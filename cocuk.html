@@ -642,7 +642,7 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
 @keyframes breathe{0%,100%{scale:1}50%{scale:1.06}}
 
 /* Açılış ekranı tam dolsun, kayan yazı ekranın altına otursun */
-@media (min-width:861px) and (min-height:600px){
+@media (min-width:861px) and (min-height:600px) and (orientation:landscape){
   .hero{min-height:calc(100svh - var(--topH,114px) - var(--mqH,40px));display:flex;align-items:center;padding:24px 0 64px}
   .hero>.wrap{width:min(1280px,100% - 32px)}
 }
@@ -1112,7 +1112,7 @@ if(matchMedia('(hover:hover)').matches)document.querySelectorAll('details.myth, 
 <script>
 /* Sağ alttaki Randevu Al düğmesi: randevu bölümü ekrandayken gizlensin */
 (()=>{const b=document.getElementById('rdvBtn'),r=document.getElementById('randevu');if(!b||!r)return;
- new IntersectionObserver(e=>b.classList.toggle('off',e[0].isIntersecting),{threshold:.15}).observe(r)})();
+ const v=new Map(),h=document.querySelector('.hero');new IntersectionObserver(es=>{es.forEach(x=>v.set(x.target,x.isIntersecting));b.classList.toggle('off',[...v.values()].some(Boolean))},{rootMargin:'-45% 0px -45% 0px'}).observe(r);if(h)new IntersectionObserver(es=>{es.forEach(x=>v.set(x.target,x.isIntersecting));b.classList.toggle('off',[...v.values()].some(Boolean))},{threshold:.35}).observe(h)})();
 </script>
 <script>
 /* Üst şerit + menü ve kayan yazı yüksekliğini ölç */

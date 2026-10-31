@@ -1110,9 +1110,6 @@ if(matchMedia('(hover:hover)').matches)document.querySelectorAll('details.myth, 
 <script src="hekimler.js" defer></script>
 <script src="kurumlar.js" defer></script>
 <script>
-/* Sağ alttaki Randevu Al düğmesi: randevu bölümü ekrandayken gizlensin */
-(()=>{const b=document.getElementById('rdvBtn'),r=document.getElementById('randevu');if(!b||!r)return;
- const v=new Map(),h=document.querySelector('.hero');new IntersectionObserver(es=>{es.forEach(x=>v.set(x.target,x.isIntersecting));b.classList.toggle('off',[...v.values()].some(Boolean))},{rootMargin:'-45% 0px -45% 0px'}).observe(r);if(h)new IntersectionObserver(es=>{es.forEach(x=>v.set(x.target,x.isIntersecting));b.classList.toggle('off',[...v.values()].some(Boolean))},{threshold:.35}).observe(h)})();
 </script>
 <script>
 /* Üst şerit + menü ve kayan yazı yüksekliğini ölç */

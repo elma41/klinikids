@@ -747,9 +747,6 @@ if(matchMedia('(hover:hover)').matches)document.querySelectorAll('details.myth, 
 <script src="hekimler.js" defer></script>
 <script src="kurumlar.js" defer></script>
 <script>
-/* Sağ alttaki Randevu Al düğmesi: randevu bölümü ekrandayken gizlensin */
-(()=>{const b=document.getElementById('rdvBtn'),r=document.getElementById('randevu');if(!b||!r)return;
- const v=new Map(),h=document.querySelector('.hero');new IntersectionObserver(es=>{es.forEach(x=>v.set(x.target,x.isIntersecting));b.classList.toggle('off',[...v.values()].some(Boolean))},{threshold:.15}).observe(r);if(h)new IntersectionObserver(es=>{es.forEach(x=>v.set(x.target,x.isIntersecting));b.classList.toggle('off',[...v.values()].some(Boolean))},{threshold:.35}).observe(h)})();
 </script>
 <script>
 (()=>{const set=()=>{const t=(document.querySelector('.topbar')?.offsetHeight||0)+(document.getElementById('hdr')?.offsetHeight||0);document.documentElement.style.setProperty('--topH',t+'px')};set();addEventListener('resize',set);addEventListener('load',set);document.fonts&&document.fonts.ready.then(set)})();

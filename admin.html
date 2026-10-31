@@ -9,6 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
 <style>
 :root{
   --cream:#FFFBF0; --white:#fff; --line:#EDE6D3;
@@ -172,6 +174,33 @@ textarea.in{min-height:70px;resize:vertical}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:14px;font-weight:700;z-index:200;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
 .toast.bad{background:var(--red)}
 .loading{padding:30px;text-align:center;color:var(--ink2)}
+
+/* Raporlar */
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.kpi{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi span{font-size:12.5px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em}
+.kpi b{font-family:'Baloo 2';font-size:30px;line-height:1.1;color:var(--ink)}
+.kpi small{font-size:12.5px;color:var(--ink2);font-weight:600}
+@media (max-width:1200px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:560px){.kpis{grid-template-columns:1fr 1fr}}
+.rgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.rgrid .card{margin:0}
+.rgrid .card + .card{margin-top:0}
+.rgrid h3{margin-bottom:2px}
+.rgrid .span2{grid-column:span 2}.rgrid .span3{grid-column:1/-1}
+.cv{position:relative;margin-top:10px}
+@media (max-width:1000px){.rgrid{grid-template-columns:1fr}.rgrid .span2{grid-column:auto}}
+.heat{display:grid;gap:3px;margin-top:12px;font-size:12px}
+.heat .hx{text-align:center;color:var(--ink2);font-weight:700}
+.heat .hy{color:var(--ink2);font-weight:800;align-self:center}
+.heat i{font-style:normal;height:30px;border-radius:5px;display:grid;place-items:center;font-weight:800;font-size:11px;color:#173A5E;min-height:22px}
+.heat i.dk{color:#fff}
+.tbl-wrap{overflow-x:auto;margin-top:8px}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink2);padding:8px 10px;border-bottom:1.5px solid var(--line)}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.tbl td:nth-child(3){min-width:140px}
+.tbl .bar{display:inline-block;width:calc(var(--w) * .6);max-width:60%;height:8px;border-radius:4px;background:#2a78d6;margin-right:8px;vertical-align:middle}
 </style>
 </head>
 <body>
@@ -281,6 +310,7 @@ const isDoctor = () => S.staff?.role === 'doctor';
 const canDesk = () => ['admin','receptionist'].includes(S.staff?.role);
 
 const TABS = [
+  {id:'reports',  ic:'📊', label:'Raporlar',   show:()=>canDesk()},
   {id:'appts',    ic:'📅', label:'Randevular', show:()=>true},
   {id:'patients', ic:'🧑', label:'Hastalar',   show:()=>canDesk()},
   {id:'timeoff',  ic:'🏖️', label:'İzinler',    show:()=>true},
@@ -375,7 +405,7 @@ async function viewAppts(main){
   main.innerHTML = `
     <div class="top">
       <h1>Randevular</h1>
-      ${canDesk()?'<button class="btn primary" id="newAppt">＋ Yeni randevu</button>':''}
+      ${canDesk()?'<button class="btn" id="apXls">⬇ Excel</button><button class="btn primary" id="newAppt">＋ Yeni randevu</button>':''}
     </div>
     <div class="filters">
       <div class="datebar">
@@ -401,6 +431,7 @@ async function viewAppts(main){
   if($('fDoc')) $('fDoc').onchange = e => { S.docFilter = e.target.value; go('appts'); };
   $('fSt').onchange = e => { S.statusFilter = e.target.value; go('appts'); };
   if($('newAppt')) $('newAppt').onclick = () => apptForm(null, from);
+  if($('apXls')) $('apXls').onclick = () => exportAppts().catch(e => toast(friendly(e), true));
 
   const list = $('apptList');
   if(S.view==='week'){
@@ -467,6 +498,7 @@ function apptDetail(r){
       ${r.status!=='pending'&&r.status!=='confirmed'?'':''}
     </div>
     <div class="actions">
+      ${isAdmin()?'<button class="btn danger" id="delAppt" style="margin-right:auto">🗑 Randevuyu sil</button>':''}
       ${canDesk()?'<button class="btn ghost" id="edit">✏️ Düzenle / taşı</button>':''}
       <button class="btn" id="saveNote">Notu kaydet</button>
     </div>`);
@@ -481,6 +513,10 @@ function apptDetail(r){
   });
   m.el.querySelector('#saveNote').onclick = () => upd({staff_note: m.el.querySelector('#sNote').value || null});
   if(m.el.querySelector('#edit')) m.el.querySelector('#edit').onclick = () => { m.close(); apptForm(r); };
+  if(m.el.querySelector('#delAppt')) m.el.querySelector('#delAppt').onclick = async () => {
+    if(!(await confirmBox('Bu randevu kalıcı olarak silinecek ve raporlardan da çıkacak. Sadece hatalı kayıtlar için kullanın; vazgeçilen randevular için “İptal et” önerilir.', 'Kalıcı olarak sil'))) return;
+    try { await q(sb.from('appointments').delete().eq('id', r.id).select('id')); m.close(); toast('Randevu silindi'); go('appts'); } catch(e){ toast(friendly(e), true); }
+  };
 }
 
 /* ---- Yeni / düzenle ---- */
@@ -598,7 +634,7 @@ function apptForm(r, defDate){
    HASTALAR
    ========================================================= */
 async function viewPatients(main){
-  main.innerHTML = `<div class="top"><h1>Hastalar</h1></div>
+  main.innerHTML = `<div class="top"><h1>Hastalar</h1><button class="btn" id="ptXls">⬇ Tüm hastaları Excel'e aktar</button></div>
     <div class="card"><input class="in" id="pSearch" placeholder="🔍 İsim veya telefon ile ara…"><div class="list" id="pList" style="margin-top:10px"></div></div>`;
   const load = async term => {
     let qq = sb.from('patients').select('*').order('created_at',{ascending:false}).limit(50);
@@ -616,6 +652,7 @@ async function viewPatients(main){
       : '<div class="empty">Hasta bulunamadı.</div>';
     $('pList').querySelectorAll('[data-p]').forEach(el => el.onclick = () => patientDetail(rows.find(p => p.id===el.dataset.p)));
   };
+  $('ptXls').onclick = () => exportPatients().catch(e => toast(friendly(e), true));
   let t; $('pSearch').oninput = e => { clearTimeout(t); t = setTimeout(() => load(e.target.value), 300); };
   await load('');
 }
@@ -630,7 +667,7 @@ async function patientDetail(p){
     <label class="f">Notlar (sadece personel görür)<textarea class="in" id="pnotes">${esc(p.notes||'')}</textarea></label>
     <div class="muted small">KVKK onayı: ${p.kvkk_consent_at ? esc(new Date(p.kvkk_consent_at).toLocaleString('tr-TR',{timeZone:TZ})) : 'yok (telefonla kayıt)'}</div>
     <div class="err" id="pErr" hidden></div>
-    <div class="actions"><button class="btn primary" id="pSave">Kaydet</button></div>
+    <div class="actions">${isAdmin()?'<button class="btn danger" id="pDel" style="margin-right:auto">🗑 Hastayı sil</button>':''}<button class="btn primary" id="pSave">Kaydet</button></div>
     <h3 style="font-size:18px">Randevu geçmişi (${appts.length})</h3>
     <div class="list">${appts.map(a => `<div class="row"><span class="dot" style="--c:${esc(a.doctors?.color)}"></span>
       <div class="grow"><b>${esc(shortDate(ymd(a.starts_at)))} ${hm(a.starts_at)} · ${esc(svcName(a))}</b><span class="muted small">${esc(docName(a.doctors))}</span></div>
@@ -642,6 +679,14 @@ async function patientDetail(p){
       await q(sb.from('patients').update({full_name: m.el.querySelector('#pn').value.trim(), phone, email: m.el.querySelector('#pe').value.trim()||null, notes: m.el.querySelector('#pnotes').value||null}).eq('id', p.id).select('id'));
       m.close(); toast('Hasta güncellendi'); go('patients');
     } catch(e){ err.textContent=friendly(e); err.hidden=false; }
+  };
+  if(m.el.querySelector('#pDel')) m.el.querySelector('#pDel').onclick = async () => {
+    if(!(await confirmBox(`${p.full_name} ve ${appts.length} randevusu kalıcı olarak silinecek. Bu işlem geri alınamaz (KVKK silme talepleri için).`, 'Kalıcı olarak sil'))) return;
+    try {
+      if(appts.length) await q(sb.from('appointments').delete().eq('patient_id', p.id).select('id'));
+      await q(sb.from('patients').delete().eq('id', p.id).select('id'));
+      m.close(); toast('Hasta ve randevuları silindi'); go('patients');
+    } catch(e){ toast(friendly(e), true); }
   };
 }
 
@@ -947,7 +992,183 @@ async function viewSettings(main){
   };
 }
 
-const VIEWS = {appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, staff:viewStaff, settings:viewSettings};
+/* =========================================================
+   RAPORLAR
+   ========================================================= */
+const PAL = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#6250d6','#e34948'];
+const CLINIC_LBL = {cocuk:'Çocuk', yetiskin:'Yetişkin', ikisi:'Ortak'};
+const RS = {range:'30', from:null, to:null, clinic:'', charts:[]};
+const pct = (a,b) => b ? Math.round(a*1000/b)/10 : 0;
+const fmtPct = v => '%' + v.toLocaleString('tr-TR');
+async function fetchAll(build){
+  const out=[]; for(let i=0;;i+=1000){ const d = await q(build().range(i,i+999)); out.push(...d); if(d.length<1000) break; } return out;
+}
+function rangeDates(){
+  const t = today();
+  if(RS.range==='custom' && RS.from && RS.to) return [RS.from, RS.to];
+  if(RS.range==='month') return [t.slice(0,8)+'01', t];
+  if(RS.range==='year') return [t.slice(0,4)+'-01-01', t];
+  return [addDays(t, -(+RS.range-1)), t];
+}
+function xlsxDownload(sheets, name){
+  if(!window.XLSX){ toast('Excel modülü yüklenemedi, internet bağlantısını kontrol edin.', true); return; }
+  const wb = XLSX.utils.book_new();
+  sheets.forEach(([title, rows]) => { const ws = XLSX.utils.json_to_sheet(rows.length?rows:[{Bilgi:'Kayıt yok'}]);
+    const keys = Object.keys(rows[0]||{Bilgi:1}); ws['!cols'] = keys.map(k => ({wch: Math.min(40, Math.max(k.length, ...rows.map(r => String(r[k]??'').length)) + 2)}));
+    XLSX.utils.book_append_sheet(wb, ws, title.slice(0,31)); });
+  XLSX.writeFile(wb, name);
+}
+const apptRowXls = r => ({
+  'Tarih': ymd(r.starts_at).split('-').reverse().join('.'), 'Saat': hm(r.starts_at), 'Bitiş': hm(r.ends_at),
+  'Hasta': r.patients?.full_name||'', 'Telefon': fmtPhone(r.patients?.phone), 'Hekim': docName(r.doctors),
+  'Klinik': CLINIC_LBL[r.doctors?.clinic]||'', 'İşlem': svcName(r), 'Durum': STATUS[r.status]||r.status, 'Kaynak': SOURCE[r.source]||r.source,
+  'Hasta notu': r.patient_note||'', 'Personel notu': r.staff_note||''
+});
+
+async function viewReports(main){
+  RS.charts.forEach(c => c.destroy()); RS.charts = [];
+  const [from, to] = rangeDates();
+  const [a, b] = [new Date(from+'T00:00:00'+OFF).toISOString(), new Date(addDays(to,1)+'T00:00:00'+OFF).toISOString()];
+  main.innerHTML = `<div class="top"><h1>Raporlar</h1><button class="btn" id="rxXls">⬇ Excel'e aktar</button></div>
+    <div class="filters">
+      <div class="seg" id="rxRange">${[['7','7 gün'],['30','30 gün'],['90','3 ay'],['month','Bu ay'],['year','Bu yıl'],['custom','Özel']].map(([k,v])=>`<button data-r="${k}" class="${RS.range===k?'on':''}">${v}</button>`).join('')}</div>
+      <span id="rxCustom" ${RS.range==='custom'?'':'hidden'}><input type="date" class="in" id="rxFrom" value="${from}" style="width:150px"> – <input type="date" class="in" id="rxTo" value="${to}" style="width:150px"></span>
+      <select class="in" id="rxClinic"><option value="">Tüm klinikler</option><option value="cocuk" ${RS.clinic==='cocuk'?'selected':''}>Çocuk Kliniği</option><option value="yetiskin" ${RS.clinic==='yetiskin'?'selected':''}>Yetişkin Kliniği</option></select>
+      <span class="muted small">${esc(shortDate(from))} – ${esc(shortDate(to))}</span>
+    </div>
+    <div class="loading">Veriler hesaplanıyor…</div>`;
+  main.querySelectorAll('[data-r]').forEach(x => x.onclick = () => { RS.range = x.dataset.r; go('reports'); });
+  $('rxClinic').onchange = e => { RS.clinic = e.target.value; go('reports'); };
+  const cf = () => { if($('rxFrom').value && $('rxTo').value && $('rxFrom').value <= $('rxTo').value){ RS.from=$('rxFrom').value; RS.to=$('rxTo').value; go('reports'); } };
+  $('rxFrom').onchange = cf; $('rxTo').onchange = cf;
+
+  let rows = await fetchAll(() => sb.from('appointments')
+    .select('id,starts_at,ends_at,status,source,patient_id,patient_note,staff_note,custom_service_name,services(name,duration_minutes),doctors(full_name,title,color,clinic),patients(full_name,phone,created_at)')
+    .gte('starts_at', a).lt('starts_at', b).order('starts_at'));
+  if(RS.clinic) rows = rows.filter(r => (r.doctors?.clinic||'ikisi') === RS.clinic || r.doctors?.clinic==='ikisi');
+  const { count: newPat } = await sb.from('patients').select('id',{count:'exact',head:true}).gte('created_at', a).lt('created_at', b);
+
+  const N = rows.length;
+  const by = (f) => { const m = new Map(); rows.forEach(r => { const k = f(r); m.set(k, (m.get(k)||0)+1); }); return [...m.entries()].sort((x,y)=>y[1]-x[1]); };
+  const cnt = s => rows.filter(r => r.status===s).length;
+  const done = cnt('completed'), noshow = cnt('no_show'), canc = cnt('cancelled'), pend = cnt('pending'), conf = cnt('confirmed');
+  const online = rows.filter(r => r.source==='online').length;
+  const uniqPat = new Set(rows.map(r => r.patient_id)).size;
+  const svc = by(r => svcName(r));
+  const docs = by(r => docName(r.doctors));
+  const clin = by(r => CLINIC_LBL[r.doctors?.clinic]||'Ortak');
+
+  // previous period for trend
+  const days = Math.round((new Date(to) - new Date(from))/864e5)+1;
+  const [pa, pb] = [new Date(addDays(from,-days)+'T00:00:00'+OFF).toISOString(), a];
+  const { count: prevN } = await sb.from('appointments').select('id',{count:'exact',head:true}).gte('starts_at', pa).lt('starts_at', pb);
+  const delta = prevN ? Math.round((N-prevN)*100/prevN) : null;
+
+  const kpi = (lbl, val, sub, tone='') => `<div class="kpi ${tone}"><span>${lbl}</span><b>${val}</b><small>${sub}</small></div>`;
+  main.querySelector('.loading').outerHTML = N ? `
+    <div class="kpis">
+      ${kpi('Toplam randevu', N.toLocaleString('tr-TR'), delta===null?'önceki dönemle kıyas yok':`${delta>=0?'▲':'▼'} %${Math.abs(delta)} önceki ${days} güne göre`)}
+      ${kpi('Gerçekleşen', done.toLocaleString('tr-TR'), `${fmtPct(pct(done,N))} · geldi olarak işaretli`)}
+      ${kpi('Gelmeme oranı', fmtPct(pct(noshow, done+noshow)), `${noshow} hasta gelmedi`)}
+      ${kpi('İptal oranı', fmtPct(pct(canc,N)), `${canc} iptal`)}
+      ${kpi('Online randevu', fmtPct(pct(online,N)), `${online} siteden alındı`)}
+      ${kpi('Hasta', uniqPat.toLocaleString('tr-TR'), `${newPat||0} yeni kayıt`)}
+    </div>
+    <div class="rgrid">
+      <div class="card span2"><h3>Randevu trendi</h3><p class="muted small">${days>62?'Haftalık':'Günlük'} randevu sayısı, kliniğe göre</p><div class="cv" style="height:260px"><canvas id="cTrend"></canvas></div></div>
+      <div class="card"><h3>Durum dağılımı</h3><p class="muted small">Tüm randevuların yüzdesi</p><div class="cv" style="height:240px"><canvas id="cStatus"></canvas></div></div>
+      <div class="card span2"><h3>En çok yapılan işlemler</h3><p class="muted small">İlk 10 işlem · randevu sayısı ve payı</p><div class="cv" style="height:${Math.max(180, Math.min(10,svc.length)*34+40)}px"><canvas id="cSvc"></canvas></div></div>
+      <div class="card"><h3>Randevu kaynağı</h3><p class="muted small">Online / telefon / kapıdan</p><div class="cv" style="height:240px"><canvas id="cSrc"></canvas></div></div>
+      <div class="card"><h3>Hekime göre</h3><p class="muted small">Randevu sayısı</p><div class="cv" style="height:${Math.max(160, docs.length*40+40)}px"><canvas id="cDoc"></canvas></div></div>
+      <div class="card span2"><h3>Yoğunluk haritası</h3><p class="muted small">Haftanın günü × saat · koyu = daha yoğun</p><div id="heat"></div></div>
+      <div class="card span3"><h3>İşlem analizi</h3><div class="tbl-wrap"><table class="tbl" id="svcTbl"></table></div></div>
+    </div>` : `<div class="card empty"><div class="big">📊</div><p>Bu dönemde randevu yok. Tarih aralığını genişletin.</p></div>`;
+
+  $('rxXls').onclick = () => {
+    const svcRows = svc.map(([k,v]) => { const rs = rows.filter(r => svcName(r)===k); const d = rs.filter(r=>r.status==='completed').length, ns = rs.filter(r=>r.status==='no_show').length;
+      return {'İşlem':k,'Randevu':v,'Pay (%)':pct(v,N),'Gerçekleşen':d,'Gelmedi':ns,'İptal':rs.filter(r=>r.status==='cancelled').length,'Gelmeme oranı (%)':pct(ns,d+ns)}; });
+    xlsxDownload([
+      ['Özet', [{'Dönem':`${from} – ${to}`,'Klinik':RS.clinic?CLINIC_LBL[RS.clinic]:'Tümü','Toplam randevu':N,'Gerçekleşen':done,'Gelmedi':noshow,'İptal':canc,'Onay bekliyor':pend,'Onaylı':conf,'Gelmeme oranı (%)':pct(noshow,done+noshow),'İptal oranı (%)':pct(canc,N),'Online oranı (%)':pct(online,N),'Farklı hasta':uniqPat,'Yeni hasta kaydı':newPat||0}]],
+      ['İşlemler', svcRows],
+      ['Hekimler', docs.map(([k,v]) => ({'Hekim':k,'Randevu':v,'Pay (%)':pct(v,N)}))],
+      ['Randevular', rows.map(apptRowXls)],
+    ], `klinikids-rapor-${from}_${to}.xlsx`);
+  };
+  if(!N) return;
+  if(!window.Chart){ main.querySelectorAll('.cv').forEach(c => c.innerHTML='<p class="muted small">Grafik modülü yüklenemedi.</p>'); }
+
+  Chart.defaults.font.family = "'Nunito', system-ui, sans-serif";
+  Chart.defaults.color = '#4E6782';
+  Chart.defaults.plugins.tooltip.backgroundColor = '#173A5E';
+  Chart.defaults.plugins.tooltip.padding = 10;
+  Chart.defaults.plugins.tooltip.cornerRadius = 10;
+  const grid = {color:'rgba(23,58,94,.07)'}, noGrid = {display:false};
+
+  // Trend
+  const weekly = days > 62, keyOf = d => weekly ? startOfWeek(d) : d;
+  const keys = []; for(let d = weekly?startOfWeek(from):from; d <= to; d = addDays(d, weekly?7:1)) keys.push(d);
+  const groups = RS.clinic ? [[CLINIC_LBL[RS.clinic], r => true]] : [['Çocuk', r => r.doctors?.clinic==='cocuk'], ['Yetişkin', r => r.doctors?.clinic!=='cocuk']];
+  RS.charts.push(new Chart($('cTrend'), { type:'line',
+    data:{ labels: keys.map(k => weekly ? shortDate(k)+' haftası' : shortDate(k)),
+      datasets: groups.map(([name, f], i) => { const m = {}; rows.filter(f).forEach(r => { const k = keyOf(ymd(r.starts_at)); m[k]=(m[k]||0)+1; });
+        return {label:name, data:keys.map(k => m[k]||0), borderColor:PAL[i], backgroundColor:PAL[i], borderWidth:2, pointRadius:keys.length>40?0:3, pointHoverRadius:5, tension:.25, cubicInterpolationMode:'monotone'}; }) },
+    options:{ maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, plugins:{legend:{position:'top',align:'end',labels:{usePointStyle:true,boxWidth:8}}},
+      scales:{ x:{grid:noGrid, ticks:{maxTicksLimit:10}}, y:{beginAtZero:true, grid, ticks:{precision:0}} } } }));
+
+  // Durum
+  const st = [['completed','Geldi'],['confirmed','Onaylı'],['pending','Onay bekliyor'],['no_show','Gelmedi'],['cancelled','İptal']].map(([k,l]) => [l, cnt(k)]).filter(x => x[1]);
+  const donut = (el, pairs) => new Chart(el, { type:'doughnut',
+    data:{ labels: pairs.map(p => `${p[0]} · ${fmtPct(pct(p[1],N))}`), datasets:[{ data: pairs.map(p=>p[1]), backgroundColor: pairs.map((_,i)=>PAL[i]), borderColor:'#fff', borderWidth:2, hoverOffset:6 }] },
+    options:{ maintainAspectRatio:false, cutout:'62%', plugins:{ legend:{position:'right',labels:{usePointStyle:true,boxWidth:8,padding:12}},
+      tooltip:{callbacks:{label:c => ` ${c.raw} randevu`}} } } });
+  RS.charts.push(donut($('cStatus'), st));
+  RS.charts.push(donut($('cSrc'), [['Online',online],['Telefon',rows.filter(r=>r.source==='phone').length],['Kapıdan',rows.filter(r=>r.source==='walk_in').length]].filter(x=>x[1])));
+
+  // İşlemler / hekimler (yatay bar, tek seri = tek renk)
+  const hbar = (el, pairs, color) => new Chart(el, { type:'bar',
+    data:{ labels: pairs.map(p=>p[0]), datasets:[{ data: pairs.map(p=>p[1]), backgroundColor: color, borderRadius:4, borderSkipped:'start', barThickness:18 }] },
+    options:{ indexAxis:'y', maintainAspectRatio:false, layout:{padding:{right:72}}, plugins:{ legend:{display:false}, tooltip:{callbacks:{label:c => ` ${c.raw} randevu · ${fmtPct(pct(c.raw,N))}`}} },
+      scales:{ x:{beginAtZero:true, grid, ticks:{precision:0}}, y:{grid:noGrid} } },
+    plugins:[{ id:'vals', afterDatasetsDraw(ch){ const {ctx} = ch; ctx.save(); ctx.font = "700 12px Nunito, sans-serif"; ctx.fillStyle = '#173A5E'; ctx.textBaseline='middle';
+      ch.getDatasetMeta(0).data.forEach((bar,i) => { const v = ch.data.datasets[0].data[i]; ctx.fillText(`${v} · ${fmtPct(pct(v,N))}`, bar.x + 6, bar.y); }); ctx.restore(); } }] });
+  RS.charts.push(hbar($('cSvc'), svc.slice(0,10), PAL[0]));
+  RS.charts.push(hbar($('cDoc'), docs, PAL[2]));
+
+  // Yoğunluk haritası
+  const hours = []; rows.forEach(r => hours.push(+hm(r.starts_at).slice(0,2)));
+  const h0 = Math.min(...hours, 9), h1 = Math.max(...hours, 17);
+  const H = {}; let mx = 0; rows.forEach(r => { const k = isoDow(ymd(r.starts_at))+'-'+(+hm(r.starts_at).slice(0,2)); H[k]=(H[k]||0)+1; mx=Math.max(mx,H[k]); });
+  const hrs = []; for(let h=h0; h<=h1; h++) hrs.push(h);
+  const shade = v => { if(!v) return '#F4F7FA'; const t = v/mx; const L = [ '#d6e6fa','#a9caf3','#6fa5e8','#3f86dd','#2a78d6','#1d5aa6' ]; return L[Math.min(5, Math.floor(t*5.999))]; };
+  $('heat').innerHTML = `<div class="heat" style="grid-template-columns:44px repeat(${hrs.length},1fr)">
+    <span></span>${hrs.map(h=>`<span class="hx">${String(h).padStart(2,'0')}</span>`).join('')}
+    ${[1,2,3,4,5,6,7].map(d => `<span class="hy">${SDAYS[d]}</span>${hrs.map(h => { const v = H[d+'-'+h]||0; return `<i style="background:${shade(v)}" title="${DAYS[d]} ${String(h).padStart(2,'0')}:00 · ${v} randevu"${v/mx>.55?' class="dk"':''}>${v||''}</i>`; }).join('')}`).join('')}
+  </div>`;
+
+  // Tablo
+  $('svcTbl').innerHTML = `<thead><tr><th>İşlem</th><th>Randevu</th><th>Pay</th><th>Gerçekleşen</th><th>Gelmedi</th><th>İptal</th><th>Gelmeme oranı</th></tr></thead><tbody>${svc.map(([k,v]) => {
+    const rs = rows.filter(r => svcName(r)===k), d = rs.filter(r=>r.status==='completed').length, ns = rs.filter(r=>r.status==='no_show').length, c = rs.filter(r=>r.status==='cancelled').length;
+    return `<tr><td><b>${esc(k)}</b></td><td>${v}</td><td><span class="bar" style="--w:${pct(v,svc[0][1])}%"></span>${fmtPct(pct(v,N))}</td><td>${d}</td><td>${ns}</td><td>${c}</td><td>${d+ns?fmtPct(pct(ns,d+ns)):'—'}</td></tr>`; }).join('')}</tbody>`;
+}
+
+/* ---- Excel: randevular ve hastalar ---- */
+async function exportAppts(){
+  const span = S.view==='week' ? 7 : 1, from = S.view==='week' ? startOfWeek(S.date) : S.date;
+  const [a,b] = dayRange(from, span);
+  let qq = () => { let x = sb.from('appointments').select('*, patients(full_name,phone), doctors(full_name,title,clinic), services(name)').gte('starts_at',a).lt('starts_at',b).order('starts_at'); if(S.docFilter) x = x.eq('doctor_id',S.docFilter); if(S.statusFilter) x = x.eq('status',S.statusFilter); return x; };
+  const rows = await fetchAll(qq);
+  xlsxDownload([['Randevular', rows.map(apptRowXls)]], `klinikids-randevular-${from}${span>1?'_'+addDays(from,6):''}.xlsx`);
+}
+async function exportPatients(){
+  const ps = await fetchAll(() => sb.from('patients').select('*').order('full_name'));
+  const ap = await fetchAll(() => sb.from('appointments').select('patient_id,starts_at,status'));
+  const stat = {}; ap.forEach(r => { const s = stat[r.patient_id] ||= {n:0,last:null,done:0}; s.n++; if(r.status==='completed') s.done++; if(!s.last || r.starts_at > s.last) s.last = r.starts_at; });
+  xlsxDownload([['Hastalar', ps.map(p => ({ 'Ad soyad':p.full_name, 'Telefon':fmtPhone(p.phone), 'E-posta':p.email||'', 'Kayıt tarihi': ymd(p.created_at).split('-').reverse().join('.'),
+    'KVKK onayı': p.kvkk_consent_at ? 'Var' : 'Yok', 'Randevu sayısı': stat[p.id]?.n||0, 'Gerçekleşen': stat[p.id]?.done||0,
+    'Son randevu': stat[p.id]?.last ? ymd(stat[p.id].last).split('-').reverse().join('.') : '', 'Notlar': p.notes||'' }))]], `klinikids-hastalar-${today()}.xlsx`);
+}
+
+const VIEWS = {reports:viewReports, appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, staff:viewStaff, settings:viewSettings};
 
 sb.auth.onAuthStateChange(ev => { if(ev==='SIGNED_OUT'){ $('appView').hidden=true; $('loginView').hidden=false; } });
 boot();

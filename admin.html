@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Klinikids – Yönetim Paneli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.89.0/dist/umd/supabase.js"></script>
+<style>
+:root{
+  --cream:#FFFBF0; --white:#fff; --line:#EDE6D3;
+  --ink:#173A5E; --ink2:#4E6782; --ink3:#8A9BB0;
+  --yellow:#FFC83D; --yellow-soft:#FFF1C4;
+  --teal:#1FA59B; --teal-dark:#1E5F5B; --teal-soft:#D8F3EF;
+  --blue:#45B4EA; --blue-soft:#DDF2FC;
+  --pink:#FF6F9C; --pink-soft:#FFE3EC;
+  --green:#5FAF33; --green-soft:#E7F6DC;
+  --orange:#E8772A; --orange-soft:#FFE8D6;
+  --purple:#9C7CF0; --purple-soft:#EDE6FF;
+  --red:#D9433A; --red-soft:#FDE4E2;
+  --radius:18px;
+  --shadow:0 10px 30px -16px rgba(23,58,94,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%}
+body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.5;font-size:15px}
+h1,h2,h3{font-family:'Baloo 2',sans-serif;line-height:1.15}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font:inherit;color:inherit}
+[hidden]{display:none!important}
+
+/* Buttons & form */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:9px 16px;border-radius:12px;font-weight:800;background:var(--white);border:1.5px solid var(--line);transition:transform .1s,background .15s;white-space:nowrap}
+.btn:hover{background:#FFF8E6}
+.btn:active{transform:translateY(1px)}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.primary{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn.primary:hover{background:var(--teal-dark)}
+.btn.danger{color:var(--red);border-color:#F3C9C5}
+.btn.danger:hover{background:var(--red-soft)}
+.btn.sm{padding:5px 10px;font-size:13px;border-radius:10px}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.ghost:hover{background:rgba(23,58,94,.06)}
+label.f{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:13px;color:var(--ink2)}
+.in{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-size:15px;color:var(--ink)}
+.in:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-soft)}
+textarea.in{min-height:70px;resize:vertical}
+.check{display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--teal)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:640px){.grid2,.grid3{grid-template-columns:1fr}}
+.muted{color:var(--ink2)}
+.small{font-size:13px}
+.err{background:var(--red-soft);color:var(--red);padding:10px 12px;border-radius:12px;font-weight:700;font-size:14px}
+
+/* Login */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px}
+.login-card{width:min(400px,100%);background:#fff;border-radius:28px;padding:34px 28px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:14px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo .tooth{width:44px;height:44px;border-radius:14px;background:var(--yellow);display:grid;place-items:center;font-size:24px}
+.logo b{font-family:'Baloo 2';font-size:24px;line-height:1}
+.logo small{display:block;color:var(--ink2);font-weight:700;font-size:12px}
+
+/* Shell */
+.shell{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+.side{background:#fff;border-right:1.5px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh}
+.nav{display:flex;flex-direction:column;gap:3px}
+.nav button{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-weight:700;text-align:left;color:var(--ink2)}
+.nav button:hover{background:var(--cream)}
+.nav button.on{background:var(--teal-soft);color:var(--teal-dark)}
+.nav .ic{width:22px;text-align:center}
+.nav .badge{margin-left:auto;background:var(--orange);color:#fff;border-radius:99px;font-size:12px;padding:0 8px;font-weight:800}
+.me{margin-top:auto;border-top:1.5px solid var(--line);padding-top:14px;font-size:13px}
+.me b{display:block;font-size:14px}
+.main{padding:24px 28px 60px;min-width:0}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.top h1{font-size:30px;margin-right:auto}
+.mobile-bar{display:none}
+@media (max-width:860px){
+  .shell{grid-template-columns:1fr}
+  .side{display:none}
+  .mobile-bar{display:flex;position:sticky;top:0;z-index:20;background:#fff;border-bottom:1.5px solid var(--line);overflow-x:auto;gap:4px;padding:8px 12px}
+  .mobile-bar button{padding:8px 12px;border-radius:10px;font-weight:800;white-space:nowrap;color:var(--ink2);font-size:14px}
+  .mobile-bar button.on{background:var(--teal-soft);color:var(--teal-dark)}
+  .main{padding:16px 16px 60px}
+  .top h1{font-size:24px}
+  .datebar .label{min-width:0;flex:1}
+}
+
+/* Cards */
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+.card + .card{margin-top:14px}
+.card h3{font-size:19px;margin-bottom:10px}
+.empty{padding:34px 16px;text-align:center;color:var(--ink2)}
+.empty .big{font-size:38px}
+
+/* Date bar */
+.datebar{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.datebar .label{font-family:'Baloo 2';font-weight:700;font-size:18px;min-width:200px;text-align:center}
+.seg{display:inline-flex;background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:3px}
+.seg button{padding:6px 12px;border-radius:9px;font-weight:800;font-size:14px;color:var(--ink2)}
+.seg button.on{background:var(--ink);color:#fff}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.filters .in{width:auto;padding:7px 10px;font-size:14px}
+
+/* Appointment rows */
+.day-h{font-family:'Baloo 2';font-weight:700;font-size:17px;margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+.day-h:first-child{margin-top:0}
+.day-h .cnt{font-family:'Nunito';font-size:12px;background:var(--yellow-soft);border-radius:99px;padding:1px 9px}
+.appt{display:grid;grid-template-columns:78px 1fr auto;gap:14px;align-items:center;background:#fff;border-radius:16px;padding:12px 14px;border-left:6px solid var(--c,#ccc);box-shadow:0 4px 14px -10px rgba(23,58,94,.4);cursor:pointer}
+.appt + .appt{margin-top:8px}
+.appt:hover{box-shadow:0 6px 20px -10px rgba(23,58,94,.55)}
+.appt .time{font-family:'Baloo 2';font-weight:700;font-size:18px;line-height:1.1}
+.appt .time small{display:block;font-family:'Nunito';font-size:12px;color:var(--ink3);font-weight:700}
+.appt .who b{font-size:16px}
+.appt .who .meta{font-size:13px;color:var(--ink2)}
+.appt.cancelled{opacity:.55}
+.appt.cancelled .who b{text-decoration:line-through}
+@media (max-width:640px){.appt{grid-template-columns:60px 1fr}.appt .st{grid-column:1/-1}}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:12px;font-weight:800;white-space:nowrap}
+.pill.pending{background:var(--orange-soft);color:var(--orange)}
+.pill.confirmed{background:var(--teal-soft);color:var(--teal-dark)}
+.pill.completed{background:var(--green-soft);color:var(--green)}
+.pill.cancelled{background:#EEF0F3;color:var(--ink3)}
+.pill.no_show{background:var(--red-soft);color:var(--red)}
+.src{font-size:11px;font-weight:800;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);vertical-align:middle;margin-right:4px}
+
+/* Week grid */
+.week{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));gap:8px;overflow-x:auto;padding-bottom:6px}
+.wcol{background:#fff;border-radius:14px;padding:8px;min-height:160px;box-shadow:0 4px 14px -10px rgba(23,58,94,.4)}
+.wcol.today{outline:2px solid var(--yellow)}
+.wcol h4{font-family:'Baloo 2';font-size:14px;text-align:center;margin-bottom:6px;cursor:pointer}
+.wcol h4 span{display:block;font-size:20px}
+.wit{font-size:12px;border-left:4px solid var(--c);background:var(--cream);border-radius:8px;padding:5px 7px;margin-bottom:5px;cursor:pointer;line-height:1.3}
+.wit b{display:block}
+.wit.cancelled{opacity:.45;text-decoration:line-through}
+.wit.pending{background:var(--orange-soft)}
+
+/* Tables / lists */
+.list{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:12px;padding:12px 4px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.row .grow{flex:1;min-width:0}
+.row .grow b{display:block}
+.avatar{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--c,var(--teal));flex-shrink:0;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--cream);border:1.5px solid var(--line);border-radius:99px;padding:3px 10px;font-size:13px;font-weight:700}
+.wh-row{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}
+.wh-row:last-child{border-bottom:0}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(23,58,94,.45);display:grid;place-items:center;z-index:100;padding:16px}
+.modal{background:#fff;border-radius:22px;width:min(560px,100%);max-height:calc(100vh - 32px);overflow:auto;padding:22px;display:flex;flex-direction:column;gap:14px}
+.modal h2{font-size:24px;display:flex;align-items:center;gap:8px}
+.modal .x{margin-left:auto;font-size:22px;width:36px;height:36px;border-radius:10px}
+.modal .x:hover{background:var(--cream)}
+.modal .actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:6px 12px;background:var(--cream);border-radius:14px;padding:14px}
+.kv dt{color:var(--ink2);font-weight:700;font-size:14px}
+.kv dd{font-weight:700}
+.kv a{color:var(--teal-dark)}
+.slots{display:flex;flex-wrap:wrap;gap:6px;max-height:180px;overflow:auto}
+.slots button{padding:6px 11px;border-radius:10px;border:1.5px solid var(--line);font-weight:800;font-size:14px}
+.slots button.on{background:var(--teal);border-color:var(--teal);color:#fff}
+
+/* Toast */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:14px;font-weight:700;z-index:200;box-shadow:var(--shadow);max-width:calc(100% - 32px)}
+.toast.bad{background:var(--red)}
+.loading{padding:30px;text-align:center;color:var(--ink2)}
+</style>
+</head>
+<body>
+
+<!-- GİRİŞ -->
+<div class="login" id="loginView" hidden>
+  <form class="login-card" id="loginForm">
+    <div class="logo"><div class="tooth">🦷</div><div><b>Klinikids</b><small>Yönetim Paneli</small></div></div>
+    <h2 style="font-size:22px;margin-top:6px">Personel girişi</h2>
+    <label class="f">E-posta<input class="in" type="email" id="lgEmail" autocomplete="username" required></label>
+    <label class="f">Şifre<input class="in" type="password" id="lgPass" autocomplete="current-password" required></label>
+    <div class="err" id="lgErr" hidden></div>
+    <button class="btn primary" id="lgBtn" type="submit" style="padding:12px">Giriş yap</button>
+    <p class="muted small">Şifrenizi unuttuysanız klinik yöneticisine başvurun.</p>
+  </form>
+</div>
+
+<!-- PANEL -->
+<div class="shell" id="appView" hidden>
+  <aside class="side">
+    <div class="logo"><div class="tooth">🦷</div><div><b>Klinikids</b><small>Yönetim Paneli</small></div></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="me"><b id="meName"></b><span class="muted" id="meRole"></span><br><button class="btn sm" id="logoutBtn" style="margin-top:10px">Çıkış yap</button></div>
+  </aside>
+  <div style="min-width:0">
+    <div class="mobile-bar" id="mnav"></div>
+    <main class="main" id="main"></main>
+  </div>
+</div>
+
+<div id="modalRoot"></div>
+
+<script>
+(() => {
+const SB_URL = 'https://xnjnxogvnldrbridzvqu.supabase.co';
+const SB_KEY = 'sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+/* ---------------- yardımcılar ---------------- */
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TZ = 'Europe/Istanbul';
+const OFF = '+03:00'; // Türkiye 2016'dan beri sabit UTC+3
+const ymd = d => new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(d));
+const today = () => ymd(new Date());
+const addDays = (s,n) => { const d = new Date(s+'T12:00:00Z'); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
+const isoDow = s => new Date(s+'T12:00:00Z').getUTCDay() || 7;
+const startOfWeek = s => addDays(s, 1 - isoDow(s));
+const hm = d => new Intl.DateTimeFormat('tr-TR',{timeZone:TZ,hour:'2-digit',minute:'2-digit'}).format(new Date(d));
+const longDate = s => new Date(s+'T12:00:00Z').toLocaleDateString('tr-TR',{timeZone:'UTC',weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const shortDate = s => new Date(s+'T12:00:00Z').toLocaleDateString('tr-TR',{timeZone:'UTC',day:'numeric',month:'short'});
+const dtLocal = d => { const x = new Date(d); return ymd(x)+'T'+hm(x); };       // timestamptz → datetime-local
+const fromLocal = v => v ? new Date(v.length===16 ? v+':00'+OFF : v+OFF).toISOString() : null; // datetime-local → ISO
+const dayRange = (from, days) => [new Date(from+'T00:00:00'+OFF).toISOString(), new Date(addDays(from,days)+'T00:00:00'+OFF).toISOString()];
+const DAYS = ['','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
+const SDAYS = ['','Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+const STATUS = {pending:'Onay bekliyor',confirmed:'Onaylandı',completed:'Geldi',no_show:'Gelmedi',cancelled:'İptal'};
+const SOURCE = {online:'Online',phone:'Telefon',walk_in:'Kapıdan'};
+const ROLES = {admin:'Yönetici',receptionist:'Sekreter',doctor:'Doktor'};
+const initials = n => String(n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toLocaleUpperCase('tr-TR')||'').join('');
+function normPhone(p){ let v=String(p||'').replace(/\D/g,''); if(/^90\d{10}$/.test(v)) v=v.slice(2); else if(/^0\d{10}$/.test(v)) v=v.slice(1); return /^5\d{9}$/.test(v)?v:null; }
+const fmtPhone = p => p && p.length===10 ? `0${p.slice(0,3)} ${p.slice(3,6)} ${p.slice(6,8)} ${p.slice(8)}` : (p||'');
+const docName = d => d ? [d.title, d.full_name].filter(Boolean).join(' ') : '—';
+const svcName = a => a.services?.name || a.custom_service_name || '—';
+
+function toast(msg, bad){ const t=document.createElement('div'); t.className='toast'+(bad?' bad':''); t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(), bad?4500:2400); }
+function friendly(e){
+  const m = e?.message || String(e);
+  if (e?.code === '23P01' || /exclu/i.test(m)) return 'Bu saat çakışıyor: doktorun o saatte başka bir randevusu ya da çalışma saati var.';
+  if (e?.code === '23505' || /duplicate key/i.test(m)) return 'Bu kayıt zaten var.';
+  if (e?.code === '23503') return 'Bu kayda bağlı başka kayıtlar olduğu için silinemiyor. Pasife almayı deneyin.';
+  if (/row-level security|permission denied/i.test(m)) return 'Bu işlem için yetkiniz yok.';
+  if (/Failed to fetch|NetworkError/i.test(m)) return 'İnternet bağlantısı kurulamadı.';
+  return m;
+}
+async function q(promise){ const {data,error} = await promise; if(error) throw error; return data; }
+
+/* ---------------- modal ---------------- */
+function modal(title, bodyHtml, {wide}={}){
+  const root=$('modalRoot');
+  root.innerHTML = `<div class="modal-bg"><div class="modal"${wide?' style="width:min(720px,100%)"':''}><h2>${title}<button class="x" data-close aria-label="Kapat">×</button></h2>${bodyHtml}</div></div>`;
+  const bg = root.firstElementChild;
+  const close = () => { root.innerHTML=''; document.removeEventListener('keydown', onKey); };
+  const onKey = e => { if(e.key==='Escape') close(); };
+  document.addEventListener('keydown', onKey);
+  bg.addEventListener('mousedown', e => { if(e.target===bg) close(); });
+  bg.querySelectorAll('[data-close]').forEach(b => b.onclick = close);
+  return {el: bg.querySelector('.modal'), close};
+}
+function confirmBox(text, okLabel='Evet', danger=true){
+  return new Promise(res => {
+    const m = modal('Emin misiniz?', `<p>${esc(text)}</p><div class="actions"><button class="btn" data-no>Vazgeç</button><button class="btn ${danger?'danger':'primary'}" data-ok>${esc(okLabel)}</button></div>`);
+    m.el.querySelector('[data-no]').onclick = () => { m.close(); res(false); };
+    m.el.querySelector('[data-ok]').onclick = () => { m.close(); res(true); };
+  });
+}
+
+/* ---------------- durum ---------------- */
+const S = {
+  user:null, staff:null, tab:'appts',
+  doctors:[], services:[], links:[], settings:null,
+  view:'day', date: today(), docFilter:'', statusFilter:'',
+};
+const isAdmin = () => S.staff?.role === 'admin';
+const isDoctor = () => S.staff?.role === 'doctor';
+const canDesk = () => ['admin','receptionist'].includes(S.staff?.role);
+
+const TABS = [
+  {id:'appts',    ic:'📅', label:'Randevular', show:()=>true},
+  {id:'patients', ic:'🧑', label:'Hastalar',   show:()=>canDesk()},
+  {id:'timeoff',  ic:'🏖️', label:'İzinler',    show:()=>true},
+  {id:'doctors',  ic:'👩‍⚕️', label:'Doktorlar',  show:()=>true},
+  {id:'services', ic:'🦷', label:'Hizmetler',  show:()=>isAdmin()},
+  {id:'staff',    ic:'🔑', label:'Personel',   show:()=>isAdmin()},
+  {id:'settings', ic:'⚙️', label:'Ayarlar',    show:()=>isAdmin()},
+];
+
+/* ---------------- giriş ---------------- */
+$('loginForm').onsubmit = async e => {
+  e.preventDefault();
+  const btn=$('lgBtn'), err=$('lgErr'); err.hidden=true; btn.disabled=true; btn.textContent='Giriş yapılıyor…';
+  const {error} = await sb.auth.signInWithPassword({email:$('lgEmail').value.trim(), password:$('lgPass').value});
+  btn.disabled=false; btn.textContent='Giriş yap';
+  if(error){ err.textContent = /Invalid login/i.test(error.message) ? 'E-posta veya şifre hatalı.' : friendly(error); err.hidden=false; return; }
+  $('lgPass').value='';
+  await boot();
+};
+$('logoutBtn').onclick = async () => { await sb.auth.signOut(); location.reload(); };
+
+async function boot(){
+  const {data:{session}} = await sb.auth.getSession();
+  if(!session){ $('appView').hidden=true; $('loginView').hidden=false; return; }
+  S.user = session.user;
+  let staff=null;
+  try { staff = (await q(sb.from('staff_profiles').select('*').eq('user_id', S.user.id)))[0]; } catch(e){}
+  if(!staff){
+    $('loginView').hidden=false; $('appView').hidden=true;
+    $('lgErr').textContent='Bu hesabın panel yetkisi yok. Klinik yöneticisinden personel olarak tanımlanmayı isteyin.'; $('lgErr').hidden=false;
+    await sb.auth.signOut(); return;
+  }
+  S.staff = staff;
+  if(isDoctor()) S.docFilter = staff.doctor_id || '';
+  $('loginView').hidden=true; $('appView').hidden=false;
+  $('meName').textContent = staff.full_name;
+  $('meRole').textContent = ROLES[staff.role] + ' · ' + S.user.email;
+  await loadRefs();
+  go(S.tab);
+}
+
+async function loadRefs(){
+  const [doctors, services, links, settings] = await Promise.all([
+    q(sb.from('doctors').select('*').order('sort_order').order('full_name')),
+    q(sb.from('services').select('*').order('sort_order').order('name')),
+    q(sb.from('doctor_services').select('*')),
+    q(sb.from('clinic_settings').select('*').limit(1)),
+  ]);
+  Object.assign(S, {doctors, services, links, settings: settings[0]});
+}
+const docOf = id => S.doctors.find(d => d.id===id);
+const svcsOf = docId => S.services.filter(s => S.links.some(l => l.doctor_id===docId && l.service_id===s.id));
+
+/* ---------------- gezinme ---------------- */
+async function refreshBadge(){
+  if(isDoctor() && !S.staff.doctor_id) return;
+  let qq = sb.from('appointments').select('id',{count:'exact',head:true}).eq('status','pending').gte('starts_at', new Date().toISOString());
+  const {count} = await qq;
+  document.querySelectorAll('[data-badge]').forEach(b => { b.textContent = count||''; b.hidden = !count; });
+}
+function renderNav(){
+  const tabs = TABS.filter(t => t.show());
+  $('nav').innerHTML = tabs.map(t => `<button data-tab="${t.id}" class="${t.id===S.tab?'on':''}"><span class="ic">${t.ic}</span>${t.label}${t.id==='appts'?'<span class="badge" data-badge hidden></span>':''}</button>`).join('');
+  $('mnav').innerHTML = tabs.map(t => `<button data-tab="${t.id}" class="${t.id===S.tab?'on':''}">${t.ic} ${t.label}</button>`).join('') + `<button id="mLogout">↩ Çıkış</button>`;
+  document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => go(b.dataset.tab));
+  $('mLogout').onclick = () => $('logoutBtn').click();
+  refreshBadge();
+}
+async function go(tab){
+  S.tab = tab; renderNav();
+  const main = $('main'); main.innerHTML = '<div class="loading">Yükleniyor…</div>';
+  try { await VIEWS[tab](main); }
+  catch(e){ main.innerHTML = `<div class="err">${esc(friendly(e))}</div>`; }
+}
+
+/* =========================================================
+   RANDEVULAR
+   ========================================================= */
+async function viewAppts(main){
+  const span = S.view==='week' ? 7 : 1;
+  const from = S.view==='week' ? startOfWeek(S.date) : S.date;
+  const [a,b] = dayRange(from, span);
+  const label = S.view==='week' ? `${shortDate(from)} – ${shortDate(addDays(from,6))}` : longDate(from);
+
+  let qq = sb.from('appointments')
+    .select('*, patients(id,full_name,phone,email,notes), doctors(id,full_name,title,color), services(id,name,duration_minutes)')
+    .gte('starts_at', a).lt('starts_at', b).order('starts_at');
+  if(S.docFilter) qq = qq.eq('doctor_id', S.docFilter);
+  if(S.statusFilter) qq = qq.eq('status', S.statusFilter);
+  const rows = await q(qq);
+
+  main.innerHTML = `
+    <div class="top">
+      <h1>Randevular</h1>
+      ${canDesk()?'<button class="btn primary" id="newAppt">＋ Yeni randevu</button>':''}
+    </div>
+    <div class="filters">
+      <div class="datebar">
+        <button class="btn sm" id="prev" aria-label="Önceki">‹</button>
+        <span class="label">${esc(label)}</span>
+        <button class="btn sm" id="next" aria-label="Sonraki">›</button>
+        <button class="btn sm" id="today">Bugün</button>
+        <input type="date" class="in" id="pick" value="${from}" style="width:150px">
+      </div>
+      <div class="seg"><button data-v="day" class="${S.view==='day'?'on':''}">Gün</button><button data-v="week" class="${S.view==='week'?'on':''}">Hafta</button></div>
+      ${isDoctor()?'':`<select class="in" id="fDoc"><option value="">Tüm doktorlar</option>${S.doctors.map(d=>`<option value="${d.id}" ${d.id===S.docFilter?'selected':''}>${esc(docName(d))}</option>`).join('')}</select>`}
+      <select class="in" id="fSt"><option value="">Tüm durumlar</option>${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${k===S.statusFilter?'selected':''}>${v}</option>`).join('')}</select>
+    </div>
+    <div id="pendingBox"></div>
+    <div id="apptList"></div>`;
+
+  const step = S.view==='week'?7:1;
+  $('prev').onclick = () => { S.date = addDays(from,-step); go('appts'); };
+  $('next').onclick = () => { S.date = addDays(from, step); go('appts'); };
+  $('today').onclick = () => { S.date = today(); go('appts'); };
+  $('pick').onchange = e => { if(e.target.value){ S.date = e.target.value; go('appts'); } };
+  main.querySelectorAll('[data-v]').forEach(b => b.onclick = () => { S.view=b.dataset.v; go('appts'); });
+  if($('fDoc')) $('fDoc').onchange = e => { S.docFilter = e.target.value; go('appts'); };
+  $('fSt').onchange = e => { S.statusFilter = e.target.value; go('appts'); };
+  if($('newAppt')) $('newAppt').onclick = () => apptForm(null, from);
+
+  const list = $('apptList');
+  if(S.view==='week'){
+    const days = [...Array(7)].map((_,i)=>addDays(from,i));
+    list.innerHTML = `<div class="week">${days.map(d => {
+      const items = rows.filter(r => ymd(r.starts_at)===d);
+      return `<div class="wcol ${d===today()?'today':''}"><h4 data-day="${d}">${SDAYS[isoDow(d)]}<span>${d.slice(8)}</span></h4>
+        ${items.map(r => `<div class="wit ${r.status}" style="--c:${esc(r.doctors?.color||'#ccc')}" data-id="${r.id}"><b>${hm(r.starts_at)} ${esc(r.patients?.full_name)}</b>${esc(svcName(r))}</div>`).join('') || '<div class="muted small" style="text-align:center">—</div>'}
+      </div>`; }).join('')}</div>`;
+    list.querySelectorAll('[data-day]').forEach(h => h.onclick = () => { S.date=h.dataset.day; S.view='day'; go('appts'); });
+  } else {
+    if(!rows.length){
+      list.innerHTML = `<div class="card empty"><div class="big">🗓️</div><p>Bu gün için randevu yok.</p></div>`;
+    } else {
+      list.innerHTML = rows.map(r => apptRow(r)).join('');
+    }
+  }
+  list.querySelectorAll('[data-id]').forEach(el => el.onclick = () => apptDetail(rows.find(r => r.id===el.dataset.id)));
+
+  // Bekleyen online talepler (sadece günlük görünümde, filtre yokken)
+  if(S.view==='day' && !S.statusFilter){
+    let pq = sb.from('appointments').select('*, patients(id,full_name,phone,email,notes), doctors(id,full_name,title,color), services(id,name,duration_minutes)')
+      .eq('status','pending').gte('starts_at', new Date().toISOString()).order('starts_at').limit(50);
+    if(S.docFilter) pq = pq.eq('doctor_id', S.docFilter);
+    const pend = (await q(pq)).filter(p => !rows.some(r => r.id===p.id));
+    if(pend.length){
+      const box = $('pendingBox');
+      box.innerHTML = `<div class="card" style="background:var(--orange-soft);margin-bottom:16px"><h3>⏳ Onay bekleyen ${pend.length} talep (diğer günler)</h3>
+        ${pend.map(r => apptRow(r, true)).join('')}</div>`;
+      box.querySelectorAll('[data-id]').forEach(el => el.onclick = () => apptDetail(pend.find(r => r.id===el.dataset.id)));
+    }
+  }
+}
+function apptRow(r, withDate){
+  return `<div class="appt ${r.status}" style="--c:${esc(r.doctors?.color||'#ccc')}" data-id="${r.id}">
+    <div class="time">${hm(r.starts_at)}<small>${withDate ? esc(shortDate(ymd(r.starts_at))) : '– '+hm(r.ends_at)}</small></div>
+    <div class="who"><b>${esc(r.patients?.full_name)}</b>
+      <div class="meta">${esc(svcName(r))} · <span class="dot" style="--c:${esc(r.doctors?.color||'#ccc')}"></span>${esc(docName(r.doctors))} · ${esc(fmtPhone(r.patients?.phone))}</div>
+      ${r.patient_note?`<div class="meta">💬 ${esc(r.patient_note)}</div>`:''}
+    </div>
+    <div class="st" style="text-align:right"><span class="pill ${r.status}">${STATUS[r.status]}</span><div class="src">${SOURCE[r.source]||''}</div></div>
+  </div>`;
+}
+
+function apptDetail(r){
+  const btn = (st, label, cls='') => r.status===st ? '' : `<button class="btn ${cls}" data-st="${st}">${label}</button>`;
+  const m = modal(`${esc(r.patients?.full_name)}`, `
+    <div><span class="pill ${r.status}">${STATUS[r.status]}</span> <span class="src">· ${SOURCE[r.source]||''} randevu</span></div>
+    <dl class="kv">
+      <dt>Tarih</dt><dd>${esc(longDate(ymd(r.starts_at)))}</dd>
+      <dt>Saat</dt><dd>${hm(r.starts_at)} – ${hm(r.ends_at)}</dd>
+      <dt>Doktor</dt><dd><span class="dot" style="--c:${esc(r.doctors?.color)}"></span>${esc(docName(r.doctors))}</dd>
+      <dt>İşlem</dt><dd>${esc(svcName(r))}</dd>
+      <dt>Telefon</dt><dd><a href="tel:+90${esc(r.patients?.phone)}">${esc(fmtPhone(r.patients?.phone))}</a> · <a href="https://wa.me/90${esc(r.patients?.phone)}" target="_blank" rel="noopener">WhatsApp</a></dd>
+      ${r.patients?.email?`<dt>E-posta</dt><dd>${esc(r.patients.email)}</dd>`:''}
+      ${r.patient_note?`<dt>Hasta notu</dt><dd>${esc(r.patient_note)}</dd>`:''}
+    </dl>
+    <label class="f">Personel notu (hasta görmez)<textarea class="in" id="sNote">${esc(r.staff_note||'')}</textarea></label>
+    <div class="chips">
+      ${btn('confirmed','✅ Onayla','primary')}
+      ${btn('completed','👍 Geldi')}
+      ${btn('no_show','🚫 Gelmedi')}
+      ${btn('cancelled','✖ İptal et','danger')}
+      ${r.status!=='pending'&&r.status!=='confirmed'?'':''}
+    </div>
+    <div class="actions">
+      ${canDesk()?'<button class="btn ghost" id="edit">✏️ Düzenle / taşı</button>':''}
+      <button class="btn" id="saveNote">Notu kaydet</button>
+    </div>`);
+  const upd = async patch => {
+    try { await q(sb.from('appointments').update(patch).eq('id', r.id).select('id')); m.close(); toast('Kaydedildi'); go('appts'); }
+    catch(e){ toast(friendly(e), true); }
+  };
+  m.el.querySelectorAll('[data-st]').forEach(b => b.onclick = async () => {
+    const st = b.dataset.st;
+    if(st==='cancelled' && !(await confirmBox('Bu randevu iptal edilecek ve saat tekrar boşa çıkacak.', 'İptal et'))) return;
+    upd({status: st, staff_note: m.el.querySelector('#sNote')?.value || null});
+  });
+  m.el.querySelector('#saveNote').onclick = () => upd({staff_note: m.el.querySelector('#sNote').value || null});
+  if(m.el.querySelector('#edit')) m.el.querySelector('#edit').onclick = () => { m.close(); apptForm(r); };
+}
+
+/* ---- Yeni / düzenle ---- */
+function apptForm(r, defDate){
+  const activeDocs = S.doctors.filter(d => d.is_active || d.id===r?.doctor_id);
+  const st = {
+    doctor: r?.doctor_id || S.docFilter || activeDocs[0]?.id || '',
+    service: r?.service_id || '',
+    custom: !!(r && !r.service_id),
+    date: r ? ymd(r.starts_at) : (defDate && defDate>=today() ? defDate : today()),
+    slot: r?.starts_at || null,
+  };
+  const m = modal(r ? 'Randevuyu düzenle' : 'Yeni randevu', `
+    ${r ? `<p class="muted">Hasta: <b>${esc(r.patients?.full_name)}</b> · ${esc(fmtPhone(r.patients?.phone))}</p>` : `
+    <div class="grid2">
+      <label class="f">Cep telefonu<input class="in" id="fPhone" inputmode="tel" placeholder="05xx xxx xx xx"></label>
+      <label class="f">Ad soyad<input class="in" id="fName" placeholder="Hasta adı"></label>
+    </div>
+    <div class="muted small" id="pInfo">Telefonu yazınca kayıtlı hasta varsa otomatik bulunur.</div>`}
+    <div class="grid2">
+      <label class="f">Doktor<select class="in" id="fDoc">${activeDocs.map(d=>`<option value="${d.id}">${esc(docName(d))}</option>`).join('')}</select></label>
+      <label class="f">İşlem<select class="in" id="fSvc"></select></label>
+    </div>
+    <div id="customBox" class="grid2" hidden>
+      <label class="f">İşlem adı<input class="in" id="fCustom" value="${esc(r?.custom_service_name||'')}"></label>
+      <label class="f">Süre (dakika)<input class="in" id="fDur" type="number" min="5" step="5" value="${r && !r.service_id ? Math.round((new Date(r.ends_at)-new Date(r.starts_at))/60000) : 30}"></label>
+    </div>
+    <div class="grid2">
+      <label class="f">Tarih<input class="in" type="date" id="fDate" value="${st.date}"></label>
+      <label class="f">Saat (elle)<input class="in" type="time" id="fTime" step="300" value="${r?hm(r.starts_at):''}"></label>
+    </div>
+    <div><div class="muted small" style="margin-bottom:6px;font-weight:700">Boş saatler</div><div class="slots" id="slots"></div></div>
+    ${r?'':`<label class="f">Not (isteğe bağlı)<input class="in" id="fNote"></label>
+    <label class="check"><input type="checkbox" id="fConf" checked> Onaylı olarak kaydet</label>`}
+    <div class="err" id="fErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="fSave">${r?'Kaydet':'Randevuyu oluştur'}</button></div>`);
+  const el = id => m.el.querySelector('#'+id);
+  el('fDoc').value = st.doctor;
+  let patient = r?.patients || null;
+
+  const fillSvcs = () => {
+    const list = svcsOf(el('fDoc').value).filter(s => s.is_active || s.id===st.service);
+    el('fSvc').innerHTML = list.map(s=>`<option value="${s.id}">${esc(s.name)} (${s.duration_minutes} dk)</option>`).join('') + `<option value="__custom">✏️ Listede yok, elle yaz…</option>`;
+    el('fSvc').value = st.custom ? '__custom' : (list.some(s=>s.id===st.service) ? st.service : (list[0]?.id || '__custom'));
+    el('customBox').hidden = el('fSvc').value !== '__custom';
+  };
+  const loadSlots = async () => {
+    const box = el('slots'); const svc = el('fSvc').value;
+    if(svc==='__custom'){ box.innerHTML = '<span class="muted small">Elle yazılan işlem için saati yukarıdan girin.</span>'; return; }
+    box.innerHTML = '<span class="muted small">Yükleniyor…</span>';
+    try {
+      const data = await q(sb.rpc('get_available_slots', {p_doctor_id: el('fDoc').value, p_service_id: svc, p_date: el('fDate').value}));
+      if(!data.length){ box.innerHTML = '<span class="muted small">Bu gün için boş saat yok (veya en erken randevu süresinin içinde). Saati elle girebilirsiniz.</span>'; return; }
+      box.innerHTML = data.map(s => `<button type="button" data-t="${hm(s.slot_start)}">${hm(s.slot_start)}</button>`).join('');
+      box.querySelectorAll('button').forEach(b => {
+        if(b.dataset.t===el('fTime').value) b.classList.add('on');
+        b.onclick = () => { el('fTime').value = b.dataset.t; box.querySelectorAll('button').forEach(x=>x.classList.toggle('on', x===b)); };
+      });
+    } catch(e){ box.innerHTML = `<span class="muted small">${esc(friendly(e))}</span>`; }
+  };
+  fillSvcs(); loadSlots();
+  el('fDoc').onchange = () => { st.custom=false; fillSvcs(); loadSlots(); };
+  el('fSvc').onchange = () => { el('customBox').hidden = el('fSvc').value!=='__custom'; loadSlots(); };
+  el('fDate').onchange = loadSlots;
+
+  if(!r){
+    let t;
+    el('fPhone').oninput = () => { clearTimeout(t); t = setTimeout(async () => {
+      const p = normPhone(el('fPhone').value); patient = null;
+      if(!p){ el('pInfo').textContent = 'Telefonu yazınca kayıtlı hasta varsa otomatik bulunur.'; return; }
+      const found = (await q(sb.from('patients').select('*').eq('phone', p)))[0];
+      if(found){ patient = found; el('fName').value = found.full_name; el('pInfo').innerHTML = `✅ Kayıtlı hasta: <b>${esc(found.full_name)}</b>`; }
+      else el('pInfo').textContent = '🆕 Yeni hasta olarak kaydedilecek.';
+    }, 350); };
+  }
+
+  el('fSave').onclick = async () => {
+    const err = el('fErr'); err.hidden = true;
+    const fail = msg => { err.textContent = msg; err.hidden = false; };
+    const time = el('fTime').value, date = el('fDate').value;
+    if(!date || !time) return fail('Tarih ve saat seçin.');
+    const starts = new Date(`${date}T${time}:00${OFF}`).toISOString();
+    const custom = el('fSvc').value === '__custom';
+    const rec = { doctor_id: el('fDoc').value, starts_at: starts };
+    if(custom){
+      const name = el('fCustom').value.trim(), dur = +el('fDur').value;
+      if(!name) return fail('İşlem adını yazın.');
+      if(!(dur>=5)) return fail('Süreyi dakika olarak girin.');
+      Object.assign(rec, {service_id:null, custom_service_name:name, ends_at: new Date(new Date(starts).getTime()+dur*60000).toISOString()});
+    } else {
+      const s = S.services.find(x => x.id===el('fSvc').value);
+      Object.assign(rec, {service_id:s.id, custom_service_name:null, ends_at: new Date(new Date(starts).getTime()+s.duration_minutes*60000).toISOString()});
+    }
+    el('fSave').disabled = true;
+    try {
+      if(r){
+        await q(sb.from('appointments').update(rec).eq('id', r.id).select('id'));
+      } else {
+        const phone = normPhone(el('fPhone').value), name = el('fName').value.trim();
+        if(!phone) throw new Error('Geçerli bir cep telefonu girin (5xx xxx xx xx).');
+        if(!patient){
+          if(name.length < 3) throw new Error('Hastanın adını ve soyadını girin.');
+          patient = (await q(sb.from('patients').insert({full_name:name, phone}).select()))[0];
+        }
+        await q(sb.from('appointments').insert({...rec, patient_id: patient.id, source:'phone',
+          status: el('fConf').checked ? 'confirmed' : 'pending', staff_note: el('fNote').value.trim() || null}).select('id'));
+      }
+      m.close(); toast(r ? 'Randevu güncellendi' : 'Randevu oluşturuldu');
+      S.date = date; S.view = 'day'; go('appts');
+    } catch(e){ fail(friendly(e)); el('fSave').disabled = false; }
+  };
+}
+
+/* =========================================================
+   HASTALAR
+   ========================================================= */
+async function viewPatients(main){
+  main.innerHTML = `<div class="top"><h1>Hastalar</h1></div>
+    <div class="card"><input class="in" id="pSearch" placeholder="🔍 İsim veya telefon ile ara…"><div class="list" id="pList" style="margin-top:10px"></div></div>`;
+  const load = async term => {
+    let qq = sb.from('patients').select('*').order('created_at',{ascending:false}).limit(50);
+    const t = (term||'').trim();
+    if(t){
+      const digits = t.replace(/\D/g,'');
+      if(digits.length >= 3) qq = qq.ilike('phone', `%${digits.replace(/^0/,'')}%`);
+      else qq = qq.ilike('full_name', `%${t.replace(/[%_,()]/g,'')}%`);
+    }
+    const rows = await q(qq);
+    $('pList').innerHTML = rows.length ? rows.map(p => `<div class="row" data-p="${p.id}" style="cursor:pointer">
+      <div class="avatar" style="--c:var(--blue)">${esc(initials(p.full_name))}</div>
+      <div class="grow"><b>${esc(p.full_name)}</b><span class="muted small">${esc(fmtPhone(p.phone))}${p.email?' · '+esc(p.email):''}</span></div>
+      <span class="muted small">${esc(shortDate(ymd(p.created_at)))}</span></div>`).join('')
+      : '<div class="empty">Hasta bulunamadı.</div>';
+    $('pList').querySelectorAll('[data-p]').forEach(el => el.onclick = () => patientDetail(rows.find(p => p.id===el.dataset.p)));
+  };
+  let t; $('pSearch').oninput = e => { clearTimeout(t); t = setTimeout(() => load(e.target.value), 300); };
+  await load('');
+}
+async function patientDetail(p){
+  const appts = await q(sb.from('appointments').select('*, doctors(full_name,title,color), services(name)').eq('patient_id', p.id).order('starts_at',{ascending:false}));
+  const m = modal(esc(p.full_name), `
+    <div class="grid2">
+      <label class="f">Ad soyad<input class="in" id="pn" value="${esc(p.full_name)}"></label>
+      <label class="f">Telefon<input class="in" id="pp" value="${esc(fmtPhone(p.phone))}"></label>
+    </div>
+    <label class="f">E-posta<input class="in" id="pe" value="${esc(p.email||'')}"></label>
+    <label class="f">Notlar (sadece personel görür)<textarea class="in" id="pnotes">${esc(p.notes||'')}</textarea></label>
+    <div class="muted small">KVKK onayı: ${p.kvkk_consent_at ? esc(new Date(p.kvkk_consent_at).toLocaleString('tr-TR',{timeZone:TZ})) : 'yok (telefonla kayıt)'}</div>
+    <div class="err" id="pErr" hidden></div>
+    <div class="actions"><button class="btn primary" id="pSave">Kaydet</button></div>
+    <h3 style="font-size:18px">Randevu geçmişi (${appts.length})</h3>
+    <div class="list">${appts.map(a => `<div class="row"><span class="dot" style="--c:${esc(a.doctors?.color)}"></span>
+      <div class="grow"><b>${esc(shortDate(ymd(a.starts_at)))} ${hm(a.starts_at)} · ${esc(svcName(a))}</b><span class="muted small">${esc(docName(a.doctors))}</span></div>
+      <span class="pill ${a.status}">${STATUS[a.status]}</span></div>`).join('') || '<div class="muted">Randevu yok.</div>'}</div>`, {wide:true});
+  m.el.querySelector('#pSave').onclick = async () => {
+    const phone = normPhone(m.el.querySelector('#pp').value), err = m.el.querySelector('#pErr');
+    if(!phone){ err.textContent='Geçerli bir cep telefonu girin.'; err.hidden=false; return; }
+    try {
+      await q(sb.from('patients').update({full_name: m.el.querySelector('#pn').value.trim(), phone, email: m.el.querySelector('#pe').value.trim()||null, notes: m.el.querySelector('#pnotes').value||null}).eq('id', p.id).select('id'));
+      m.close(); toast('Hasta güncellendi'); go('patients');
+    } catch(e){ err.textContent=friendly(e); err.hidden=false; }
+  };
+}
+
+/* =========================================================
+   İZİNLER
+   ========================================================= */
+async function viewTimeoff(main){
+  let qq = sb.from('time_off').select('*, doctors(full_name,title,color)').gte('ends_at', new Date(Date.now()-30*864e5).toISOString()).order('starts_at');
+  if(isDoctor()) qq = qq.eq('doctor_id', S.staff.doctor_id);
+  const rows = await q(qq);
+  const docs = isDoctor() ? S.doctors.filter(d => d.id===S.staff.doctor_id) : S.doctors.filter(d => d.is_active);
+  main.innerHTML = `<div class="top"><h1>İzinler ve tatiller</h1></div>
+    <div class="card"><h3>Yeni izin ekle</h3>
+      <div class="grid2">
+        <label class="f">Doktor<select class="in" id="tDoc">${isDoctor()?'':'<option value="__all">Tüm doktorlar (resmi tatil)</option>'}${docs.map(d=>`<option value="${d.id}">${esc(docName(d))}</option>`).join('')}</select></label>
+        <label class="f">Açıklama<input class="in" id="tReason" placeholder="Yıllık izin, kongre, bayram…"></label>
+      </div>
+      <div class="grid3" style="margin-top:12px">
+        <label class="f">Başlangıç<input class="in" type="date" id="tFrom" value="${today()}"></label>
+        <label class="f">Bitiş (dahil)<input class="in" type="date" id="tTo" value="${today()}"></label>
+        <label class="check" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="tPart"> Saat aralığı</label>
+      </div>
+      <div class="grid2" id="tHours" hidden style="margin-top:12px">
+        <label class="f">Başlangıç saati<input class="in" type="time" id="tFh" value="09:00"></label>
+        <label class="f">Bitiş saati<input class="in" type="time" id="tTh" value="12:00"></label>
+      </div>
+      <div class="err" id="tErr" hidden style="margin-top:12px"></div>
+      <div class="actions" style="margin-top:12px;display:flex;justify-content:flex-end"><button class="btn primary" id="tAdd">İzni ekle</button></div>
+    </div>
+    <div class="card"><h3>Yaklaşan ve son izinler</h3><div class="list">
+      ${rows.map(t => `<div class="row"><div class="avatar" style="--c:${esc(t.doctors?.color)}">${esc(initials(t.doctors?.full_name))}</div>
+        <div class="grow"><b>${esc(docName(t.doctors))}${t.reason?' · '+esc(t.reason):''}</b>
+        <span class="muted small">${new Date(t.starts_at).toLocaleString('tr-TR',{timeZone:TZ,dateStyle:'medium',timeStyle:'short'})} → ${new Date(t.ends_at).toLocaleString('tr-TR',{timeZone:TZ,dateStyle:'medium',timeStyle:'short'})}</span></div>
+        <button class="btn sm danger" data-del="${t.id}">Sil</button></div>`).join('') || '<div class="empty">Kayıtlı izin yok.</div>'}
+    </div></div>`;
+  $('tPart').onchange = e => $('tHours').hidden = !e.target.checked;
+  $('tAdd').onclick = async () => {
+    const err=$('tErr'); err.hidden=true;
+    const f=$('tFrom').value, t=$('tTo').value, part=$('tPart').checked;
+    if(!f||!t||t<f){ err.textContent='Tarihleri kontrol edin.'; err.hidden=false; return; }
+    const starts = new Date(`${f}T${part?$('tFh').value:'00:00'}:00${OFF}`).toISOString();
+    const ends = part ? new Date(`${t}T${$('tTh').value}:00${OFF}`).toISOString() : new Date(`${addDays(t,1)}T00:00:00${OFF}`).toISOString();
+    if(ends<=starts){ err.textContent='Bitiş, başlangıçtan sonra olmalı.'; err.hidden=false; return; }
+    const ids = $('tDoc').value==='__all' ? docs.map(d=>d.id) : [$('tDoc').value];
+    const reason = $('tReason').value.trim() || null;
+    try {
+      // Çakışan aktif randevu uyarısı
+      const clash = await q(sb.from('appointments').select('id').in('doctor_id', ids).in('status',['pending','confirmed']).lt('starts_at', ends).gt('ends_at', starts));
+      if(clash.length && !(await confirmBox(`Bu aralıkta ${clash.length} aktif randevu var. İzin eklenecek ama randevular iptal edilmeyecek; hastaları ayrıca aramanız gerekir.`, 'Yine de ekle', false))) return;
+      await q(sb.from('time_off').insert(ids.map(id => ({doctor_id:id, starts_at:starts, ends_at:ends, reason}))).select('id'));
+      toast('İzin eklendi'); go('timeoff');
+    } catch(e){ err.textContent=friendly(e); err.hidden=false; }
+  };
+  main.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+    if(!(await confirmBox('Bu izin kaydı silinecek.', 'Sil'))) return;
+    try { await q(sb.from('time_off').delete().eq('id', b.dataset.del).select('id')); toast('Silindi'); go('timeoff'); } catch(e){ toast(friendly(e), true); }
+  });
+}
+
+/* =========================================================
+   DOKTORLAR
+   ========================================================= */
+async function viewDoctors(main){
+  await loadRefs();
+  const hours = await q(sb.from('working_hours').select('*').order('weekday').order('start_time'));
+  const docs = isDoctor() ? S.doctors.filter(d => d.id===S.staff.doctor_id) : S.doctors;
+  main.innerHTML = `<div class="top"><h1>${isDoctor()?'Çalışma saatlerim':'Doktorlar'}</h1>${isAdmin()?'<button class="btn primary" id="dNew">＋ Doktor ekle</button>':''}</div>
+    ${docs.map(d => {
+      const h = hours.filter(x => x.doctor_id===d.id);
+      return `<div class="card" style="${d.is_active?'':'opacity:.6'}">
+        <div class="row" style="padding-top:0">
+          <div class="avatar" style="--c:${esc(d.color)}">${esc(initials(d.full_name))}</div>
+          <div class="grow"><b>${esc(docName(d))} ${d.is_active?'':'<span class="pill cancelled">Pasif</span>'}</b><span class="muted small">${esc(d.specialty||'')}</span></div>
+          ${isAdmin()?`<button class="btn sm" data-edit="${d.id}">✏️ Düzenle</button>`:''}
+          <button class="btn sm" data-hours="${d.id}">🕘 Saatler</button>
+        </div>
+        <div class="chips" style="margin:8px 0">${svcsOf(d.id).map(s=>`<span class="chip">${esc(s.name)}</span>`).join('') || '<span class="muted small">Hizmet atanmamış — online randevuda görünmez.</span>'}</div>
+        <div class="muted small">${[1,2,3,4,5,6,7].map(w => { const x=h.filter(y=>y.weekday===w); return x.length?`<b>${SDAYS[w]}</b> ${x.map(y=>y.start_time.slice(0,5)+'–'+y.end_time.slice(0,5)).join(', ')}`:null; }).filter(Boolean).join(' · ') || 'Çalışma saati girilmemiş — online randevuda görünmez.'}</div>
+      </div>`; }).join('') || '<div class="card empty">Henüz doktor yok.</div>'}`;
+  if($('dNew')) $('dNew').onclick = () => doctorForm(null);
+  main.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => doctorForm(docOf(b.dataset.edit)));
+  main.querySelectorAll('[data-hours]').forEach(b => b.onclick = () => hoursForm(docOf(b.dataset.hours), hours.filter(h => h.doctor_id===b.dataset.hours)));
+}
+function doctorForm(d){
+  const COLORS = ['#1FA59B','#45B4EA','#FF6F9C','#9C7CF0','#FF8A3D','#7CC94F','#EF4E45','#173A5E'];
+  const mine = new Set(d ? svcsOf(d.id).map(s=>s.id) : []);
+  const m = modal(d ? 'Doktoru düzenle' : 'Yeni doktor', `
+    <div class="grid2">
+      <label class="f">Unvan<select class="in" id="dTitle">${['Dt.','Uzm. Dt.','Dr. Dt.','Doç. Dr.','Prof. Dr.'].map(t=>`<option ${d?.title===t?'selected':''}>${t}</option>`).join('')}</select></label>
+      <label class="f">Ad soyad<input class="in" id="dName" value="${esc(d?.full_name||'')}"></label>
+    </div>
+    <div class="grid2">
+      <label class="f">Uzmanlık<input class="in" id="dSpec" value="${esc(d?.specialty||'')}" placeholder="Ortodonti, Pedodonti…"></label>
+      <label class="f">Sıra<input class="in" type="number" id="dSort" value="${d?.sort_order??S.doctors.length+1}"></label>
+    </div>
+    <label class="f">Takvim rengi<div class="chips" id="dColors">${COLORS.map(c=>`<button type="button" data-c="${c}" style="width:30px;height:30px;border-radius:9px;background:${c};outline:${(d?.color||COLORS[0])===c?'3px solid var(--ink)':'none'};outline-offset:2px"></button>`).join('')}</div></label>
+    <label class="f">Verdiği hizmetler<div class="chips">${S.services.filter(s=>s.is_active||mine.has(s.id)).map(s=>`<label class="chip check"><input type="checkbox" value="${s.id}" ${mine.has(s.id)?'checked':''}> ${esc(s.name)}</label>`).join('') || '<span class="muted small">Önce Hizmetler sayfasından hizmet ekleyin.</span>'}</div></label>
+    ${d?`<label class="check"><input type="checkbox" id="dActive" ${d.is_active?'checked':''}> Aktif (sitede görünsün, randevu alınabilsin)</label>`:''}
+    ${d?'':'<p class="muted small">Kaydettikten sonra “🕘 Saatler” düğmesinden çalışma saatlerini girin; Pzt–Cum 09:00–18:00 varsayılan olarak eklenir.</p>'}
+    <div class="err" id="dErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="dSave">Kaydet</button></div>`);
+  let color = d?.color || COLORS[0];
+  m.el.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { color=b.dataset.c; m.el.querySelectorAll('[data-c]').forEach(x=>x.style.outline = x===b?'3px solid var(--ink)':'none'); });
+  m.el.querySelector('#dSave').onclick = async () => {
+    const err = m.el.querySelector('#dErr'); err.hidden=true;
+    const rec = { title: m.el.querySelector('#dTitle').value, full_name: m.el.querySelector('#dName').value.trim(), specialty: m.el.querySelector('#dSpec').value.trim()||null, sort_order: +m.el.querySelector('#dSort').value||0, color };
+    if(d) rec.is_active = m.el.querySelector('#dActive').checked;
+    if(rec.full_name.length<3){ err.textContent='Doktorun adını girin.'; err.hidden=false; return; }
+    const chosen = [...m.el.querySelectorAll('.chips input[type=checkbox]:checked')].map(x=>x.value);
+    try {
+      let id = d?.id;
+      if(d) await q(sb.from('doctors').update(rec).eq('id', id).select('id'));
+      else {
+        id = (await q(sb.from('doctors').insert(rec).select('id')))[0].id;
+        await q(sb.from('working_hours').insert([1,2,3,4,5].map(w=>({doctor_id:id, weekday:w, start_time:'09:00', end_time:'18:00'}))).select('id'));
+      }
+      const before = new Set(S.links.filter(l=>l.doctor_id===id).map(l=>l.service_id));
+      const add = chosen.filter(s=>!before.has(s)), del = [...before].filter(s=>!chosen.includes(s));
+      if(add.length) await q(sb.from('doctor_services').insert(add.map(s=>({doctor_id:id, service_id:s}))).select('doctor_id'));
+      if(del.length) await q(sb.from('doctor_services').delete().eq('doctor_id', id).in('service_id', del).select('doctor_id'));
+      m.close(); toast('Doktor kaydedildi'); go('doctors');
+    } catch(e){ err.textContent=friendly(e); err.hidden=false; }
+  };
+}
+function hoursForm(d, hours){
+  const rowsHtml = list => [1,2,3,4,5,6,7].map(w => {
+    const x = list.filter(h=>h.weekday===w);
+    return `<div class="wh-row"><b>${DAYS[w]}</b><div class="chips">${x.map(h=>`<span class="chip">${h.start_time.slice(0,5)}–${h.end_time.slice(0,5)} <button class="btn ghost sm" data-delh="${h.id}" style="padding:0 4px" aria-label="Sil">×</button></span>`).join('') || '<span class="muted small">Kapalı</span>'}</div><span></span></div>`;
+  }).join('');
+  const m = modal(`🕘 ${esc(docName(d))}`, `
+    <p class="muted small">Öğle arası için aynı güne iki aralık ekleyin (ör. 09:00–12:30 ve 13:30–18:00).</p>
+    <div id="hList">${rowsHtml(hours)}</div>
+    <div class="card" style="box-shadow:none;background:var(--cream)"><b>Aralık ekle</b>
+      <div class="grid3" style="margin-top:8px">
+        <label class="f">Gün<select class="in" id="hDay"><option value="1-5">Pzt–Cum (hepsi)</option>${[1,2,3,4,5,6,7].map(w=>`<option value="${w}">${DAYS[w]}</option>`).join('')}</select></label>
+        <label class="f">Başlangıç<input class="in" type="time" id="hFrom" value="09:00"></label>
+        <label class="f">Bitiş<input class="in" type="time" id="hTo" value="18:00"></label>
+      </div>
+      <div class="err" id="hErr" hidden style="margin-top:8px"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn primary" id="hAdd">Ekle</button></div>
+    </div>
+    <div class="actions"><button class="btn" data-close>Bitti</button></div>`, {wide:true});
+  let list = hours.slice();
+  const bind = () => m.el.querySelectorAll('[data-delh]').forEach(b => b.onclick = async () => {
+    try { await q(sb.from('working_hours').delete().eq('id', b.dataset.delh).select('id')); list = list.filter(h=>h.id!==b.dataset.delh); m.el.querySelector('#hList').innerHTML = rowsHtml(list); bind(); }
+    catch(e){ toast(friendly(e), true); }
+  });
+  bind();
+  m.el.querySelector('#hAdd').onclick = async () => {
+    const err = m.el.querySelector('#hErr'); err.hidden=true;
+    const v = m.el.querySelector('#hDay').value, s = m.el.querySelector('#hFrom').value, e = m.el.querySelector('#hTo').value;
+    if(!s||!e||e<=s){ err.textContent='Bitiş saati başlangıçtan sonra olmalı.'; err.hidden=false; return; }
+    const days = v==='1-5' ? [1,2,3,4,5] : [+v];
+    try {
+      const added = await q(sb.from('working_hours').insert(days.map(w=>({doctor_id:d.id, weekday:w, start_time:s, end_time:e}))).select());
+      list = list.concat(added).sort((a,b)=>a.weekday-b.weekday || a.start_time.localeCompare(b.start_time));
+      m.el.querySelector('#hList').innerHTML = rowsHtml(list); bind();
+    } catch(ex){ err.textContent = /exclu|23P01/.test(ex.message+ex.code) ? 'Bu aralık o gün mevcut bir aralıkla çakışıyor.' : friendly(ex); err.hidden=false; }
+  };
+  // Kapatınca listeyi tazele
+  const obs = new MutationObserver(() => { if(!$('modalRoot').children.length){ obs.disconnect(); if(S.tab==='doctors') go('doctors'); } });
+  obs.observe($('modalRoot'), {childList:true});
+}
+
+/* =========================================================
+   HİZMETLER
+   ========================================================= */
+async function viewServices(main){
+  await loadRefs();
+  main.innerHTML = `<div class="top"><h1>Hizmetler</h1><button class="btn primary" id="sNew">＋ Hizmet ekle</button></div>
+    <div class="card"><div class="list">${S.services.map(s => `<div class="row" style="${s.is_active?'':'opacity:.55'}">
+      <div class="avatar" style="--c:var(--yellow);color:var(--ink)">${s.duration_minutes}'</div>
+      <div class="grow"><b>${esc(s.name)} ${s.is_active?'':'<span class="pill cancelled">Pasif</span>'}</b>
+        <span class="muted small">${s.duration_minutes} dakika · ${S.links.filter(l=>l.service_id===s.id).map(l=>esc(docOf(l.doctor_id)?.full_name)).join(', ') || 'hiçbir doktora atanmamış'}</span></div>
+      <button class="btn sm" data-s="${s.id}">✏️ Düzenle</button></div>`).join('') || '<div class="empty">Henüz hizmet yok.</div>'}</div></div>`;
+  $('sNew').onclick = () => serviceForm(null);
+  main.querySelectorAll('[data-s]').forEach(b => b.onclick = () => serviceForm(S.services.find(s=>s.id===b.dataset.s)));
+}
+function serviceForm(s){
+  const mine = new Set(s ? S.links.filter(l=>l.service_id===s.id).map(l=>l.doctor_id) : []);
+  const m = modal(s ? 'Hizmeti düzenle' : 'Yeni hizmet', `
+    <label class="f">Hizmet adı<input class="in" id="sName" value="${esc(s?.name||'')}" placeholder="Muayene, Dolgu, Diş taşı temizliği…"></label>
+    <div class="grid2">
+      <label class="f">Süre (dakika)<input class="in" type="number" min="5" step="5" id="sDur" value="${s?.duration_minutes||30}"></label>
+      <label class="f">Sıra<input class="in" type="number" id="sSort" value="${s?.sort_order??S.services.length+1}"></label>
+    </div>
+    <label class="f">Açıklama (isteğe bağlı)<input class="in" id="sDesc" value="${esc(s?.description||'')}"></label>
+    <label class="f">Bu hizmeti veren doktorlar<div class="chips">${S.doctors.filter(d=>d.is_active||mine.has(d.id)).map(d=>`<label class="chip check"><input type="checkbox" value="${d.id}" ${mine.has(d.id)||!s?'checked':''}> ${esc(docName(d))}</label>`).join('')}</div></label>
+    ${s?`<label class="check"><input type="checkbox" id="sActive" ${s.is_active?'checked':''}> Aktif (sitede görünsün)</label>`:''}
+    <div class="err" id="sErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="sSave">Kaydet</button></div>`);
+  m.el.querySelector('#sSave').onclick = async () => {
+    const err = m.el.querySelector('#sErr'); err.hidden=true;
+    const rec = { name: m.el.querySelector('#sName').value.trim(), duration_minutes: +m.el.querySelector('#sDur').value, sort_order: +m.el.querySelector('#sSort').value||0, description: m.el.querySelector('#sDesc').value.trim()||null };
+    if(s) rec.is_active = m.el.querySelector('#sActive').checked;
+    if(rec.name.length<2){ err.textContent='Hizmet adını girin.'; err.hidden=false; return; }
+    if(!(rec.duration_minutes>=5 && rec.duration_minutes<=480)){ err.textContent='Süre 5–480 dakika arasında olmalı.'; err.hidden=false; return; }
+    const chosen = [...m.el.querySelectorAll('.chips input:checked')].map(x=>x.value);
+    try {
+      let id = s?.id;
+      if(s) await q(sb.from('services').update(rec).eq('id', id).select('id'));
+      else id = (await q(sb.from('services').insert(rec).select('id')))[0].id;
+      const add = chosen.filter(x=>!mine.has(x)), del = [...mine].filter(x=>!chosen.includes(x));
+      if(add.length) await q(sb.from('doctor_services').insert(add.map(d=>({doctor_id:d, service_id:id}))).select('service_id'));
+      if(del.length) await q(sb.from('doctor_services').delete().eq('service_id', id).in('doctor_id', del).select('service_id'));
+      m.close(); toast('Hizmet kaydedildi'); go('services');
+    } catch(e){ err.textContent=friendly(e); err.hidden=false; }
+  };
+}
+
+/* =========================================================
+   PERSONEL
+   ========================================================= */
+async function viewStaff(main){
+  const rows = await q(sb.from('staff_profiles').select('*').order('role').order('full_name'));
+  main.innerHTML = `<div class="top"><h1>Personel</h1><button class="btn primary" id="stNew">＋ Personel ekle</button></div>
+    <div class="card"><div class="list">${rows.map(r => `<div class="row">
+      <div class="avatar" style="--c:${r.role==='admin'?'var(--ink)':r.role==='doctor'?esc(docOf(r.doctor_id)?.color||'var(--teal)'):'var(--purple)'}">${esc(initials(r.full_name))}</div>
+      <div class="grow"><b>${esc(r.full_name)} ${r.user_id===S.user.id?'<span class="muted small">(siz)</span>':''}</b><span class="muted small">${ROLES[r.role]}${r.doctor_id?' · '+esc(docName(docOf(r.doctor_id))):''}</span></div>
+      <button class="btn sm" data-st="${r.user_id}">✏️</button></div>`).join('')}</div></div>
+    <div class="card"><h3>Yeni personel nasıl eklenir?</h3>
+      <ol class="muted" style="padding-left:20px;display:flex;flex-direction:column;gap:6px">
+        <li>Supabase’te <a href="https://supabase.com/dashboard/project/xnjnxogvnldrbridzvqu/auth/users" target="_blank" rel="noopener" style="color:var(--teal);font-weight:800">Authentication → Users</a> sayfasında <b>Add user → Create new user</b> ile e-posta ve şifre oluşturun (<b>Auto Confirm User</b> işaretli).</li>
+        <li>Oluşan kullanıcının <b>UID</b> değerini kopyalayın.</li>
+        <li>Buradaki <b>＋ Personel ekle</b> düğmesine basıp UID’yi yapıştırın, rolü seçin.</li>
+      </ol></div>`;
+  $('stNew').onclick = () => staffForm(null);
+  main.querySelectorAll('[data-st]').forEach(b => b.onclick = () => staffForm(rows.find(r=>r.user_id===b.dataset.st)));
+}
+function staffForm(r){
+  const self = r?.user_id === S.user.id;
+  const m = modal(r ? 'Personeli düzenle' : 'Personel ekle', `
+    ${r?'':'<label class="f">Kullanıcı UID (Supabase’ten)<input class="in" id="stId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></label>'}
+    <label class="f">Ad soyad<input class="in" id="stName" value="${esc(r?.full_name||'')}"></label>
+    <div class="grid2">
+      <label class="f">Rol<select class="in" id="stRole" ${self?'disabled':''}>${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${r?.role===k?'selected':''}>${v}</option>`).join('')}</select></label>
+      <label class="f" id="stDocBox">Bağlı doktor<select class="in" id="stDoc">${S.doctors.map(d=>`<option value="${d.id}" ${r?.doctor_id===d.id?'selected':''}>${esc(docName(d))}</option>`).join('')}</select></label>
+    </div>
+    <p class="muted small"><b>Yönetici:</b> her şey · <b>Sekreter:</b> randevu, hasta, izin, saat · <b>Doktor:</b> sadece kendi randevuları ve saatleri</p>
+    ${self?'<p class="muted small">Kendi rolünüzü değiştiremezsiniz.</p>':''}
+    <div class="err" id="stErr" hidden></div>
+    <div class="actions">${r&&!self?'<button class="btn danger" id="stDel" style="margin-right:auto">Yetkiyi kaldır</button>':''}<button class="btn" data-close>Vazgeç</button><button class="btn primary" id="stSave">Kaydet</button></div>`);
+  const el = id => m.el.querySelector('#'+id);
+  const sync = () => el('stDocBox').hidden = el('stRole').value !== 'doctor';
+  el('stRole').onchange = sync; sync();
+  el('stSave').onclick = async () => {
+    const err = el('stErr'); err.hidden=true;
+    const role = el('stRole').value;
+    const rec = { full_name: el('stName').value.trim(), role, doctor_id: role==='doctor' ? el('stDoc').value : null };
+    if(rec.full_name.length<2){ err.textContent='Adı girin.'; err.hidden=false; return; }
+    try {
+      if(r){ if(self){ delete rec.role; delete rec.doctor_id; } await q(sb.from('staff_profiles').update(rec).eq('user_id', r.user_id).select('user_id')); }
+      else {
+        const id = el('stId').value.trim();
+        if(!/^[0-9a-f-]{36}$/i.test(id)) throw new Error('UID biçimi hatalı. Supabase’teki kullanıcı satırından kopyalayın.');
+        await q(sb.from('staff_profiles').insert({user_id:id, ...rec}).select('user_id'));
+      }
+      m.close(); toast('Kaydedildi'); go('staff');
+    } catch(e){ err.textContent = e.code==='23503' ? 'Bu UID ile bir kullanıcı bulunamadı.' : friendly(e); err.hidden=false; }
+  };
+  if(el('stDel')) el('stDel').onclick = async () => {
+    if(!(await confirmBox(`${r.full_name} artık panele giriş yapamayacak.`, 'Yetkiyi kaldır'))) return;
+    try { await q(sb.from('staff_profiles').delete().eq('user_id', r.user_id).select('user_id')); m.close(); toast('Yetki kaldırıldı'); go('staff'); } catch(e){ toast(friendly(e), true); }
+  };
+}
+
+/* =========================================================
+   AYARLAR
+   ========================================================= */
+async function viewSettings(main){
+  await loadRefs();
+  const s = S.settings;
+  main.innerHTML = `<div class="top"><h1>Ayarlar</h1></div>
+    <div class="card">
+      <label class="f">Klinik adı<input class="in" id="cName" value="${esc(s.clinic_name)}"></label>
+      <div class="grid3" style="margin-top:12px">
+        <label class="f">Saat aralığı (dk)<select class="in" id="cStep">${[10,15,20,30,60].map(v=>`<option ${s.slot_step_minutes===v?'selected':''}>${v}</option>`).join('')}</select></label>
+        <label class="f">En erken randevu (saat sonra)<input class="in" type="number" min="0" step="0.5" id="cNotice" value="${s.min_notice_minutes/60}"></label>
+        <label class="f">En ileri tarih (gün)<input class="in" type="number" min="1" max="365" id="cAhead" value="${s.max_days_ahead}"></label>
+      </div>
+      <label class="check" style="margin-top:14px"><input type="checkbox" id="cAuto" ${s.auto_confirm?'checked':''}> Online randevuları otomatik onayla</label>
+      <p class="muted small" style="margin-top:4px">Kapalıyken siteden gelen randevular “Onay bekliyor” olarak düşer; siz arayıp onaylarsınız.</p>
+      <div class="err" id="cErr" hidden style="margin-top:12px"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:14px"><button class="btn primary" id="cSave">Kaydet</button></div>
+    </div>
+    <div class="card"><h3>Hesabım</h3>
+      <p class="muted small">${esc(S.user.email)}</p>
+      <div class="grid2" style="margin-top:10px"><label class="f">Yeni şifre<input class="in" type="password" id="nPass" autocomplete="new-password" minlength="8"></label>
+      <div style="align-self:end"><button class="btn" id="nSave">Şifreyi değiştir</button></div></div>
+    </div>`;
+  $('cSave').onclick = async () => {
+    const err=$('cErr'); err.hidden=true;
+    const rec = { clinic_name: $('cName').value.trim()||'Diş Kliniği', slot_step_minutes: +$('cStep').value, min_notice_minutes: Math.round(+$('cNotice').value*60), max_days_ahead: +$('cAhead').value, auto_confirm: $('cAuto').checked };
+    try { await q(sb.from('clinic_settings').update(rec).eq('id', true).select('id')); toast('Ayarlar kaydedildi'); }
+    catch(e){ err.textContent = /check/i.test(e.message) ? 'Değerlerden biri izin verilen aralığın dışında.' : friendly(e); err.hidden=false; }
+  };
+  $('nSave').onclick = async () => {
+    const p = $('nPass').value;
+    if(p.length<8) return toast('Şifre en az 8 karakter olmalı.', true);
+    const {error} = await sb.auth.updateUser({password:p});
+    if(error) toast(friendly(error), true); else { $('nPass').value=''; toast('Şifre değiştirildi'); }
+  };
+}
+
+const VIEWS = {appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, staff:viewStaff, settings:viewSettings};
+
+sb.auth.onAuthStateChange(ev => { if(ev==='SIGNED_OUT'){ $('appView').hidden=true; $('loginView').hidden=false; } });
+boot();
+})();
+</script>
+</body>
+</html>

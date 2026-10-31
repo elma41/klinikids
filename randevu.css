@@ -1,0 +1,116 @@
+/* Klinikids — Online randevu bileşeni (ortak). Renkler her sayfanın değişkenlerinden gelir. */
+.rb{--a:var(--rb-accent,#1FA59B);--as:var(--rb-accent-soft,#D8F3EF);--ln:var(--rb-line,#F1E7CC);--fd:var(--rb-field,#FFFBF0);
+  --ik:var(--rb-ink,#173A5E);--ik2:var(--rb-ink2,#4E6782);--nm:var(--rb-num,#FFC83D);--nmi:var(--rb-num-ink,#173A5E);--r:var(--rb-r,16px);
+  color:var(--ik);min-width:0}
+.rb *{box-sizing:border-box}
+.rb [hidden]{display:none!important}
+:where(.rb) button{font:inherit;cursor:pointer;color:inherit}
+.rb-loading{padding:48px 0;text-align:center;font-weight:700;color:var(--ik2)}
+.rb-step{display:grid;gap:10px;padding:16px 0;border-bottom:2px dashed var(--ln);min-width:0}
+.rb-step:first-child{padding-top:0}
+.rb-lbl{display:flex;align-items:center;gap:10px;font-family:var(--rb-head,inherit);font-weight:700;font-size:18px}
+.rb-n{width:28px;height:28px;border-radius:50%;background:var(--nm);color:var(--nmi);display:inline-grid;place-items:center;font-size:14px;flex:none;transition:background .2s}
+.rb-step.ok .rb-n{background:var(--a);color:#fff}
+.rb-hint{color:var(--ik2);font-size:15px;font-weight:600;margin:0}
+.rb-hint a{color:var(--a);font-weight:800}
+
+.rb-docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.rb-doc{display:flex;gap:12px;align-items:center;text-align:left;background:var(--fd);border:2px solid var(--ln);border-radius:var(--r);padding:10px 12px;font-weight:800;transition:all .2s;min-width:0}
+.rb-av{width:42px;height:42px;border-radius:50%;background:var(--c,var(--a));color:#fff;display:grid;place-items:center;font-weight:800;flex:none}
+.rb-doc small{display:block;color:var(--ik2);font-weight:600;font-size:13px}
+.rb-chips{display:flex;flex-wrap:wrap;gap:8px}
+.rb-chip{padding:9px 15px;border-radius:99px;border:2px solid var(--ln);background:var(--fd);font-weight:800;font-size:15px;transition:all .2s;max-width:100%}
+.rb-chip small{font-weight:700;color:var(--ik2);font-size:12px;margin-left:5px}
+
+/* Haftalık gün seçici: her zaman 7 sütun, ekrana sığar */
+.rb-week{min-width:0}
+.rb-wnav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.rb-wnav b{font-weight:800;font-size:16px;text-align:center}
+.rb-arrow{width:38px;height:38px;border-radius:12px;border:2px solid var(--ln);background:var(--fd);font-size:22px;line-height:1;font-weight:800;display:grid;place-items:center;flex:none}
+.rb-arrow:disabled{opacity:.35;cursor:not-allowed}
+.rb-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.rb-day{display:grid;justify-items:center;gap:1px;padding:8px 2px;border-radius:calc(var(--r) - 2px);border:2px solid var(--ln);background:var(--fd);font-weight:800;line-height:1.2;transition:all .2s;min-width:0}
+.rb-day span{font-size:12px;color:var(--ik2)}
+.rb-day b{font-size:22px;line-height:1.1;font-variant-numeric:tabular-nums}
+.rb-day em{font-style:normal;font-size:11px;color:var(--a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.rb-day.is-today{box-shadow:inset 0 -3px 0 var(--nm)}
+.rb-day:disabled{opacity:.42;cursor:not-allowed}
+.rb-day:disabled em{color:var(--ik2)}
+@media (max-width:420px){.rb-days{gap:4px}.rb-day{padding:7px 0}.rb-day b{font-size:18px}.rb-day em{font-size:10px}}
+
+.rb-doc:hover,.rb-chip:hover,.rb-day:not(:disabled):hover,.rb-slot:hover,.rb-arrow:not(:disabled):hover{border-color:var(--a)}
+.rb-doc[aria-pressed=true],.rb-chip[aria-pressed=true],.rb-day[aria-pressed=true]{border-color:var(--a);background:var(--as)}
+.rb-slot-g{display:grid;gap:8px}
+.rb-slot-g+.rb-slot-g{margin-top:12px}
+.rb-slot-g h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ik2);margin:0;font-family:inherit}
+.rb-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px}
+.rb-slot{padding:9px 0;border-radius:12px;border:2px solid var(--ln);background:var(--fd);font-weight:800;font-size:16px;transition:all .2s;font-variant-numeric:tabular-nums}
+.rb-slot[aria-pressed=true]{background:var(--a);border-color:var(--a);color:#fff}
+
+.rb-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.rb-full{grid-column:1/-1}
+.rb-field{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:14px}
+.rb-field input,.rb-field textarea{font:inherit;font-weight:600;color:var(--ik);background:var(--fd);border:2px solid var(--ln);border-radius:12px;padding:12px 13px;outline:none;width:100%;transition:border-color .2s,background .2s}
+.rb-field input:focus,.rb-field textarea:focus{border-color:var(--a);background:#fff}
+.rb-field textarea{resize:vertical;min-height:84px}
+.rb-check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ik2);font-weight:600;cursor:pointer}
+.rb-check input{width:20px;height:20px;flex:none;margin-top:1px;accent-color:var(--a)}
+@media (max-width:560px){.rb-grid{grid-template-columns:1fr}}
+
+.rb-sum{margin:14px 0 0;font-weight:600;color:var(--ik2);font-size:15px}
+.rb-sum:empty{display:none}
+.rb-sum b{color:var(--ik)}
+.rb-err{color:#D9433A;font-weight:800;font-size:14px;min-height:20px;margin-top:10px}
+.rb-foot{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center}
+.rb-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:var(--rb-btn-r,99px);font-weight:800;font-size:16px;border:2px solid var(--ln);background:#fff;color:var(--ik);text-decoration:none;transition:transform .15s,filter .15s}
+.rb-btn:hover{transform:translateY(-2px)}
+.rb-btn:disabled{opacity:.6;cursor:default;transform:none}
+.rb-btn svg{width:20px;height:20px}
+.rb-primary{background:var(--a);border-color:var(--a);color:#fff}
+.rb-wa{background:#25D366;border-color:#25D366;color:#fff}
+
+.rb-done,.rb-fallback{text-align:center;display:grid;gap:12px;justify-items:center;padding:8px 0}
+.rb-big{font-size:56px;line-height:1}
+.rb-done h3,.rb-fallback h3{font-family:var(--rb-head,inherit);font-size:clamp(24px,4vw,30px);margin:0}
+.rb-done p,.rb-fallback p{color:var(--ik2);max-width:440px;margin:0}
+.rb-done dl{display:grid;gap:8px;text-align:left;background:var(--fd);border-radius:var(--r);padding:16px 20px;width:100%;max-width:440px;margin:0}
+.rb-done dl div{display:grid;grid-template-columns:80px 1fr;gap:10px}
+.rb-done dt{color:var(--ik2);font-weight:700}
+.rb-done dd{font-weight:800;min-width:0;margin:0}
+
+/* Kompakt */
+.rb-step{padding:11px 0;gap:8px}
+.rb-lbl{font-size:16.5px}
+.rb-n{width:25px;height:25px;font-size:13px}
+.rb-chip{padding:6px 12px;font-size:14px}
+.rb-wnav{margin-bottom:6px}.rb-arrow{width:34px;height:34px;font-size:20px}
+.rb-day{padding:6px 2px}.rb-day b{font-size:19px}
+.rb-slots{grid-template-columns:repeat(auto-fill,minmax(66px,1fr));gap:6px}
+.rb-slot{padding:7px 0;font-size:15px}
+.rb-slot-g+.rb-slot-g{margin-top:8px}
+.rb-grid{gap:10px 14px}
+.rb-field{font-size:13.5px;gap:4px}
+.rb-field input,.rb-field textarea{padding:9px 12px}
+.rb-field textarea{min-height:58px}
+.rb-check{font-size:13px}
+.rb-sum{margin-top:8px;font-size:14px}
+.rb-err{min-height:0;margin-top:6px}
+.rb-foot{margin-top:10px}
+.rb-btn{padding:11px 20px;font-size:15px}
+
+/* Geniş alanda iki sütun: solda seçim, sağda bilgiler */
+.rb{container-type:inline-size}
+@container (min-width:600px){
+  .rb-cols{display:grid;grid-template-columns:1.12fr .88fr;gap:0 26px;align-items:start}
+  .rb-colB{position:sticky;top:90px}
+  .rb-colB .rb-step:first-child{padding-top:0}
+  .rb-colB .rb-grid{grid-template-columns:1fr 1fr}
+  .rb-colA .rb-step:last-child{border-bottom:0}
+}
+
+/* Gönder + WhatsApp düğmeleri yan yana, eşit */
+.rb-foot{display:grid;grid-template-columns:1.25fr 1fr;gap:10px}
+.rb-foot .rb-btn{width:100%;white-space:nowrap;padding:12px 10px;box-shadow:none!important;transform:none}
+.rb-foot .rb-btn:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.rb-done .rb-foot,.rb-fallback .rb-foot{display:flex}
+@media (max-width:360px){.rb-foot{grid-template-columns:1fr}}

@@ -2,1112 +2,185 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Klinikids – İzmit Diş Sanatı</title>
-<meta name="description" content="Klinikids İzmit Diş Sanatı – Çocuk ve yetişkin hastalara ağız ve diş sağlığı hizmeti. WhatsApp'tan hemen randevu alın.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Klinikids – Çocuk ve Yetişkin Ağız ve Diş Sağlığı | İzmit</title>
+<meta name="description" content="Özel Klinikids Ağız ve Diş Sağlığı Polikliniği, İzmit. Çocuk kliniği ve yetişkin kliniği tek çatı altında. Online randevu, WhatsApp ve telefonla ulaşın.">
+<meta name="theme-color" content="#FFFBF0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&family=Caveat:wght@600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --cream:#FFFBF0; --white:#fff;
-  --ink:#173A5E; --ink2:#4E6782;
-  --yellow:#FFC83D; --yellow-soft:#FFF1C4;
-  --teal:#1FA59B; --teal-dark:#1E5F5B; --teal-soft:#D8F3EF;
-  --blue:#45B4EA; --blue-soft:#DDF2FC;
-  --pink:#FF6F9C; --pink-soft:#FFE3EC;
-  --green:#7CC94F; --green-soft:#E7F6DC;
-  --orange:#FF8A3D; --orange-soft:#FFE8D6;
-  --purple:#9C7CF0; --purple-soft:#EDE6FF;
-  --red:#EF4E45;
-  --wa:#25D366;
-  --radius:28px;
-  --shadow:0 14px 40px -18px rgba(23,58,94,.35);
+  --cream:#FFFBF0; --yellow:#FFC83D; --yellow-soft:#FFF1C4; --pink:#FF6F9C; --pink-soft:#FFE3EC;
+  --teal:#1FA59B; --blue:#45B4EA; --blue-soft:#DDF2FC; --green:#7CC94F; --orange:#FF8A3D; --purple:#9C7CF0; --red:#EF4E45;
+  --ink:#173A5E; --ink2:#4E6782; --navy:#0F2A44; --navy2:#1A4166; --gold:#D4B27A;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-html,body{overflow-x:clip}
-body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--cream);line-height:1.6;overflow-x:hidden}
-h1,h2,h3,h4{font-family:'Baloo 2',sans-serif;line-height:1.1}
+body{font-family:'Nunito',system-ui,sans-serif;color:var(--ink);background:var(--cream);min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
 a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
 img,svg{display:block}
-.wrap{width:min(1180px,100% - 32px);margin-inline:auto}
-section{position:relative;padding:96px 0}
-.hand{font-family:'Caveat',cursive;font-weight:700}
-.script{font-family:'Dancing Script',cursive}
 
-/* ---------- Logo ---------- */
-.logo-word{font-family:'Baloo 2';font-weight:800;letter-spacing:-.5px;display:inline-flex}
-.logo-word b{color:var(--c);display:inline-block;transform:rotate(var(--r,0deg));text-shadow:0 2px 0 rgba(0,0,0,.08);transition:transform .3s}
-.logo:hover .logo-word b{animation:hop .5s calc(var(--i)*40ms) both}
-@keyframes hop{50%{transform:translateY(-6px) rotate(var(--r))}}
+/* Arka plan süsleri */
+.bg{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg i{position:absolute;border-radius:50%;filter:blur(2px);opacity:.7}
+.bg i:nth-child(1){width:420px;height:420px;background:var(--yellow-soft);left:-140px;top:-120px}
+.bg i:nth-child(2){width:340px;height:340px;background:var(--blue-soft);right:-120px;top:30%}
+.bg i:nth-child(3){width:260px;height:260px;background:var(--pink-soft);left:18%;bottom:-140px}
+
+.page{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(16px,3vh,34px);padding:clamp(20px,4vh,48px) 16px 18px;width:min(1120px,100%);margin:0 auto}
+
+/* Marka */
+.brand{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+.brand .logo{display:flex;align-items:center;gap:12px}
+.brand .logo svg{width:clamp(46px,6vw,64px);height:auto;aspect-ratio:100/110}
+.brand .w{font-family:'Baloo 2';font-weight:800;font-size:clamp(40px,6.4vw,72px);line-height:1;display:inline-flex;letter-spacing:-1px}
+.brand .w b{color:var(--c);display:inline-block;transform:rotate(var(--r));text-shadow:0 3px 0 rgba(0,0,0,.07)}
+.brand .script{font-family:'Dancing Script';font-size:clamp(20px,2.4vw,26px);margin-top:-4px}
+.brand p{color:var(--ink2);font-weight:700;font-size:clamp(15px,1.8vw,18px);margin-top:6px}
 .prop{transform-origin:50px 10px;transform-box:view-box;animation:prop .35s linear infinite}
 @keyframes prop{0%,100%{transform:scaleX(1)}50%{transform:scaleX(-1)}}
 
-/* ---------- Top bar ---------- */
-.topbar{background:var(--teal-dark);color:#E4F7F4;font-size:14px;font-weight:700}
-.topbar .wrap{display:flex;justify-content:space-between;gap:12px;padding:8px 0;flex-wrap:wrap}
-.topbar .tb-r{display:flex;gap:18px}
-.topbar a:hover{color:var(--yellow)}
-@media (max-width:700px){.topbar .wrap>span:first-child{display:none}.topbar .wrap{justify-content:center}}
+/* İki kapı */
+.doors{display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,2.4vw,28px);width:100%}
+.door{position:relative;border-radius:36px;padding:clamp(26px,3.4vw,40px);min-height:clamp(290px,44vh,400px);display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;isolation:isolate;padding-top:clamp(110px,15vh,150px);transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s}
+.door:hover{transform:translateY(-6px)}
+.door:focus-visible{outline:4px solid var(--blue);outline-offset:4px}
+.door h2{line-height:1.02;margin:12px 0 10px}
+.door p{font-size:16.5px;line-height:1.55;max-width:400px}
+.door .chips{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 22px}
+.door .chips span{font-size:13px;font-weight:700;padding:5px 11px;border-radius:99px}
+.door .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.door .enter{display:inline-flex;align-items:center;gap:10px;padding:14px 22px;font-weight:800;font-size:16px;transition:gap .2s}
+.door:hover .enter{gap:16px}
+.door .sub{font-weight:700;font-size:15px;text-decoration:underline;text-underline-offset:4px}
 
-/* ---------- Blog ---------- */
-.posts{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.post{background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);display:flex;flex-direction:column;transition:transform .25s}
-.post:hover{transform:translateY(-6px) rotate(-.5deg)}
-.post .ph{height:130px;background:var(--bg);display:grid;place-items:center;font-size:62px;position:relative;overflow:hidden}
-.post .ph::after{content:"";position:absolute;width:120px;height:120px;border-radius:50%;background:#fff;opacity:.35;right:-30px;bottom:-50px}
-.post:hover .ph span{animation:wig .8s}
-.post .pb{padding:20px 22px 22px;display:flex;flex-direction:column;gap:8px;flex:1}
-.post h3{font-size:21px}
-.post p{color:var(--ink2);font-size:15px;flex:1}
-.post .more{font-weight:800;color:var(--teal)}
-@media (max-width:900px){.posts{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:560px){.posts{grid-template-columns:1fr}}
-
-/* ---------- Nav ---------- */
-header{position:sticky;top:0;z-index:50;transition:background .3s,box-shadow .3s}
-header.scrolled{background:rgba(255,251,240,.88);backdrop-filter:blur(10px);box-shadow:0 6px 24px -16px rgba(23,58,94,.4)}
-.nav{display:flex;align-items:center;justify-content:space-between;height:76px;gap:16px}
-.logo{display:flex;align-items:center;gap:8px}
-.logo svg{width:40px;height:44px}
-.logo .logo-word{font-size:28px}
-.logo small{display:block;font-family:'Dancing Script';font-size:15px;margin-top:-8px;color:var(--ink)}
-.nav-links{display:flex;gap:4px;align-items:center}
-.nav-links a{padding:8px 12px;border-radius:99px;font-weight:700;font-size:15px;transition:background .2s,color .2s}
-.nav-links a:hover{background:var(--yellow-soft)}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:99px;font-weight:800;font-family:'Baloo 2';font-size:17px;transition:transform .2s,box-shadow .2s;white-space:nowrap}
-.btn:hover{transform:translateY(-3px) rotate(-1deg)}
-.btn-primary{background:var(--pink);color:#fff;box-shadow:0 6px 0 #D84C79}
-.btn-primary:active{transform:translateY(3px);box-shadow:0 2px 0 #D84C79}
-.btn-wa{background:var(--wa);color:#fff;box-shadow:0 6px 0 #17A64F}
-.btn-ghost{background:#fff;color:var(--ink);box-shadow:0 6px 0 #E5DCC4}
-.btn svg{width:20px;height:20px}
-.nav .btn{padding:10px 18px;font-size:16px}
-.burger{display:none;width:46px;height:46px;border-radius:14px;background:#fff;box-shadow:var(--shadow)}
-.burger span{display:block;width:22px;height:3px;border-radius:3px;background:var(--ink);margin:4px auto;transition:.3s}
-@media (max-width:1120px){
-  .nav-links{position:fixed;inset:76px 16px auto 16px;flex-direction:column;background:#fff;border-radius:24px;padding:16px;box-shadow:var(--shadow);transform:translateY(-12px);opacity:0;pointer-events:none;transition:.25s}
-  .nav-links.open{transform:none;opacity:1;pointer-events:auto}
-  .nav-links a{width:100%;text-align:center;padding:12px}
-  .burger{display:block}
-  .nav>.btn{display:none}
-}
-
-/* ---------- Background blobs ---------- */
-.blob{position:absolute;border-radius:42% 58% 63% 37%/45% 40% 60% 55%;filter:blur(0);opacity:.55;animation:morph 14s ease-in-out infinite;z-index:0;pointer-events:none}
-@keyframes morph{
-  0%,100%{border-radius:42% 58% 63% 37%/45% 40% 60% 55%;transform:translate(0,0) rotate(0)}
-  50%{border-radius:60% 40% 35% 65%/55% 60% 40% 45%;transform:translate(14px,-18px) rotate(12deg)}
-}
-
-/* ---------- Hero ---------- */
-.hero{padding:40px 0 110px;overflow:hidden}
-.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;position:relative;z-index:1}
-.pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:99px;padding:8px 16px 8px 8px;font-weight:800;font-size:14px;box-shadow:var(--shadow)}
-.pill i{font-style:normal;background:var(--teal);color:#fff;border-radius:99px;padding:3px 10px;font-size:12px}
-.hero h1{font-size:clamp(44px,7vw,84px);margin:22px 0 10px;letter-spacing:-1px}
-.hero h1 .hl{position:relative;display:inline-block;color:var(--teal)}
-.hero h1 .hl::after{content:"";position:absolute;left:-4%;right:-4%;bottom:6%;height:32%;background:var(--yellow);border-radius:12px;z-index:-1;transform:rotate(-2deg) scaleX(0);transform-origin:left;animation:mark .8s .6s cubic-bezier(.6,.1,.2,1) forwards}
-@keyframes mark{to{transform:rotate(-2deg) scaleX(1)}}
-.hero h1 .wiggle{display:inline-block;animation:wig 2.4s ease-in-out infinite}
-@keyframes wig{0%,100%{transform:rotate(0)}10%{transform:rotate(-8deg)}20%{transform:rotate(8deg)}30%{transform:rotate(0)}}
-.hero p.lead{font-size:20px;color:var(--ink2);max-width:540px;margin-bottom:28px}
-.hero .ctas{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:30px}
-.chips{display:flex;flex-wrap:wrap;gap:10px}
-.chip{background:var(--bg);border-radius:16px;padding:8px 14px;font-weight:800;font-size:14px;display:inline-flex;gap:6px;align-items:center}
-.hero-art{position:relative;aspect-ratio:1;max-width:520px;width:100%;margin-inline:auto}
-.hero-art .disc{position:absolute;inset:8%;background:var(--yellow);border-radius:50%;box-shadow:inset 0 -18px 0 rgba(0,0,0,.06)}
-.hero-art .disc::before{content:"";position:absolute;inset:-14px;border:3px dashed var(--teal);border-radius:50%;animation:spin 30s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.mascot{position:absolute;inset:16% 20% 10%;animation:float 4s ease-in-out infinite}
-.mascot svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 18px 18px rgba(23,58,94,.18))}
-@keyframes float{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-18px) rotate(2deg)}}
+/* Çocuk kapısı */
+.kids{background:linear-gradient(155deg,#FFE68F 0%,var(--yellow) 45%,#FFB547 100%);box-shadow:0 26px 50px -28px rgba(214,140,20,.7)}
+.kids:hover{box-shadow:0 34px 60px -26px rgba(214,140,20,.8)}
+.kids .tag{display:inline-flex;align-self:flex-start;background:#fff;color:var(--teal);font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:99px}
+.kids h2{font-family:'Baloo 2';font-size:clamp(40px,4.8vw,60px);color:var(--ink)}
+.kids p{color:#5A4A1E}
+.kids .chips span{background:rgba(255,255,255,.75);color:var(--ink)}
+.kids .enter{background:var(--pink);color:#fff;border-radius:99px;font-family:'Baloo 2';font-size:18px;box-shadow:0 5px 0 #D84C79}
+.kids .mascot{position:absolute;right:clamp(6px,3vw,34px);top:clamp(14px,3vw,30px);width:clamp(96px,10vw,124px);z-index:-1;animation:float 4s ease-in-out infinite}
+.kids .em{position:absolute;font-size:30px;z-index:-1;animation:float 5s ease-in-out infinite}
+.kids .ring{position:absolute;width:300px;height:300px;border-radius:50%;border:3px dashed rgba(255,255,255,.6);right:-90px;top:-90px;z-index:-1}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(3deg)}}
 .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.5s infinite}
 @keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
-.orbit{position:absolute;inset:0;animation:spin 18s linear infinite}
-.orbit span{position:absolute;width:64px;height:64px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:30px;box-shadow:var(--shadow);animation:spin 18s linear infinite reverse}
-.orbit span:nth-child(1){top:0;left:50%;margin-left:-32px}
-.orbit span:nth-child(2){bottom:8%;left:2%}
-.orbit span:nth-child(3){bottom:8%;right:2%}
-.speech{position:absolute;top:6%;right:-2%;background:#fff;border-radius:22px 22px 22px 4px;padding:10px 16px;font-family:'Caveat';font-size:24px;font-weight:700;box-shadow:var(--shadow);transform:rotate(6deg);animation:pop .6s 1.2s both}
-@keyframes pop{from{opacity:0;transform:scale(.4) rotate(20deg)}}
-.bubbles{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-.bubbles span{position:absolute;bottom:-60px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#fff,rgba(69,180,234,.25));border:2px solid rgba(69,180,234,.35);animation:rise linear infinite}
-@keyframes rise{to{transform:translateY(-120vh) translateX(var(--dx))}}
-.spark{position:absolute;color:var(--yellow);font-size:26px;animation:twinkle 2s ease-in-out infinite}
-@keyframes twinkle{0%,100%{transform:scale(.6) rotate(0);opacity:.5}50%{transform:scale(1.15) rotate(25deg);opacity:1}}
-.wave{position:absolute;left:0;right:0;bottom:-1px;height:80px;z-index:1}
-@media (max-width:860px){
-  .hero-grid{grid-template-columns:1fr}
-  .hero-art{max-width:380px;order:-1}
-  .hero{text-align:center}
-  .hero p.lead{margin-inline:auto}
-  .hero .ctas,.chips{justify-content:center}
+
+/* Yetişkin kapısı */
+.adults{font-family:'Plus Jakarta Sans',sans-serif;background:radial-gradient(120% 90% at 85% 0%,var(--navy2) 0%,var(--navy) 60%);color:#fff;box-shadow:0 26px 50px -28px rgba(15,42,68,.9)}
+.adults:hover{box-shadow:0 34px 60px -26px rgba(15,42,68,.95)}
+.adults .tag{display:inline-flex;align-self:flex-start;color:var(--gold);font-weight:700;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;border:1px solid rgba(212,178,122,.45);padding:6px 12px;border-radius:99px}
+.adults h2{font-size:clamp(36px,4.2vw,54px);font-weight:800;letter-spacing:-1.5px}
+.adults h2 em{font-style:normal;color:var(--gold)}
+.adults p{color:#B9C8D8}
+.adults .chips span{border:1px solid rgba(255,255,255,.2);color:#DCE6F0}
+.adults .enter{background:#fff;color:var(--navy);border-radius:12px}
+.adults .sub{color:#DCE6F0}
+.adults .mark{position:absolute;right:clamp(16px,3.4vw,40px);top:clamp(18px,3.4vw,38px);width:clamp(84px,10vw,118px);z-index:-1;opacity:.9}
+.adults .lines{position:absolute;inset:0;z-index:-2;opacity:.08;background-image:linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px);background-size:44px 44px;-webkit-mask-image:radial-gradient(circle at 85% 15%,#000,transparent 65%);mask-image:radial-gradient(circle at 85% 15%,#000,transparent 65%)}
+
+/* İletişim */
+.contact{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.contact a{display:inline-flex;align-items:center;gap:8px;background:#fff;border-radius:99px;padding:11px 18px;font-weight:800;font-size:15px;box-shadow:0 8px 20px -14px rgba(23,58,94,.45);transition:transform .2s}
+.contact a:hover{transform:translateY(-2px)}
+.contact svg{width:18px;height:18px}
+.contact .wa svg{color:#25D366}.contact .ig svg{color:#D6249F}.contact .tel svg{color:var(--orange)}.contact .map svg{color:var(--teal)}
+.foot{text-align:center;font-size:13px;color:var(--ink2);font-weight:600;padding:0 16px 22px;position:relative;z-index:1}
+
+/* Tablet ve telefon */
+@media (max-width:820px){
+  .doors{grid-template-columns:1fr}
+  .door{min-height:300px}
+  .kids .mascot{width:110px}
 }
-
-/* ---------- Marquee ---------- */
-.marquee{background:var(--teal-dark);color:#fff;padding:18px 0;overflow:hidden;transform:rotate(-1.5deg);margin:-30px -10px 0;position:relative;z-index:2}
-.marquee-track{display:flex;gap:40px;width:max-content;animation:scroll 32s linear infinite;font-family:'Baloo 2';font-weight:700;font-size:24px}
-.marquee-track span{display:flex;gap:40px;align-items:center}
-.marquee-track span::after{content:"✦";color:var(--yellow)}
-@keyframes scroll{to{transform:translateX(-50%)}}
-
-/* ---------- Section heads ---------- */
-.head{text-align:center;max-width:720px;margin:0 auto 52px}
-.head .hand{font-size:28px;color:var(--pink);display:block;transform:rotate(-2deg)}
-.head h2{font-size:clamp(36px,5vw,56px);margin:4px 0 12px}
-.head p{color:var(--ink2);font-size:18px}
-.squiggle{display:block;margin:10px auto 0;width:140px;height:16px}
-
-/* ---------- Who (tabs) ---------- */
-.tabs{display:flex;justify-content:center;margin-bottom:36px}
-.tabbar{display:inline-flex;background:#fff;border-radius:99px;padding:6px;box-shadow:var(--shadow);position:relative}
-.tabbar button{position:relative;z-index:1;padding:14px 28px;border-radius:99px;font-family:'Baloo 2';font-weight:800;font-size:18px;transition:color .3s}
-.tabbar button[aria-selected=true]{color:#fff}
-.tabbar .slider{position:absolute;top:6px;bottom:6px;left:6px;border-radius:99px;background:var(--orange);transition:all .4s cubic-bezier(.5,1.6,.4,1)}
-.tabpanel{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.tabpanel[hidden]{display:none}
-.tile{background:#fff;border-radius:var(--radius);padding:28px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden;animation:tileIn .5s both}
-.tile:nth-child(2){animation-delay:.08s}.tile:nth-child(3){animation-delay:.16s}.tile:nth-child(4){animation-delay:.24s}
-@keyframes tileIn{from{opacity:0;transform:translateY(24px) scale(.95)}}
-.tile .ico{width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:32px;background:var(--bg);margin-bottom:14px;transition:transform .3s}
-.tile:hover .ico{transform:rotate(-10deg) scale(1.1)}
-.tile h3{font-size:22px;margin-bottom:6px}
-.tile p{color:var(--ink2);font-size:15px}
-.tile .tag{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-.tile .tag em{font-style:normal;font-size:12px;font-weight:800;background:var(--bg);padding:4px 10px;border-radius:99px}
-@media (max-width:980px){.tabpanel{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:560px){.tabpanel{grid-template-columns:1fr}.tabbar button{padding:12px 18px;font-size:16px}}
-
-/* ---------- Services flip cards ---------- */
-.services{background:#fff;border-radius:60px 60px 0 0}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
-.card{perspective:1000px;height:300px;cursor:pointer;outline:none}
-.card-in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.4,1.4,.5,1);transform-style:preserve-3d}
-.card:hover .card-in,.card.flipped .card-in,.card:focus-visible .card-in{transform:rotateY(180deg)}
-.face{position:absolute;inset:0;border-radius:var(--radius);backface-visibility:hidden;-webkit-backface-visibility:hidden;padding:24px;display:flex;flex-direction:column}
-.front{background:var(--soft);align-items:flex-start;justify-content:space-between;overflow:hidden}
-.front .em{font-size:54px;line-height:1;transition:transform .3s}
-.front h3{font-size:25px}
-.front p{font-size:15px;color:var(--ink2)}
-.front .turn{font-family:'Caveat';font-size:20px;color:var(--main);font-weight:700}
-.front::after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:var(--main);opacity:.15;right:-50px;top:-50px}
-.back{background:var(--main);color:#fff;transform:rotateY(180deg);justify-content:space-between}
-.back h3{font-size:22px;margin-bottom:8px}
-.back ul{list-style:none;font-size:14.5px;font-weight:700}
-.back li{padding-left:24px;position:relative;margin-bottom:5px}
-.back li::before{content:"✓";position:absolute;left:0;width:18px;height:18px;border-radius:50%;background:rgba(255,255,255,.3);display:grid;place-items:center;font-size:11px;top:3px}
-.back .btn{background:#fff;color:var(--ink);padding:10px 18px;font-size:15px;align-self:flex-start;box-shadow:0 4px 0 rgba(0,0,0,.15)}
-@media (max-width:1060px){.grid{grid-template-columns:repeat(3,1fr)}}
-@media (max-width:760px){.grid{grid-template-columns:repeat(2,1fr)}.card{height:320px}}
-@media (max-width:480px){.grid{grid-template-columns:1fr}.card{height:290px}}
-
-/* ---------- Whitening / Mockup ---------- */
-.sim{background:var(--blue-soft)}
-.sim-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
-.ba{position:relative;background:#fff;border-radius:40px;padding:34px;box-shadow:var(--shadow)}
-.ba-stage{position:relative;user-select:none;touch-action:none}
-.mouth{width:100%;aspect-ratio:2.1;border-radius:48% 48% 50% 50%/32% 32% 68% 68%;border:16px solid #FF8FA8;background:radial-gradient(ellipse at 50% 55%,#4c1023,#8b2440);display:flex;flex-direction:column;justify-content:space-between;padding:4% 7% 6%;overflow:hidden;box-shadow:inset 0 0 0 4px #F27392}
-.row{display:flex;gap:2.5%;justify-content:center;height:44%}
-.row i{flex:1;max-width:12%;border-radius:8px 8px 45% 45%;background:var(--tooth);box-shadow:inset -4px -6px 0 rgba(0,0,0,.06)}
-.row.low i{border-radius:45% 45% 8px 8px}
-.row i:nth-child(4),.row i:nth-child(5){flex:1.35;max-width:15%}
-.row.up{align-items:flex-start}.row.low{align-items:flex-end}
-.row.up i:nth-child(1),.row.up i:nth-child(8){height:70%}
-.row.up i:nth-child(2),.row.up i:nth-child(7){height:84%}
-.row.up i:nth-child(3),.row.up i:nth-child(6){height:94%}
-.row.up i:nth-child(4),.row.up i:nth-child(5){height:100%}
-.row.low i{height:80%}
-.ba-layer{position:absolute;inset:0}
-.ba-before{--tooth:linear-gradient(#EFD9A0,#D6B866)}
-.ba-after{--tooth:linear-gradient(#fff,#E9F3F9);clip-path:inset(0 0 0 50%)}
-.ba-after::after{content:"✨";position:absolute;right:12%;top:10%;font-size:28px;animation:twinkle 1.6s infinite}
-.ba-handle{position:absolute;top:-10px;bottom:-10px;left:50%;width:4px;background:var(--ink);border-radius:4px;transform:translateX(-50%);pointer-events:none}
-.ba-handle::after{content:"⇆";position:absolute;top:50%;left:50%;width:46px;height:46px;transform:translate(-50%,-50%);border-radius:50%;background:var(--yellow);border:4px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:20px}
-.ba input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize}
-.ba-labels{display:flex;justify-content:space-between;margin-top:18px;font-family:'Baloo 2';font-weight:800}
-.ba-labels span{background:var(--bg);padding:6px 16px;border-radius:99px}
-.mock-list{display:grid;gap:14px;margin:22px 0 28px}
-.mock-list>div{display:flex;gap:14px;align-items:flex-start;background:#fff;padding:16px 18px;border-radius:20px;box-shadow:0 6px 0 rgba(69,180,234,.18)}
-.mock-list b{font-family:'Baloo 2';font-size:18px;display:block}
-.mock-list span.n{flex:none;width:40px;height:40px;border-radius:12px;background:var(--blue);color:#fff;font-family:'Baloo 2';font-weight:800;display:grid;place-items:center;font-size:20px}
-.mock-list p{font-size:15px;color:var(--ink2)}
-.sim h2{font-size:clamp(34px,4.5vw,50px);margin:6px 0 10px}
-@media (max-width:860px){.sim-grid{grid-template-columns:1fr}}
-
-/* ---------- Gum ---------- */
-.gum-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:48px;align-items:center}
-.gum-art{position:relative;background:var(--pink-soft);border-radius:50%;aspect-ratio:1;max-width:440px;width:100%;margin-inline:auto;display:grid;place-items:center}
-.gum-art svg{width:72%;transition:transform .4s}
-.gum-art.shake svg{animation:shake .5s}
-@keyframes shake{20%{transform:translateX(-8px) rotate(-4deg)}40%{transform:translateX(8px) rotate(4deg)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
-.mouth-happy,.mouth-sad{transition:opacity .3s}
-.gum-art.sad .mouth-happy{opacity:0}
-.gum-art:not(.sad) .mouth-sad{opacity:0}
-.gum-btns{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
-.gum-btns button{padding:10px 16px;border-radius:99px;background:#fff;font-weight:800;border:3px solid var(--c);color:var(--ink);transition:all .2s}
-.gum-btns button.on,.gum-btns button:hover{background:var(--c);color:#fff;transform:translateY(-2px)}
-.gum-panel{background:#fff;border-radius:var(--radius);padding:26px;box-shadow:var(--shadow);min-height:150px;border-left:10px solid var(--c,var(--pink))}
-.gum-panel h3{font-size:26px;margin-bottom:6px}
-.gum-panel p{color:var(--ink2);font-size:17px}
-.note{display:inline-block;margin-top:20px;background:var(--yellow-soft);padding:14px 20px;border-radius:6px;transform:rotate(-2deg);font-family:'Caveat';font-size:24px;font-weight:700;box-shadow:4px 6px 0 rgba(0,0,0,.06)}
-@media (max-width:860px){.gum-grid{grid-template-columns:1fr}}
-
-/* ---------- Brush game ---------- */
-.game{background:var(--teal-dark);color:#fff;overflow:hidden}
-.game .head p{color:#CFEDEA}
-.game .head .hand{color:var(--yellow)}
-.game-box{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;background:rgba(255,255,255,.07);border:2px dashed rgba(255,255,255,.25);border-radius:40px;padding:40px;position:relative;z-index:1}
-.timer{position:relative;width:min(300px,100%);aspect-ratio:1;margin-inline:auto}
-.timer svg{width:100%;height:100%;transform:rotate(-90deg)}
-.timer .track{stroke:rgba(255,255,255,.15)}
-.timer .bar{stroke:var(--yellow);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
-.timer .center{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
-.timer .time{font-family:'Baloo 2';font-weight:800;font-size:64px;line-height:1}
-.timer .brush{font-size:40px;display:inline-block}
-.running .timer .brush{animation:brush .35s ease-in-out infinite alternate}
-@keyframes brush{from{transform:translateX(-10px) rotate(-10deg)}to{transform:translateX(10px) rotate(10deg)}}
-.quads{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 24px;max-width:360px}
-.quads div{padding:16px;border-radius:18px;background:rgba(255,255,255,.1);font-weight:800;text-align:center;transition:all .3s}
-.quads div.on{background:var(--yellow);color:var(--ink);transform:scale(1.06)}
-.quads div.done{background:var(--green);color:#fff}
-.game-ctrl{display:flex;gap:12px;flex-wrap:wrap}
-.game .btn-ghost{box-shadow:0 6px 0 rgba(0,0,0,.25)}
-.stars{margin-top:22px;font-weight:800;font-size:18px}
-.stars span{color:var(--yellow);letter-spacing:2px}
-.game-msg{font-family:'Caveat';font-size:30px;color:var(--yellow);min-height:40px}
-@media (max-width:860px){.game-box{grid-template-columns:1fr;padding:26px;text-align:center}.quads{margin-inline:auto}.game-ctrl{justify-content:center}}
-
-/* ---------- Clinic ---------- */
-.clinic-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.feat{border-radius:var(--radius);padding:30px;background:var(--bg);position:relative;overflow:hidden}
-.feat .big{font-size:70px;line-height:1;display:inline-block;animation:float 3.5s ease-in-out infinite}
-.feat h3{font-size:26px;margin:12px 0 6px}
-.feat p{color:var(--ink2)}
-.feat.dark{background:var(--teal-dark);color:#fff}
-.feat.dark p{color:#D3EEEB}
-@media (max-width:860px){.clinic-grid{grid-template-columns:1fr}}
-
-/* ---------- Booking ---------- */
-.booking{background:linear-gradient(180deg,var(--cream),var(--yellow-soft))}
-.book-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:40px;align-items:start}
-.book-side h2{font-size:clamp(38px,5vw,58px)}
-.book-side p{color:var(--ink2);font-size:18px;margin:12px 0 24px}
-.contact-cards{display:grid;gap:14px}
-.ccard{display:flex;align-items:center;gap:16px;background:#fff;border-radius:22px;padding:16px 18px;box-shadow:var(--shadow);transition:transform .2s}
-.ccard:hover{transform:translateX(6px)}
-.ccard .ci{flex:none;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;color:#fff;background:var(--bg)}
-.ccard .ci svg{width:26px;height:26px}
-.ccard small{display:block;color:var(--ink2);font-weight:700}
-.ccard b{font-family:'Baloo 2';font-size:20px;line-height:1.2}
-form.book{background:#fff;border-radius:40px;padding:36px;box-shadow:var(--shadow);position:relative}
-form.book::before{content:"📅";position:absolute;top:-28px;right:30px;font-size:52px;animation:float 3s ease-in-out infinite}
-.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.field{display:flex;flex-direction:column;gap:6px}
-.field.full{grid-column:1/-1}
-label,.lbl{font-weight:800;font-size:15px}
-input,select,textarea{font:inherit;color:var(--ink);background:var(--cream);border:3px solid #F1E7CC;border-radius:16px;padding:13px 14px;outline:none;transition:border-color .2s,background .2s;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--teal);background:#fff}
-textarea{resize:vertical;min-height:90px}
-.seg{display:flex;flex-wrap:wrap;gap:8px}
-.seg input{position:absolute;opacity:0;width:1px;height:1px}
-.seg label{padding:11px 18px;border-radius:99px;border:3px solid #F1E7CC;cursor:pointer;font-weight:800;transition:all .2s;background:var(--cream)}
-.seg input:checked+label{background:var(--teal);border-color:var(--teal);color:#fff;transform:scale(1.04)}
-.seg input:focus-visible+label{outline:3px solid var(--blue);outline-offset:2px}
-.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink2);font-weight:600}
-.check input{width:20px;height:20px;flex:none;margin-top:2px;accent-color:var(--teal)}
-.form-foot{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px;align-items:center}
-.err{color:var(--red);font-weight:800;font-size:14px;min-height:20px;margin-top:10px}
-.age[hidden]{display:none}
-@media (max-width:900px){.book-grid{grid-template-columns:1fr}}
-@media (max-width:560px){.fgrid{grid-template-columns:1fr}form.book{padding:24px}}
-
-/* ---------- Online randevu (Supabase) ---------- */
-#bookApp[hidden],#waForm[hidden],.rb-step[hidden],.rb-age[hidden]{display:none}
-.rb-loading{padding:48px 0;text-align:center;font-weight:800;color:var(--ink2);font-size:17px}
-.rb-step{display:grid;gap:10px;padding:16px 0;border-bottom:2px dashed #F1E7CC;min-width:0}
-.rb-step:first-child{padding-top:0}
-.rb-step .lbl{display:flex;align-items:center;gap:10px;font-family:'Baloo 2';font-size:19px}
-.rb-n{width:30px;height:30px;border-radius:50%;background:var(--yellow);display:inline-grid;place-items:center;font-size:15px;flex:none;transition:background .2s}
-.rb-step.ok .rb-n{background:var(--teal);color:#fff}
-.rb-hint{color:var(--ink2);font-size:15px;font-weight:600}
-.rb-who{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.rb-age input{width:120px;padding:10px 12px}
-.rb-docs{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
-.rb-doc{display:flex;gap:12px;align-items:center;text-align:left;background:var(--cream);border:3px solid #F1E7CC;border-radius:20px;padding:10px 12px;font-weight:800;transition:all .2s;min-width:0}
-.rb-doc .av{width:44px;height:44px;border-radius:50%;background:var(--c,var(--teal));color:#fff;display:grid;place-items:center;font-family:'Baloo 2';font-weight:800;flex:none}
-.rb-doc small{display:block;color:var(--ink2);font-weight:600;font-size:13px}
-.rb-chips{display:flex;flex-wrap:wrap;gap:8px}
-.rb-chip{padding:9px 16px;border-radius:99px;border:3px solid #F1E7CC;background:var(--cream);font-weight:800;transition:all .2s}
-.rb-chip small{font-weight:700;color:var(--ink2);font-size:12px;margin-left:4px}
-.rb-days{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;scroll-snap-type:x proximity}
-.rb-day{flex:0 0 68px;scroll-snap-align:start;display:grid;justify-items:center;padding:8px 4px;border-radius:18px;border:3px solid #F1E7CC;background:var(--cream);font-weight:800;line-height:1.25;transition:all .2s}
-.rb-day b{font-family:'Baloo 2';font-size:24px;line-height:1.1}
-.rb-day span{font-size:12px;color:var(--ink2)}
-.rb-day em{font-style:normal;font-size:11px;color:var(--teal);margin-top:2px}
-.rb-day:disabled{opacity:.45;cursor:not-allowed}
-.rb-day:disabled em{color:var(--ink2)}
-.rb-doc:hover,.rb-chip:hover,.rb-day:not(:disabled):hover,.rb-slot:hover{border-color:var(--teal)}
-.rb-doc[aria-pressed=true],.rb-chip[aria-pressed=true],.rb-day[aria-pressed=true]{border-color:var(--teal);background:var(--teal-soft)}
-.rb-slot-g{display:grid;gap:8px}
-.rb-slot-g+.rb-slot-g{margin-top:12px}
-.rb-slot-g h4{font-family:'Nunito';font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
-.rb-slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
-.rb-slot{padding:9px 0;border-radius:14px;border:3px solid #F1E7CC;background:var(--cream);font-family:'Baloo 2';font-weight:800;font-size:17px;transition:all .2s;font-variant-numeric:tabular-nums}
-.rb-slot[aria-pressed=true]{background:var(--teal);border-color:var(--teal);color:#fff}
-.rb-sum{margin-top:14px;font-weight:700;color:var(--ink2);font-size:15px}
-.rb-sum:empty{display:none}
-.rb-sum b{color:var(--ink)}
-.rb-done{text-align:center;display:grid;gap:14px;justify-items:center;padding:8px 0}
-.rb-done .big{font-size:64px;line-height:1;animation:float 3s ease-in-out infinite}
-.rb-done h3{font-size:clamp(26px,4vw,34px)}
-.rb-done p{color:var(--ink2);max-width:440px}
-.rb-done dl{display:grid;gap:8px;text-align:left;background:var(--cream);border-radius:20px;padding:16px 20px;width:100%;max-width:440px}
-.rb-done dl div{display:grid;grid-template-columns:96px 1fr;gap:10px}
-.rb-done dt{color:var(--ink2);font-weight:700}
-.rb-done dd{font-weight:800;min-width:0}
-.rb-done .form-foot{justify-content:center;margin-top:4px}
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@media (max-width:560px){.rb-docs{grid-template-columns:1fr}}
-
-/* ---------- FAQ ---------- */
-.faq{max-width:820px;margin-inline:auto;display:grid;gap:14px}
-details{background:#fff;border-radius:22px;box-shadow:0 6px 0 #F1E7CC;overflow:hidden;transition:box-shadow .2s}
-details[open]{box-shadow:0 6px 0 var(--teal)}
-summary{list-style:none;cursor:pointer;padding:20px 24px;font-family:'Baloo 2';font-weight:700;font-size:20px;display:flex;justify-content:space-between;gap:16px;align-items:center}
-summary::-webkit-details-marker{display:none}
-summary::after{content:"+";flex:none;width:36px;height:36px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-size:24px;transition:transform .3s}
-details[open] summary::after{transform:rotate(135deg);background:var(--pink);color:#fff}
-details p{padding:0 24px 22px;color:var(--ink2);font-size:16.5px}
-
-/* ---------- Location ---------- */
-.loc{display:grid;grid-template-columns:1.2fr .8fr;gap:24px;align-items:stretch}
-.mapart{position:relative;border-radius:40px;overflow:hidden;min-height:340px;background:
-  linear-gradient(90deg,transparent 47%,#fff 47%,#fff 53%,transparent 53%) 0 0/100% 100%,
-  linear-gradient(0deg,transparent 46%,#fff 46%,#fff 52%,transparent 52%) 0 0/100% 100%,
-  linear-gradient(30deg,transparent 70%,#fff 70%,#fff 73%,transparent 73%),
-  var(--green-soft)}
-.mapart .park{position:absolute;width:30%;height:30%;left:8%;top:10%;background:#C9EBB3;border-radius:30px}
-.mapart .lake{position:absolute;width:26%;height:24%;right:8%;bottom:10%;background:var(--blue-soft);border-radius:50%}
-.pin{position:absolute;left:50%;top:48%;transform:translate(-50%,-100%);font-size:64px;animation:bounce 1.4s ease-in-out infinite;filter:drop-shadow(0 8px 6px rgba(0,0,0,.2))}
-@keyframes bounce{50%{transform:translate(-50%,-125%)}}
-.pin-label{position:absolute;left:50%;top:52%;transform:translateX(-50%);background:#fff;border-radius:16px;padding:8px 14px;font-weight:800;box-shadow:var(--shadow);white-space:nowrap;font-size:14px}
-.loc-box{background:var(--teal);color:#fff;border-radius:40px;padding:34px;display:flex;flex-direction:column;gap:16px;justify-content:center}
-.loc-box h3{font-size:30px}
-.loc-box p{font-size:17px;color:#E4F7F4}
-.loc-box .btn-ghost{align-self:flex-start}
-@media (max-width:860px){.loc{grid-template-columns:1fr}}
-
-/* ---------- Footer ---------- */
-footer{background:var(--ink);color:#C9D6E4;padding:70px 0 30px;border-radius:60px 60px 0 0;margin-top:40px}
-.foot{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:36px}
-footer h4{color:#fff;font-size:20px;margin-bottom:12px}
-footer a:hover{color:var(--yellow)}
-footer ul{list-style:none;display:grid;gap:6px}
-.socials{display:flex;gap:10px;margin-top:16px}
-.socials a{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:rgba(255,255,255,.1);transition:all .2s}
-.socials a:hover{background:var(--yellow);color:var(--ink);transform:rotate(-8deg)}
-.socials svg{width:22px;height:22px}
-.copy{border-top:1px solid rgba(255,255,255,.12);margin-top:40px;padding-top:22px;font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
-footer .logo-word{font-size:34px}
-@media (max-width:760px){.foot{grid-template-columns:1fr}}
-
-/* ---------- Floating ---------- */
-.fab{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:12px;align-items:flex-end}
-.fab a{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;color:#fff;box-shadow:0 10px 24px -8px rgba(0,0,0,.4);transition:transform .2s;position:relative}
-.fab a:hover{transform:scale(1.1) rotate(-8deg)}
-.fab svg{width:30px;height:30px}
-.fab .wa{background:var(--wa)}
-.fab .wa::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--wa);animation:ping 1.8s infinite;z-index:-1}
-@keyframes ping{to{transform:scale(1.7);opacity:0}}
-.fab .ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%);width:50px;height:50px}
-.fab .ig svg{width:24px;height:24px}
-.fab .tip{position:absolute;right:72px;top:50%;transform:translateY(-50%);background:#fff;color:var(--ink);padding:8px 14px;border-radius:14px;font-weight:800;font-size:14px;white-space:nowrap;box-shadow:var(--shadow);animation:pop .5s 2.5s both}
-@media (max-width:560px){.fab .tip{display:none}}
-
-/* ---------- Reveal ---------- */
-.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s,transform .8s cubic-bezier(.2,.8,.2,1)}
-.reveal.in{opacity:1;transform:none}
-canvas#confetti{position:fixed;inset:0;pointer-events:none;z-index:100}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
-  .reveal{opacity:1;transform:none}
+@media (max-width:480px){
+  .door{border-radius:28px;padding:24px 20px;min-height:auto;padding-top:120px}
+  .kids .mascot{width:92px;top:16px;right:14px}
+  .adults .mark{width:74px;top:20px;right:18px}
+  .door p{font-size:15.5px}
+  .contact a{padding:10px 14px;font-size:14px}
 }
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-<body id="top">
+<body>
 
-<!-- SVG defs -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91A9.85 9.85 0 0 0 12.04 2Zm5.79 14.06c-.24.68-1.42 1.31-1.95 1.36-.5.05-.97.23-3.27-.68-2.77-1.09-4.52-3.92-4.66-4.1-.13-.18-1.11-1.48-1.11-2.82s.7-2 .95-2.27c.25-.27.54-.34.72-.34h.52c.17 0 .39-.06.61.47.24.55.79 1.9.86 2.04.07.14.11.3.02.48-.09.18-.14.3-.27.46l-.41.48c-.14.13-.28.28-.12.55.16.27.71 1.17 1.53 1.9 1.05.94 1.94 1.23 2.21 1.37.27.14.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.23.61-.14.25.09 1.59.75 1.86.89.27.14.45.2.52.32.07.11.07.66-.17 1.34Z"/></symbol>
-    <symbol id="i-ig" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2.2c3.2 0 3.6 0 4.8.1 3.3.1 4.8 1.7 4.9 4.9.1 1.3.1 1.6.1 4.8s0 3.6-.1 4.8c-.1 3.2-1.7 4.8-4.9 4.9-1.3.1-1.6.1-4.8.1s-3.6 0-4.8-.1c-3.3-.1-4.8-1.7-4.9-4.9C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.8C2.4 3.9 3.9 2.4 7.2 2.3 8.4 2.2 8.8 2.2 12 2.2ZM12 0C8.7 0 8.3 0 7.1.1 2.7.3.3 2.7.1 7.1 0 8.3 0 8.7 0 12s0 3.7.1 4.9c.2 4.4 2.6 6.8 7 7 1.2.1 1.6.1 4.9.1s3.7 0 4.9-.1c4.4-.2 6.8-2.6 7-7 .1-1.2.1-1.6.1-4.9s0-3.7-.1-4.9c-.2-4.4-2.6-6.8-7-7C15.7 0 15.3 0 12 0Zm0 5.8a6.2 6.2 0 1 0 0 12.4 6.2 6.2 0 0 0 0-12.4ZM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm6.4-11.8a1.4 1.4 0 1 0 0 2.9 1.4 1.4 0 0 0 0-2.9Z"/></symbol>
-    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></symbol>
-    <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></symbol>
-    <!-- Klinikids tooth with propeller cap -->
     <symbol id="logo-tooth" viewBox="0 0 100 110">
       <path d="M20 46c0-14 12-18 30-14 18-4 30 0 30 14 0 17-6 25-8 43-2 16-12 16-14 2-2-10-4-16-8-16s-6 6-8 16c-2 14-12 14-14-2-2-18-8-26-8-43Z" fill="#FFC83D" stroke="#173A5E" stroke-width="3.5" stroke-linejoin="round"/>
       <clipPath id="dome"><path d="M21 44a29 27 0 0 1 58 0Z"/></clipPath>
-      <g clip-path="url(#dome)">
-        <rect x="20" y="10" width="16" height="40" fill="#EF4E45"/>
-        <rect x="36" y="10" width="14" height="40" fill="#45B4EA"/>
-        <rect x="50" y="10" width="14" height="40" fill="#7CC94F"/>
-        <rect x="64" y="10" width="16" height="40" fill="#FF8A3D"/>
-      </g>
+      <g clip-path="url(#dome)"><rect x="20" y="10" width="16" height="40" fill="#EF4E45"/><rect x="36" y="10" width="14" height="40" fill="#45B4EA"/><rect x="50" y="10" width="14" height="40" fill="#7CC94F"/><rect x="64" y="10" width="16" height="40" fill="#FF8A3D"/></g>
       <path d="M21 44a29 27 0 0 1 58 0Z" fill="none" stroke="#173A5E" stroke-width="3.5" stroke-linejoin="round"/>
       <line x1="50" y1="17" x2="50" y2="10" stroke="#173A5E" stroke-width="3.5"/>
       <g class="prop"><ellipse cx="39" cy="10" rx="11" ry="3.6" fill="#45B4EA" stroke="#173A5E" stroke-width="2"/><ellipse cx="61" cy="10" rx="11" ry="3.6" fill="#FF6F9C" stroke="#173A5E" stroke-width="2"/></g>
       <circle cx="50" cy="10" r="3" fill="#173A5E"/>
     </symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91A9.85 9.85 0 0 0 12.04 2Zm5.8 14.06c-.24.68-1.41 1.3-1.95 1.35-.5.05-.97.23-3.27-.68-2.77-1.09-4.52-3.92-4.66-4.1-.13-.18-1.11-1.48-1.11-2.82s.7-2 .95-2.27c.25-.27.54-.34.72-.34h.52c.17 0 .39-.06.61.47.23.54.77 1.88.84 2.02.07.13.11.29.02.47-.09.18-.13.29-.27.45-.13.16-.28.35-.4.47-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.86 1.03.92 1.9 1.2 2.17 1.34.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.23.61-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.11.07.66-.17 1.33Z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 2.5h10A4.5 4.5 0 0 1 21.5 7v10a4.5 4.5 0 0 1-4.5 4.5H7A4.5 4.5 0 0 1 2.5 17V7A4.5 4.5 0 0 1 7 2.5Z"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></symbol>
   </defs>
 </svg>
 
-<div class="topbar">
-  <div class="wrap">
-    <span>🧒🧑 Çocuk ve yetişkin hastalara hizmet vermektedir</span>
-    <span class="tb-r"><a href="tel:+905464217141">📞 0546 421 71 41</a><a data-wa="Merhaba Klinikids!" target="_blank" rel="noopener">💬 WhatsApp</a><a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener">📸 Instagram</a></span>
-  </div>
-</div>
-<header id="hdr">
-  <div class="wrap nav">
-    <a href="#top" class="logo" aria-label="Klinikids ana sayfa">
-      <svg><use href="#logo-tooth"/></svg>
-      <span><span class="logo-word" data-logo></span><small>İzmit Diş Sanatı</small></span>
+<div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<main class="page">
+  <header class="brand">
+    <div class="logo"><svg><use href="#logo-tooth"/></svg><span class="w" id="logoWord" aria-label="Klinikids"></span></div>
+    <div class="script">İzmit Diş Sanatı</div>
+    <p>Tüm aile için ağız ve diş sağlığı · Hangi kliniğimize gitmek istersiniz?</p>
+  </header>
+
+  <div class="doors">
+    <!-- ÇOCUK -->
+    <a class="door kids" href="cocuk.html" aria-label="Çocuk Kliniği'ne gir">
+      <span class="ring" aria-hidden="true"></span>
+      <svg class="mascot" viewBox="0 0 200 220" aria-hidden="true">
+        <path d="M100 38C82 22 40 18 30 52c-8 28 4 52 10 78 6 30 8 66 26 68 16 2 18-38 34-40 16 2 18 42 34 40 18-2 20-38 26-68 6-26 18-50 10-78-10-34-52-30-70-14Z" fill="#fff" stroke="#173A5E" stroke-width="6" stroke-linejoin="round"/>
+        <ellipse class="eye" cx="78" cy="94" rx="8" ry="11" fill="#173A5E"/><ellipse class="eye" cx="122" cy="94" rx="8" ry="11" fill="#173A5E"/>
+        <circle cx="81" cy="89" r="3" fill="#fff"/><circle cx="125" cy="89" r="3" fill="#fff"/>
+        <ellipse cx="62" cy="114" rx="10" ry="6" fill="#FFB3C8"/><ellipse cx="138" cy="114" rx="10" ry="6" fill="#FFB3C8"/>
+        <path d="M84 114q16 26 32 0Z" fill="#173A5E" stroke="#173A5E" stroke-width="4" stroke-linejoin="round"/><path d="M92 122q8 6 16 0" fill="#FF6F9C"/>
+      </svg>
+      <span class="em" style="left:26px;top:28px" aria-hidden="true">🦒</span>
+      <span class="em" style="left:46%;top:40px;animation-delay:-2s;font-size:24px" aria-hidden="true">⭐</span>
+      <span class="tag">🧒 Çocuklar için</span>
+      <h2>Çocuk Kliniği</h2>
+      <p>Korkusuz, renkli ve sabırlı bir diş hekimliği. İlk muayeneden koruyucu tedavilere, her adımı oyunla anlatıyoruz.</p>
+      <div class="chips"><span>🛡️ Koruyucu tedavi</span><span>🦷 Süt dişi tedavisi</span><span>🎮 Fırçalama oyunu</span></div>
+      <div class="row"><span class="enter">Çocuk Kliniği'ne gir <span aria-hidden="true">→</span></span></div>
     </a>
-    <nav class="nav-links" id="menu">
-      <a href="#kimler">Çocuk & Yetişkin</a>
-      <a href="#hizmetler">Hizmetler</a>
-      <a href="#gulus">Gülüş Simülatörü</a>
-      <a href="#oyun">Fırçalama Oyunu</a>
-      <a href="#bilgi">Bilgi Köşesi</a>
-      <a href="#sss">SSS</a>
-      <a href="#iletisim">İletişim</a>
-    </nav>
-    <a href="#randevu" class="btn btn-primary">📅 Randevu Al</a>
-    <button class="burger" id="burger" aria-label="Menüyü aç" aria-expanded="false"><span></span><span></span><span></span></button>
+
+    <!-- YETİŞKİN -->
+    <a class="door adults" href="yetiskin.html" aria-label="Yetişkin Kliniği'ne gir">
+      <span class="lines" aria-hidden="true"></span>
+      <svg class="mark" viewBox="0 0 120 130" fill="none" stroke="#D4B27A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M24 40c0-17 15-22 36-17 21-5 36 0 36 17 0 20-7 30-9 51-3 19-14 19-17 2-2-12-5-19-10-19s-8 7-10 19c-3 17-14 17-17-2-2-21-9-31-9-51Z"/><path d="M42 36c5-3 12-3 18 0" opacity=".6"/></svg>
+      <span class="tag">Yetişkinler için</span>
+      <h2>Yetişkin <em>Kliniği</em></h2>
+      <p>Gülüş tasarımı, implant ve protez çözümleri, ortodonti ve koruyucu bakım. Her tedavi muayene ve planlamayla başlar.</p>
+      <div class="chips"><span>Gülüş tasarımı</span><span>İmplant</span><span>Lamine & E-max</span><span>Şeffaf plak</span></div>
+      <div class="row"><span class="enter">Yetişkin Kliniği'ne gir <span aria-hidden="true">→</span></span></div>
+    </a>
   </div>
-</header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="bubbles" id="bubbles"></div>
-  <div class="blob" style="width:380px;height:380px;background:var(--blue-soft);left:-120px;top:40px"></div>
-  <div class="blob" style="width:300px;height:300px;background:var(--pink-soft);right:-80px;bottom:60px;animation-delay:-5s"></div>
-  <span class="spark" style="left:46%;top:12%">✦</span>
-  <span class="spark" style="left:8%;bottom:22%;animation-delay:.6s;color:var(--pink)">✦</span>
-  <div class="wrap hero-grid">
-    <div>
-      <span class="pill"><i>🦷</i> Çocuk ve yetişkin hastalara hizmet vermektedir</span>
-      <h1>Sağlıklı <span class="hl">Gülüşler</span>,<br>Mutlu Yarınlar <span class="wiggle">😁</span></h1>
-      <p class="lead">İzmit'in en neşeli diş kliniğine hoş geldiniz! Minik kahramanlardan büyüklere, tüm aile için güvenli, konforlu ve gülümseten bir diş hekimliği deneyimi.</p>
-      <div class="ctas">
-        <a href="#randevu" class="btn btn-primary">📅 Online Randevu Al</a>
-        <a class="btn btn-wa" data-wa="Merhaba Klinikids! Bilgi almak istiyorum 😊" target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg> WhatsApp'tan Yaz</a>
-      </div>
-      <div class="chips">
-        <span class="chip" style="--bg:var(--yellow-soft)">🧒 Çocuklar</span>
-        <span class="chip" style="--bg:var(--blue-soft)">🧑 Yetişkinler</span>
-        <span class="chip" style="--bg:var(--green-soft)">🦒 Zürafalı bekleme salonu</span>
-        <span class="chip" style="--bg:var(--pink-soft)">📍 İzmit, Kocaeli</span>
-      </div>
-    </div>
-    <div class="hero-art" aria-hidden="true">
-      <div class="disc"></div>
-      <div class="orbit"><span>🪥</span><span>⭐</span><span>💧</span></div>
-      <div class="mascot">
-        <svg viewBox="0 0 200 220">
-          <path d="M100 38C82 22 40 18 30 52c-8 28 4 52 10 78 6 30 8 66 26 68 16 2 18-38 34-40 16 2 18 42 34 40 18-2 20-38 26-68 6-26 18-50 10-78-10-34-52-30-70-14Z" fill="#fff" stroke="#173A5E" stroke-width="5" stroke-linejoin="round"/>
-          <path d="M46 60c4-18 20-26 34-22" stroke="#DDF2FC" stroke-width="9" fill="none" stroke-linecap="round"/>
-          <ellipse class="eye" cx="78" cy="94" rx="8" ry="11" fill="#173A5E"/>
-          <ellipse class="eye" cx="122" cy="94" rx="8" ry="11" fill="#173A5E"/>
-          <circle cx="81" cy="89" r="3" fill="#fff"/><circle cx="125" cy="89" r="3" fill="#fff"/>
-          <ellipse cx="62" cy="114" rx="10" ry="6" fill="#FFB3C8"/><ellipse cx="138" cy="114" rx="10" ry="6" fill="#FFB3C8"/>
-          <path d="M84 114q16 26 32 0Z" fill="#173A5E" stroke="#173A5E" stroke-width="4" stroke-linejoin="round"/>
-          <path d="M92 122q8 6 16 0" fill="#FF6F9C"/>
-        </svg>
-      </div>
-      <div class="speech">Fırçaladın mı? 🪥</div>
-    </div>
-  </div>
-  <svg class="wave" viewBox="0 0 1440 80" preserveAspectRatio="none"><path d="M0 40c240 40 480 40 720 0s480-40 720 0v40H0Z" fill="#fff" opacity=".0"/></svg>
-</section>
-
-<div class="marquee" aria-hidden="true">
-  <div class="marquee-track" id="marquee"></div>
-</div>
-
-<!-- WHO -->
-<section id="kimler">
-  <div class="wrap">
-    <div class="head reveal">
-      <span class="hand">Tüm aile için tek adres!</span>
-      <h2>Küçük ya da büyük, herkes burada gülümser</h2>
-      <p>Çocuk ve yetişkin hastalarımıza, ihtiyaçlarına göre şekillenen tedaviler sunuyoruz.</p>
-    </div>
-    <div class="tabs">
-      <div class="tabbar" role="tablist">
-        <span class="slider" id="tabSlider"></span>
-        <button role="tab" aria-selected="true" aria-controls="tab-kids" id="t-kids">🧒 Çocuklar İçin</button>
-        <button role="tab" aria-selected="false" aria-controls="tab-adults" id="t-adults">🧑 Yetişkinler İçin</button>
-      </div>
-    </div>
-    <div class="tabpanel" id="tab-kids" role="tabpanel">
-      <div class="tile" style="--bg:var(--blue-soft)"><div class="ico">🛡️</div><h3>Flor Uygulaması</h3><p>Diş minesini güçlendirmeye ve çürük oluşumuna karşı korunmaya yardımcı olur.</p></div>
-      <div class="tile" style="--bg:var(--yellow-soft)"><div class="ico">🪥</div><h3>Fırçalama Alışkanlığı</h3><p>Günde 2 kez, 2 dakika, florürlü macunla. Doğru alışkanlıkları birlikte kazandırıyoruz.</p></div>
-      <div class="tile" style="--bg:var(--green-soft)"><div class="ico">🔍</div><h3>Düzenli Kontroller</h3><p>Sağlıklı gülüşler için düzenli diş hekimi kontrolü önemlidir.</p></div>
-      <div class="tile" style="--bg:var(--pink-soft)"><div class="ico">🦒</div><h3>Korkusuz Ortam</h3><p>Kocaman zürafamız ve rengârenk salonumuzla diş hekimi ziyareti bir maceraya dönüşür.</p></div>
-    </div>
-    <div class="tabpanel" id="tab-adults" role="tabpanel" hidden>
-      <div class="tile" style="--bg:var(--yellow-soft)"><div class="ico">✨</div><h3>Estetik Diş Hekimliği</h3><p>Daha parlak, daha doğal ve daha özgüvenli gülüşler.</p><div class="tag"><em>Beyazlatma</em><em>Lamine</em><em>E-max</em><em>Mockup</em></div></div>
-      <div class="tile" style="--bg:var(--blue-soft)"><div class="ico">🔩</div><h3>Eksik Diş Çözümleri</h3><p>Gülüşünüz yarım kalmasın: her eksik dişin bir çözümü var!</p><div class="tag"><em>İmplant</em><em>Köprü</em><em>Protez</em></div></div>
-      <div class="tile" style="--bg:var(--purple-soft)"><div class="ico">😬</div><h3>Ortodonti</h3><p>Dişlerinizi estetik ve konforlu şekilde düzelten modern yöntemler.</p><div class="tag"><em>Şeffaf Plak</em></div></div>
-      <div class="tile" style="--bg:var(--green-soft)"><div class="ico">🌿</div><h3>Koruyucu Bakım</h3><p>Diş ve diş eti sağlığını korumak için düzenli bakım.</p><div class="tag"><em>Diş Taşı</em><em>Flor</em><em>Diş Eti</em></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- SERVICES -->
-<section class="services" id="hizmetler">
-  <div class="wrap">
-    <div class="head reveal">
-      <span class="hand">Kartlara dokunun, arkasını görün!</span>
-      <h2>Hizmetlerimiz</h2>
-      <p>Her biri için hekimimiz önce sizi dinler, ağzınızı değerlendirir ve size en uygun planı birlikte belirlersiniz.</p>
-    </div>
-    <div class="grid" id="cards"></div>
-  </div>
-</section>
-
-<!-- SIMULATOR -->
-<section class="sim" id="gulus">
-  <div class="wrap sim-grid">
-    <div class="ba reveal">
-      <div class="ba-stage" id="baStage">
-        <div class="mouth ba-layer ba-before" style="position:relative"><div class="row up"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="row low"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-        <div class="mouth ba-layer ba-after" id="baAfter"><div class="row up"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="row low"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-        <div class="ba-handle" id="baHandle"></div>
-        <input type="range" min="0" max="100" value="50" id="baRange" aria-label="Öncesi ve sonrası karşılaştırma">
-      </div>
-      <div class="ba-labels"><span style="--bg:var(--yellow-soft)">😐 Öncesi</span><span style="--bg:var(--blue-soft)">Sonrası 😁</span></div>
-    </div>
-    <div class="reveal">
-      <span class="hand" style="font-size:28px;color:var(--pink)">Kaydırın ve görün ✨</span>
-      <h2>Gülüşünüzü önceden görün</h2>
-      <p style="color:var(--ink2);font-size:18px"><b>Mockup</b>, tedaviye başlamadan önce planlanan gülüş tasarımının ağız içinde geçici olarak oluşturulmasıdır. Böylece hem hekiminiz hem siz sonucu önceden görür, en doğru kararı birlikte verirsiniz.</p>
-      <div class="mock-list">
-        <div><span class="n">1</span><div><b>Diş Beyazlatma</b><p>Dişlerin doğal rengini açarak daha estetik bir görünüm kazandırır.</p></div></div>
-        <div><span class="n">2</span><div><b>Lamine & E-max</b><p>Dişin ön yüzeyine uygulanan ince porselen ve doğal görünümlü modern kaplamalar.</p></div></div>
-        <div><span class="n">3</span><div><b>Mockup Planlama</b><p>Diş formu, boyutu, rengi ve gülüş hattı önceden değerlendirilir.</p></div></div>
-      </div>
-      <a href="#randevu" class="btn btn-primary" data-pick="Mockup / Gülüş Tasarımı">Gülüş planımı yapalım →</a>
-    </div>
-  </div>
-</section>
-
-<!-- GUM -->
-<section id="dis-eti">
-  <div class="wrap gum-grid">
-    <div class="reveal">
-      <div class="gum-art" id="gumArt">
-        <svg viewBox="0 0 200 230">
-          <path d="M10 170c20-30 50-20 90-20s70-10 90 20v60H10Z" fill="#FF8FA8" stroke="#173A5E" stroke-width="5" id="gumShape"/>
-          <path d="M100 30C82 14 40 10 30 44c-8 28 4 52 10 78 6 30 8 56 26 58 16 2 18-28 34-30 16 2 18 32 34 30 18-2 20-28 26-58 6-26 18-50 10-78-10-34-52-30-70-14Z" fill="#fff" stroke="#173A5E" stroke-width="5" stroke-linejoin="round"/>
-          <path d="M10 175c20-26 50-16 90-16s70-10 90 16v55H10Z" fill="#FF8FA8"/>
-          <ellipse class="eye" cx="78" cy="86" rx="8" ry="11" fill="#173A5E"/><ellipse class="eye" cx="122" cy="86" rx="8" ry="11" fill="#173A5E"/>
-          <circle cx="81" cy="81" r="3" fill="#fff"/><circle cx="125" cy="81" r="3" fill="#fff"/>
-          <ellipse cx="62" cy="106" rx="10" ry="6" fill="#FFB3C8"/><ellipse cx="138" cy="106" rx="10" ry="6" fill="#FFB3C8"/>
-          <path class="mouth-happy" d="M84 106q16 24 32 0" fill="none" stroke="#173A5E" stroke-width="5" stroke-linecap="round"/>
-          <path class="mouth-sad" d="M84 118q16-16 32 0" fill="none" stroke="#173A5E" stroke-width="5" stroke-linecap="round"/>
-        </svg>
-      </div>
-    </div>
-    <div class="reveal">
-      <span class="hand" style="font-size:28px;color:var(--pink)">Dinleyin, size bir şey söylüyor!</span>
-      <h2 style="font-size:clamp(34px,4.5vw,50px);margin:6px 0 16px">Diş eti size ne anlatıyor?</h2>
-      <div class="gum-btns" id="gumBtns"></div>
-      <div class="gum-panel" id="gumPanel"></div>
-      <div class="note">Diş etlerinize iyi bakın, çünkü gülüşünüzün temeli onlar! 💛</div>
-    </div>
-  </div>
-</section>
-
-<!-- GAME -->
-<section class="game" id="oyun">
-  <div class="blob" style="width:340px;height:340px;background:var(--teal);left:-120px;top:-60px;opacity:.5"></div>
-  <div class="blob" style="width:260px;height:260px;background:#2A7A75;right:-60px;bottom:-40px;opacity:.6"></div>
-  <div class="wrap">
-    <div class="head reveal">
-      <span class="hand">Minik kahramanlar için!</span>
-      <h2>2 Dakika Fırçalama Oyunu</h2>
-      <p>Sabah ve yatmadan önce, florürlü diş macunuyla 2 dakika. Sayaç başlasın, ağzın 4 bölgesini sırayla fırçalayalım!</p>
-    </div>
-    <div class="game-box reveal" id="gameBox">
-      <div class="timer">
-        <svg viewBox="0 0 200 200"><circle class="track" cx="100" cy="100" r="88" fill="none" stroke-width="16"/><circle class="bar" id="bar" cx="100" cy="100" r="88" fill="none" stroke-width="16"/></svg>
-        <div class="center"><div><span class="brush">🪥</span><div class="time" id="time">2:00</div><div style="font-weight:800;opacity:.8" id="zoneTxt">Hazır mısın?</div></div></div>
-      </div>
-      <div>
-        <div class="game-msg" id="gameMsg">Başla'ya bas, fırçanı kap! 🦸</div>
-        <div class="quads" id="quads"><div>↖ Üst Sol</div><div>↗ Üst Sağ</div><div>↙ Alt Sol</div><div>↘ Alt Sağ</div></div>
-        <div class="game-ctrl">
-          <button class="btn btn-primary" id="gStart">▶ Başla</button>
-          <button class="btn btn-ghost" id="gReset">↺ Sıfırla</button>
-        </div>
-        <div class="stars">Yıldız koleksiyonum: <span id="starList">—</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CLINIC -->
-<section id="klinik">
-  <div class="wrap">
-    <div class="head reveal">
-      <span class="hand">Kapımızdan girince anlayacaksınız</span>
-      <h2>Burası sıradan bir klinik değil!</h2>
-    </div>
-    <div class="clinic-grid">
-      <div class="feat reveal" style="--bg:var(--yellow-soft)"><span class="big">🦒</span><h3>Zürafalı Karşılama</h3><p>Kocaman zürafamız, renkli duvarlarımız ve rahat bekleme salonumuzla çocuklar korkmak yerine merak ediyor.</p></div>
-      <div class="feat dark reveal"><span class="big" style="animation-delay:-1s">👨‍⚕️</span><h3>Dt. Mücahit Çağan ve Ekibi</h3><p>Tedavilerin uygunluğu hekimimiz tarafından değerlendirilir; her adım size anlatılarak, güvenli ve konforlu şekilde ilerler.</p></div>
-      <div class="feat reveal" style="--bg:var(--blue-soft)"><span class="big" style="animation-delay:-2s">👨‍👩‍👧</span><h3>Tüm Aileye Hizmet</h3><p>Çocuğunuzun ilk kontrolünden sizin gülüş tasarımınıza kadar, tüm aile tek klinikte.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- BOOKING -->
-<section class="booking" id="randevu">
-  <div class="wrap book-grid">
-    <div class="book-side reveal">
-      <span class="hand" style="font-size:30px;color:var(--pink)">Sadece 1 dakika sürer!</span>
-      <h2>Randevunuzu hemen alın</h2>
-      <p>İşleminizi seçin, takvimdeki boş saatlerden size uyanı alın. Saatiniz anında ayrılır, ekibimiz sizi arayarak randevunuzu teyit eder.</p>
-      <div class="contact-cards" id="iletisim">
-        <a class="ccard" href="tel:+905464217141"><span class="ci" style="--bg:var(--orange)"><svg><use href="#i-phone"/></svg></span><span><small>Hemen arayın</small><b>0546 421 71 41</b></span></a>
-        <a class="ccard" data-wa="Merhaba Klinikids! Randevu almak istiyorum 😊" target="_blank" rel="noopener"><span class="ci" style="--bg:var(--wa)"><svg><use href="#i-wa"/></svg></span><span><small>WhatsApp'tan yazın</small><b>Mesaj Gönder</b></span></a>
-        <a class="ccard" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener"><span class="ci" style="--bg:#D6249F"><svg><use href="#i-ig"/></svg></span><span><small>Instagram'da takip edin</small><b>@ozelklinikids_agizvedissagligi</b></span></a>
-        <a class="ccard" data-maps target="_blank" rel="noopener"><span class="ci" style="--bg:var(--teal)"><svg><use href="#i-pin"/></svg></span><span><small>Adres</small><b style="font-size:16px">Mehmet Ali Paşa Mah. Erkan Sok. RBG İş Merkezi No 7B, İzmit</b></span></a>
-      </div>
-    </div>
-
-    <!-- ONLINE RANDEVU: Supabase'deki gerçek takvime bağlı -->
-    <form class="book reveal" id="bookApp" novalidate>
-      <div class="rb-loading" id="rbLoading">Takvim yükleniyor… 🦷</div>
-      <div id="rbBody" hidden>
-        <div class="rb-step ok" id="rbWhoStep"><span class="lbl"><b class="rb-n">1</b> Randevu kimin için?</span>
-          <div class="rb-who"><div class="seg">
-            <input type="radio" name="rbWho" id="rbW1" value="Çocuk" checked><label for="rbW1">🧒 Çocuk</label>
-            <input type="radio" name="rbWho" id="rbW2" value="Yetişkin"><label for="rbW2">🧑 Yetişkin</label>
-          </div>
-          <span class="rb-age" id="rbAgeWrap"><label for="rbAge" class="sr">Çocuğun yaşı</label><input id="rbAge" type="number" min="0" max="17" inputmode="numeric" placeholder="Yaşı, örn. 6"></span></div>
-        </div>
-        <div class="rb-step" id="rbDocStep"><span class="lbl"><b class="rb-n">2</b> Doktor</span><div class="rb-docs" id="rbDocs"></div></div>
-        <div class="rb-step" id="rbSvcStep"><span class="lbl"><b class="rb-n">3</b> İşlem</span><div class="rb-chips" id="rbSvcs"></div></div>
-        <div class="rb-step" id="rbDayStep"><span class="lbl"><b class="rb-n">4</b> Gün</span><div id="rbDays"></div></div>
-        <div class="rb-step" id="rbSlotStep"><span class="lbl"><b class="rb-n">5</b> Saat</span><div id="rbSlots"></div></div>
-        <div class="rb-step" id="rbInfoStep"><span class="lbl"><b class="rb-n">6</b> Bilgileriniz</span>
-          <div class="fgrid">
-            <div class="field"><label for="rbName">Ad Soyad *</label><input id="rbName" autocomplete="name" placeholder="Örn. Ayşe Yılmaz"></div>
-            <div class="field"><label for="rbPhone">Cep Telefonu *</label><input id="rbPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="05xx xxx xx xx"></div>
-            <div class="field full"><label for="rbNote">Notunuz</label><textarea id="rbNote" placeholder="Şikâyetinizi veya sorunuzu kısaca yazabilirsiniz..."></textarea></div>
-            <div class="field full"><label class="check"><input type="checkbox" id="rbOk"> Kişisel ve sağlık verilerimin randevu işlemleri için klinik tarafından işlenmesine açık rıza veriyorum (KVKK).</label></div>
-          </div>
-        </div>
-        <p class="rb-sum" id="rbSum"></p>
-        <div class="err" id="rbErr" role="alert"></div>
-        <div class="form-foot">
-          <button type="submit" class="btn btn-primary" id="rbSubmit">📅 Randevuyu Oluştur</button>
-          <a class="btn btn-ghost" data-wa="Merhaba Klinikids! Randevu almak istiyorum 😊" target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg> WhatsApp</a>
-        </div>
-      </div>
-      <div class="rb-done" id="rbDone" hidden></div>
-    </form>
-
-    <!-- YEDEK: online sisteme ulaşılamazsa eski WhatsApp formu gösterilir -->
-    <form class="book" id="waForm" novalidate hidden>
-      <div class="fgrid">
-        <div class="field"><label for="fName">Ad Soyad *</label><input id="fName" autocomplete="name" placeholder="Örn. Ayşe Yılmaz" required></div>
-        <div class="field"><label for="fPhone">Telefon *</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="05xx xxx xx xx" required></div>
-        <div class="field full"><span class="lbl">Randevu kimin için? *</span>
-          <div class="seg">
-            <input type="radio" name="who" id="w1" value="Çocuk" checked><label for="w1">🧒 Çocuk</label>
-            <input type="radio" name="who" id="w2" value="Yetişkin"><label for="w2">🧑 Yetişkin</label>
-          </div>
-        </div>
-        <div class="field age" id="ageField"><label for="fAge">Çocuğun yaşı</label><input id="fAge" type="number" min="0" max="17" placeholder="Örn. 6"></div>
-        <div class="field" id="svcField"><label for="fSvc">Hizmet</label><select id="fSvc"><option value="">Muayene / Bilmiyorum</option></select></div>
-        <div class="field"><label for="fDate">Tercih edilen tarih</label><input id="fDate" type="date"></div>
-        <div class="field"><span class="lbl">Tercih edilen zaman</span>
-          <div class="seg">
-            <input type="radio" name="time" id="s1" value="Sabah"><label for="s1">🌅 Sabah</label>
-            <input type="radio" name="time" id="s2" value="Öğleden sonra"><label for="s2">☀️ Öğleden sonra</label>
-            <input type="radio" name="time" id="s3" value="Farketmez" checked><label for="s3">🤷 Farketmez</label>
-          </div>
-        </div>
-        <div class="field full"><label for="fNote">Notunuz</label><textarea id="fNote" placeholder="Şikâyetinizi veya sorunuzu kısaca yazabilirsiniz..."></textarea></div>
-        <div class="field full"><label class="check"><input type="checkbox" id="fOk"> Bilgilerimin randevu oluşturmak amacıyla klinik tarafından kullanılmasını onaylıyorum.</label></div>
-      </div>
-      <div class="err" id="err" role="alert"></div>
-      <div class="form-foot">
-        <button type="submit" class="btn btn-wa"><svg><use href="#i-wa"/></svg> WhatsApp ile Randevu İste</button>
-        <a href="tel:+905464217141" class="btn btn-ghost">📞 Ara</a>
-      </div>
-    </form>
-  </div>
-</section>
-
-<!-- BLOG -->
-<section id="bilgi" style="background:var(--blue-soft)">
-  <div class="wrap">
-    <div class="head reveal"><span class="hand">Instagram'dan seçtiklerimiz</span><h2>Bilgi Köşesi</h2><p>Ağız ve diş sağlığına dair kısa, anlaşılır bilgiler. Daha fazlası için bizi Instagram'da takip edin!</p></div>
-    <div class="posts" id="posts"></div>
-    <div style="text-align:center;margin-top:34px" class="reveal"><a class="btn btn-primary" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener">📸 Instagram'da Takip Et</a></div>
-  </div>
-</section>
-
-<!-- FAQ -->
-<section id="sss">
-  <div class="wrap">
-    <div class="head reveal"><span class="hand">Merak edilenler</span><h2>Sık Sorulan Sorular</h2></div>
-    <div class="faq reveal">
-      <details><summary>Diş beyazlatma dişlere zarar verir mi?</summary><p>Diş beyazlatma, uygun yöntemlerle ve hekim kontrolünde uygulandığında güvenli ve etkili bir uygulamadır. Doğru bakım ile sonuçlar uzun süre korunabilir. Size uygun olup olmadığını muayenede birlikte değerlendiriyoruz.</p></details>
-      <details><summary>Çocuğum günde kaç kez, ne kadar dişlerini fırçalamalı?</summary><p>Sabah ve yatmadan önce olmak üzere günde 2 kez, florürlü diş macunuyla 2 dakika fırçalama önerilir. Düzenli fırçalama plak birikimini ve çürük riskini azaltmaya yardımcı olur. Sitedeki 2 dakikalık oyunumuzu birlikte deneyebilirsiniz!</p></details>
-      <details><summary>Eksik dişlerim için hangi seçenekler var?</summary><p>İmplant, köprü, hareketli protez ve tam protez başlıca seçeneklerdir. Eksik dişler yalnızca estetik değil; çiğneme, konuşma ve ağız sağlığını da etkileyebilir. Hangi çözümün size uygun olduğunu hekimimiz muayene sonrası belirler.</p></details>
-      <details><summary>Mockup nedir, neden önemli?</summary><p>Mockup, planlanan gülüş tasarımının tedaviden önce ağız içinde geçici olarak oluşturulmasıdır. Böylece diş formunu, boyutunu ve rengi önceden görür, karar sürecine aktif olarak katılırsınız.</p></details>
-      <details><summary>Şeffaf plak tedavisi dışarıdan belli olur mu?</summary><p>Şeffaf plaklar kişiye özel üretilir ve neredeyse görünmezdir. Rahat kullanımı sayesinde günlük hayata kolayca uyum sağlar.</p></details>
-      <details><summary>Flor uygulaması kimlere yapılır?</summary><p>Flor, diş minesini güçlendirmeye ve çürüğe karşı korumaya yardımcı olur. Çocuklarda ve yetişkinlerde diş hekiminin önerisiyle uygulanabilir.</p></details>
-    </div>
-  </div>
-</section>
-
-<!-- LOCATION -->
-<section style="padding-top:20px">
-  <div class="wrap loc">
-    <div class="mapart reveal" aria-hidden="true"><div class="park"></div><div class="lake"></div><div class="pin">📍</div><div class="pin-label">🦷 Klinikids burada!</div></div>
-    <div class="loc-box reveal">
-      <h3>Bizi ziyaret edin</h3>
-      <p>Mehmet Ali Paşa Mahallesi, Erkan Sokak<br>RBG İş Merkezi No 7B<br>İzmit / Kocaeli</p>
-      <a class="btn btn-ghost" data-maps target="_blank" rel="noopener">🗺️ Yol Tarifi Al</a>
-      <a class="btn btn-ghost" href="tel:+905464217141" style="align-self:flex-start">📞 0546 421 71 41</a>
-      <a class="btn btn-ghost" data-review target="_blank" rel="noopener" style="align-self:flex-start">⭐ Google'da Değerlendirin</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="wrap">
-    <div class="foot">
-      <div>
-        <a href="#top" class="logo"><svg style="width:52px;height:58px"><use href="#logo-tooth"/></svg><span><span class="logo-word" data-logo></span><small style="color:#fff;font-size:18px">İzmit Diş Sanatı</small></span></a>
-        <p style="margin-top:14px">Sağlıklı gülüşler, mutlu yarınlar. Çocuk ve yetişkin hastalara hizmet vermektedir.</p>
-        <div class="socials">
-          <a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
-          <a data-wa="Merhaba Klinikids!" target="_blank" rel="noopener" aria-label="WhatsApp"><svg><use href="#i-wa"/></svg></a>
-          <a href="tel:+905464217141" aria-label="Telefon"><svg><use href="#i-phone"/></svg></a>
-          <a data-maps target="_blank" rel="noopener" aria-label="Harita"><svg><use href="#i-pin"/></svg></a>
-        </div>
-      </div>
-      <div><h4>Hizmetler</h4><ul id="footSvc"></ul></div>
-      <div><h4>İletişim</h4><ul>
-        <li><a href="tel:+905464217141">📞 0546 421 71 41</a></li>
-        <li><a data-wa="Merhaba Klinikids!" target="_blank" rel="noopener">💬 WhatsApp</a></li>
-        <li><a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener">📸 Instagram</a></li>
-        <li>📍 Mehmet Ali Paşa Mah. Erkan Sok. RBG İş Merkezi No 7B İzmit / Kocaeli</li>
-      </ul></div>
-    </div>
-    <div class="copy"><span>© <span id="yr"></span> Klinikids İzmit Diş Sanatı · Özel Ağız ve Diş Sağlığı</span><span>Bu sitedeki bilgiler genel bilgilendirme amaçlıdır; tedavi kararı muayene sonrası hekim tarafından verilir.</span></div>
-  </div>
-</footer>
-
-<div class="fab">
-  <a class="ig" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
-  <a class="wa" data-wa="Merhaba Klinikids! Randevu almak istiyorum 😊" target="_blank" rel="noopener" aria-label="WhatsApp"><svg><use href="#i-wa"/></svg><span class="tip">Randevu için yazın! 👋</span></a>
-</div>
-<canvas id="confetti"></canvas>
+  <nav class="contact" aria-label="İletişim">
+    <a class="tel" href="tel:+905464217141"><svg><use href="#i-phone"/></svg>0546 421 71 41</a>
+    <a class="wa" data-wa target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg>WhatsApp</a>
+    <a class="ig" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener"><svg><use href="#i-ig"/></svg>Instagram</a>
+    <a class="map" data-maps target="_blank" rel="noopener"><svg><use href="#i-pin"/></svg><span>Yol tarifi</span></a>
+  </nav>
+</main>
+<div class="foot">Özel Klinikids Ağız ve Diş Sağlığı Polikliniği · Mehmet Ali Paşa Mah. Erkan Sok. RBG İş Merkezi No 7B, İzmit / Kocaeli</div>
 
 <script>
-const PHONE='905464217141';
-const IG='https://www.instagram.com/ozelklinikids_agizvedissagligi/';
-const ADDRESS='Mehmet Ali Paşa Mahallesi Erkan Sokak RBG İş Merkezi No 7B İzmit Kocaeli';
-const waLink=t=>`https://wa.me/${PHONE}?text=${encodeURIComponent(t)}`;
-document.querySelectorAll('[data-wa]').forEach(a=>a.href=waLink(a.dataset.wa));
-document.querySelectorAll('[data-maps]').forEach(a=>a.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(ADDRESS));
-document.getElementById('yr').textContent=new Date().getFullYear();
-document.querySelectorAll('[data-review]').forEach(a=>a.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent('Klinikids İzmit Diş Sanatı'));
-const P=[
- ['🌸','--pink-soft','Diş Eti Size Ne Anlatıyor?','Kızarıklık, şişlik, çekilme ve ağız kokusu: diş etlerinizin verdiği sinyalleri tanıyın.'],
- ['🧩','--yellow-soft','Eksik Dişler İçin Hangi Çözümler Var?','İmplant, köprü, hareketli ve tam protez arasındaki farklar.'],
- ['🔩','--blue-soft','İmplant Nedir? Nasıl Tedavi Edilir?','Çene kemiğine yerleştirilen yapay diş kökü ve tedavi süreci.'],
- ['🪥','--green-soft','Sağlıklı Gülüşler Doğru Alışkanlıklarla Başlar','Çocuklara diş fırçalama alışkanlığı kazandırmanın püf noktaları.'],
- ['🛡️','--purple-soft','Flor Uygulaması','Mineyi güçlendirmeye ve çürüğe karşı korunmaya nasıl yardımcı olur?'],
- ['💎','--orange-soft','Lamine & E-max','Daha estetik, daha doğal bir gülüş için iki kaplama seçeneği.'],
-];
-document.getElementById('posts').innerHTML=P.map((p,i)=>`<a class="post reveal" style="--bg:var(${p[1]});transition-delay:${(i%3)*80}ms" href="${IG}" target="_blank" rel="noopener"><div class="ph"><span>${p[0]}</span></div><div class="pb"><h3>${p[2]}</h3><p>${p[3]}</p><span class="more">Instagram'da oku →</span></div></a>`).join('');
-
-/* Logo letters */
-const L=[['K','--red',-6],['L','--orange',4],['İ','--yellow',-3],['N','--green',5],['İ','--blue',-4],['K','--purple',3],['İ','--pink',-5],['D','--teal',4],['S','--orange',-6]];
-document.querySelectorAll('[data-logo]').forEach(el=>{el.innerHTML=L.map((l,i)=>`<b style="--c:var(${l[1]});--r:${l[2]}deg;--i:${i}">${l[0]}</b>`).join('')});
-
-/* Services */
-const S=[
- {e:'✨',t:'Diş Beyazlatma',m:'--yellow',s:'--yellow-soft',d:'Daha parlak, daha özgüvenli bir gülüş için.',b:['Doğal beyazlığı geri kazandırır','Gülüş estetiğini artırır','Kontrollü ve güvenli uygulanır','Doğru bakımla uzun süreli sonuç']},
- {e:'🔩',t:'İmplant',m:'--pink',s:'--pink-soft',d:'Çene kemiğine yerleştirilen yapay diş kökü.',b:['Doğal görünüm','Kalıcı çözüm','Yan dişlere zarar vermez','Uygunluğu hekim değerlendirir']},
- {e:'🌉',t:'Köprü',m:'--blue',s:'--blue-soft',d:'Yandaki dişlerden destek alan estetik çözüm.',b:['Hızlı uygulanır','Doğal görünüm sağlar','Çiğneme fonksiyonunu geri kazandırır']},
- {e:'😁',t:'Hareketli Protez',m:'--green',s:'--green-soft',d:'Bir veya birden fazla eksik diş için pratik seçenek.',b:['Kolay uygulanır','İhtiyaca göre tasarlanır','Çıkarılıp takılabilir','Ekonomik bir seçenek']},
- {e:'🦷',t:'Tam Protez',m:'--purple',s:'--purple-soft',d:'Tüm dişlerin eksik olduğu durumlar için.',b:['Estetik görünüm sağlar','Çiğneme ve konuşmayı destekler','Kişiye özel tasarlanır']},
- {e:'💎',t:'Lamine',m:'--orange',s:'--orange-soft',d:'Dişlerin ön yüzeyine uygulanan ince porselen kaplama.',b:['Estetik','Doğal görünüm','Dayanıklı','Uzun ömürlü']},
- {e:'🌟',t:'E-max',m:'--blue',s:'--blue-soft',d:'Doğal ve estetik görünüm sağlayan modern kaplama sistemi.',b:['Doğal ışık geçirgenliği','Estetik görünüm','Dayanıklı yapı']},
- {e:'🎨',t:'Mockup / Gülüş Tasarımı',m:'--teal',s:'--teal-soft',d:'Gülüşünüzü tedaviden önce görün.',b:['Önceden görme imkânı','Daha doğru planlama','Memnuniyet odaklı tedavi','Güvenli ve konforlu süreç']},
- {e:'😬',t:'Şeffaf Plak',m:'--purple',s:'--purple-soft',d:'Modern ve neredeyse görünmez ortodonti.',b:['Daha estetik görünüm','Rahat kullanım','Kişiye özel plaklar','Günlük hayata kolay uyum']},
- {e:'🪥',t:'Diş Taşı Temizliği',m:'--green',s:'--green-soft',d:'Sağlıklı dişler, mutlu gülüşler!',b:['Diş eti hastalıklarını önlemeye yardımcı','Ağız kokusunu azaltır','Çürüğe karşı korur']},
- {e:'🛡️',t:'Flor Uygulaması',m:'--yellow',s:'--yellow-soft',d:'Mineyi güçlendirir, çürüğe karşı korur.',b:['Diş minesini güçlendirir','Çürük riskini azaltmaya yardımcı','Hassasiyete destek olabilir','Çocuk ve yetişkinlere']},
- {e:'🌸',t:'Diş Eti Tedavisi',m:'--pink',s:'--pink-soft',d:'Gülüşünüzün temeli diş etlerinizdir.',b:['Kızarıklık ve kanama kontrolü','Şişlik ve çekilme takibi','Ağız kokusunun nedenlerine bakış']},
-];
-const cards=document.getElementById('cards'), sel=document.getElementById('fSvc');
-S.forEach((x,i)=>{
-  const c=document.createElement('div');
-  c.className='card reveal';c.tabIndex=0;c.style.cssText=`--main:var(${x.m});--soft:var(${x.s});transition-delay:${(i%4)*70}ms`;
-  c.innerHTML=`<div class="card-in"><div class="face front"><span class="em">${x.e}</span><div><h3>${x.t}</h3><p>${x.d}</p></div><span class="turn">çevir ↻</span></div>
-  <div class="face back"><div><h3>${x.e} ${x.t}</h3><ul>${x.b.map(b=>`<li>${b}</li>`).join('')}</ul></div><a href="#randevu" class="btn" data-pick="${x.t}">📅 Randevu Al</a></div></div>`;
-  c.addEventListener('click',e=>{if(!e.target.closest('a'))c.classList.toggle('flipped')});
-  cards.appendChild(c);
-  sel.insertAdjacentHTML('beforeend',`<option>${x.t}</option>`);
-  document.getElementById('footSvc').insertAdjacentHTML('beforeend',i<7?`<li><a href="#hizmetler">${x.t}</a></li>`:'');
-});
-document.getElementById('marquee').innerHTML=[0,1].map(()=>`<span>${S.map(x=>`<span>${x.e} ${x.t}</span>`).join('')}</span>`).join('');
-document.addEventListener('click',e=>{const p=e.target.closest('[data-pick]');if(p){sel.value=p.dataset.pick;if(window.KK_pick)window.KK_pick(p.dataset.pick);if(!document.getElementById('waForm').hidden)setTimeout(()=>document.getElementById('fName').focus({preventScroll:true}),700)}});
-
-/* Nav */
-const hdr=document.getElementById('hdr');addEventListener('scroll',()=>hdr.classList.toggle('scrolled',scrollY>10),{passive:true});
-const burger=document.getElementById('burger'),menu=document.getElementById('menu');
-burger.onclick=()=>{const o=menu.classList.toggle('open');burger.setAttribute('aria-expanded',o)};
-menu.querySelectorAll('a').forEach(a=>a.onclick=()=>{menu.classList.remove('open');burger.setAttribute('aria-expanded',false)});
-
-/* Bubbles */
-const bb=document.getElementById('bubbles');
-for(let i=0;i<16;i++){const s=document.createElement('span'),z=10+Math.random()*40;s.style.cssText=`width:${z}px;height:${z}px;left:${Math.random()*100}%;animation-duration:${9+Math.random()*12}s;animation-delay:-${Math.random()*20}s;--dx:${(Math.random()-.5)*120}px`;bb.appendChild(s)}
-
-/* Tabs */
-const tabs=[['t-kids','tab-kids','var(--orange)'],['t-adults','tab-adults','var(--teal)']],slider=document.getElementById('tabSlider');
-function setTab(i){tabs.forEach((t,j)=>{const b=document.getElementById(t[0]);b.setAttribute('aria-selected',i===j);document.getElementById(t[1]).hidden=i!==j});const b=document.getElementById(tabs[i][0]);slider.style.left=b.offsetLeft+'px';slider.style.width=b.offsetWidth+'px';slider.style.background=tabs[i][2]}
-tabs.forEach((t,i)=>document.getElementById(t[0]).onclick=()=>setTab(i));
-addEventListener('load',()=>setTab(0));addEventListener('resize',()=>setTab(tabs.findIndex(t=>document.getElementById(t[0]).getAttribute('aria-selected')==='true')));
-document.fonts&&document.fonts.ready.then(()=>setTab(0));
-
-/* Before / after */
-const baR=document.getElementById('baRange'),baA=document.getElementById('baAfter'),baH=document.getElementById('baHandle');
-function ba(v){baA.style.clipPath=`inset(0 0 0 ${v}%)`;baH.style.left=v+'%'}
-baR.oninput=e=>ba(e.target.value);
-let demo=true,t0=null;function demoAnim(ts){if(!demo)return;t0??=ts;const v=50+28*Math.sin((ts-t0)/900);ba(v);baR.value=v;requestAnimationFrame(demoAnim)}
-new IntersectionObserver((en,o)=>{if(en[0].isIntersecting){requestAnimationFrame(demoAnim);setTimeout(()=>demo=false,3800);o.disconnect()}},{threshold:.5}).observe(baR);
-baR.addEventListener('pointerdown',()=>demo=false);
-
-/* Gum */
-const G=[
- {k:'Sağlıklı',c:'--green',t:'💚 Sağlıklı Diş Etleri',p:'Pembe, sıkı ve kanamasız diş etleri; sağlıklı bir ağız ve güçlü dişlerin anahtarıdır.',ok:1},
- {k:'Kızarıklık & Kanama',c:'--red',t:'🩸 Kızarıklık ve Kanama',p:'Diş etlerinizde kızarıklık ve kanama varsa, bu genellikle iltihaplanmanın ilk belirtisidir.'},
- {k:'Şişlik',c:'--orange',t:'🎈 Şişlik',p:'Diş etlerinde şişlik, hassasiyet veya rahatsızlık, diş eti hastalıklarının habercisi olabilir.'},
- {k:'Çekilme',c:'--blue',t:'📉 Çekilme',p:'Diş etinin geri çekilmesi, diş köklerinin açığa çıkmasına neden olur ve dişlerin daha hassas hale gelmesine yol açar.'},
- {k:'Ağız Kokusu',c:'--purple',t:'💨 Ağız Kokusu',p:'Sürekli ağız kokusu, diş eti problemlerinin işareti olabilir.'},
-];
-const gB=document.getElementById('gumBtns'),gP=document.getElementById('gumPanel'),gA=document.getElementById('gumArt'),gS=document.getElementById('gumShape');
-function gum(i){const g=G[i];[...gB.children].forEach((b,j)=>b.classList.toggle('on',i===j));gP.style.setProperty('--c',`var(${g.c})`);gP.innerHTML=`<h3>${g.t}</h3><p>${g.p}</p>${g.ok?'':'<p style="margin-top:10px;font-weight:800;color:var(--ink)">👉 Bu belirtiyi fark ettiyseniz, kontrol için randevu almayı ihmal etmeyin.</p>'}`;gA.classList.toggle('sad',!g.ok);document.querySelectorAll('#gumArt path[fill="#FF8FA8"]').forEach(p=>p.setAttribute('style',g.ok?'':'fill:#F0567A'));gA.classList.remove('shake');void gA.offsetWidth;if(!g.ok)gA.classList.add('shake')}
-G.forEach((g,i)=>{const b=document.createElement('button');b.textContent=g.k;b.style.setProperty('--c',`var(${g.c})`);b.onclick=()=>gum(i);gB.appendChild(b)});gum(0);
-
-/* Brush game */
-const TOTAL=120,C=2*Math.PI*88,bar=document.getElementById('bar'),tm=document.getElementById('time'),zt=document.getElementById('zoneTxt'),msg=document.getElementById('gameMsg'),qs=[...document.querySelectorAll('#quads div')],box=document.getElementById('gameBox'),gs=document.getElementById('gStart');
-const zones=['Üst Sol','Üst Sağ','Alt Sol','Alt Sağ'],cheers=['Süpersin! 💪','Köpük köpük! 🫧','Yarıladık! 🎉','Son bölge, dayan! 🚀'];
-bar.style.strokeDasharray=C;let left=TOTAL,iv=null;
-let stars=0;try{stars=+localStorage.getItem('kk-stars')||0}catch(e){}
-const drawStars=()=>document.getElementById('starList').textContent=stars?'⭐'.repeat(Math.min(stars,10))+(stars>10?` +${stars-10}`:''):'—';drawStars();
-function render(){const m=Math.floor(left/60),s=left%60;tm.textContent=`${m}:${String(s).padStart(2,'0')}`;bar.style.strokeDashoffset=C*(1-left/TOTAL);const el=TOTAL-left,z=Math.min(3,Math.floor(el/30));qs.forEach((q,i)=>{q.classList.toggle('on',iv&&i===z);q.classList.toggle('done',i<z||left===0)});if(iv)zt.textContent=zones[z]+' bölgesi'}
-function tick(){left--;const el=TOTAL-left;if(el%30===0&&left>0)msg.textContent=cheers[el/30];render();if(left<=0){stop();msg.textContent='Harikasın! Bir yıldız kazandın ⭐';zt.textContent='Tertemiz! ✨';stars++;try{localStorage.setItem('kk-stars',stars)}catch(e){}drawStars();confetti()}}
-function stop(){clearInterval(iv);iv=null;box.classList.remove('running');gs.textContent='▶ Başla'}
-gs.onclick=()=>{if(iv){stop();msg.textContent='Mola! Devam etmek için bas 🙂';return}if(left<=0)left=TOTAL;iv=setInterval(tick,1000);box.classList.add('running');gs.textContent='⏸ Durdur';msg.textContent='Hadi başlıyoruz! Üst sol dişler 🪥';render()};
-document.getElementById('gReset').onclick=()=>{stop();left=TOTAL;zt.textContent='Hazır mısın?';msg.textContent="Başla'ya bas, fırçanı kap! 🦸";render()};render();
-
-/* Booking form */
-const f=document.getElementById('waForm'),err=document.getElementById('err'),ageF=document.getElementById('ageField'),dt=document.getElementById('fDate');
-const today=new Date();dt.min=new Date(today-today.getTimezoneOffset()*6e4).toISOString().slice(0,10);
-f.querySelectorAll('input[name=who]').forEach(r=>r.onchange=()=>ageF.hidden=f.who.value!=='Çocuk');
-f.onsubmit=e=>{
-  e.preventDefault();err.textContent='';
-  const n=f.fName.value.trim(),ph=f.fPhone.value.replace(/\D/g,'');
-  if(n.length<3){err.textContent='Lütfen adınızı ve soyadınızı yazın.';f.fName.focus();return}
-  if(ph.length<10){err.textContent='Lütfen geçerli bir telefon numarası yazın.';f.fPhone.focus();return}
-  if(!f.fOk.checked){err.textContent='Devam etmek için onay kutusunu işaretleyin.';return}
-  const who=f.who.value,date=dt.value?new Date(dt.value+'T12:00').toLocaleDateString('tr-TR',{day:'numeric',month:'long',year:'numeric',weekday:'long'}):'Farketmez';
-  const lines=['Merhaba Klinikids 👋 Randevu almak istiyorum.','',`👤 Ad Soyad: ${n}`,`📞 Telefon: ${f.fPhone.value.trim()}`,`${who==='Çocuk'?'🧒':'🧑'} Hasta: ${who}${who==='Çocuk'&&f.fAge.value?` (${f.fAge.value} yaş)`:''}`,`🦷 Hizmet: ${sel.value||'Muayene'}`,`📅 Tarih: ${date}`,`⏰ Zaman: ${f.time.value}`];
-  if(f.fNote.value.trim())lines.push(`📝 Not: ${f.fNote.value.trim()}`);
-  confetti();setTimeout(()=>window.open(waLink(lines.join('\n')),'_blank','noopener'),500);
-};
-
-/* Reveal */
-const io=new IntersectionObserver(en=>en.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.12});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
-
-/* Confetti */
-const cv=document.getElementById('confetti'),cx=cv.getContext('2d');let parts=[],raf=null;
-function size(){cv.width=innerWidth*devicePixelRatio;cv.height=innerHeight*devicePixelRatio;cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}size();addEventListener('resize',size);
-function confetti(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;const cols=['#FFC83D','#FF6F9C','#45B4EA','#7CC94F','#FF8A3D','#9C7CF0'];for(let i=0;i<160;i++)parts.push({x:innerWidth/2,y:innerHeight*.6,vx:(Math.random()-.5)*16,vy:-Math.random()*16-6,s:5+Math.random()*7,c:cols[i%6],r:Math.random()*6,vr:(Math.random()-.5)*.3,l:0,tooth:Math.random()<.12});if(!raf)loop()}
-function loop(){cx.clearRect(0,0,innerWidth,innerHeight);parts.forEach(p=>{p.vy+=.45;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;p.l++;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r);if(p.tooth){cx.font='22px serif';cx.fillText('🦷',-11,8)}else{cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2)}cx.restore()});parts=parts.filter(p=>p.y<innerHeight+40&&p.l<240);raf=parts.length?requestAnimationFrame(loop):(cx.clearRect(0,0,innerWidth,innerHeight),null)}
-</script>
-
-<script>
-/* ============ ONLINE RANDEVU — Supabase bağlantısı ============
-   Publishable anahtar herkese açık olacak şekilde tasarlanmıştır;
-   veriler veritabanındaki güvenlik kurallarıyla korunur. */
-(()=>{
-const SB='https://xnjnxogvnldrbridzvqu.supabase.co';
-const KEY='sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
-const TZ='Europe/Istanbul', DAYS=21;
-const H={apikey:KEY,'Content-Type':'application/json'};
-const get=p=>fetch(`${SB}/rest/v1/${p}`,{headers:H}).then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r.status)));
-const rpc=(fn,body)=>fetch(`${SB}/rest/v1/rpc/${fn}`,{method:'POST',headers:H,body:JSON.stringify(body)})
-  .then(async r=>{const j=await r.json().catch(()=>null);if(!r.ok)throw new Error((j&&j.message)||'Bir sorun oluştu, lütfen tekrar deneyin.');return j});
-
-const $=id=>document.getElementById(id);
-const app=$('bookApp'),wa=$('waForm'),err=$('rbErr');
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const norm=s=>String(s||'').toLocaleLowerCase('tr-TR').replace(/\s+/g,' ').trim();
-const todayTZ=()=>new Intl.DateTimeFormat('en-CA',{timeZone:TZ,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-const hm=s=>new Intl.DateTimeFormat('tr-TR',{timeZone:TZ,hour:'2-digit',minute:'2-digit'}).format(new Date(s));
-const hourOf=s=>Number(new Intl.DateTimeFormat('en-GB',{timeZone:TZ,hour:'2-digit',hourCycle:'h23'}).format(new Date(s)));
-const addD=(s,n)=>{const d=new Date(s+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
-const dow=s=>new Date(s+'T12:00:00Z').getUTCDay()||7;
-const DOW=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],MON=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
-const longD=s=>new Date(s+'T12:00:00Z').toLocaleDateString('tr-TR',{timeZone:'UTC',weekday:'long',day:'numeric',month:'long'});
-const initials=n=>norm(n).split(' ').filter(Boolean).slice(0,2).map(w=>w[0].toLocaleUpperCase('tr-TR')).join('');
-function normPhone(p){let v=String(p||'').replace(/\D/g,'');if(/^90\d{10}$/.test(v))v=v.slice(2);else if(/^0\d{10}$/.test(v))v=v.slice(1);return /^5\d{9}$/.test(v)?v:null}
-
-const st={ready:false,docs:[],svcs:[],links:[],hours:[],doc:null,svc:null,day:null,slot:null,slots:{},loading:false,pick:null,req:0};
-const docOf=id=>st.docs.find(d=>d.id===id), svcOf=id=>st.svcs.find(s=>s.id===id);
-const svcsFor=docId=>st.svcs.filter(s=>st.links.some(l=>l.doctor_id===docId&&l.service_id===s.id));
-const works=(docId,day)=>st.hours.some(h=>h.doctor_id===docId&&h.weekday===dow(day));
-
-function fallback(){app.hidden=true;wa.hidden=false;wa.classList.add('reveal','in')}
-
-async function init(){
-  try{
-    const [docs,svcs,links,hours]=await Promise.all([
-      get('doctors?select=id,full_name,title,specialty,color&is_active=eq.true&order=sort_order,full_name'),
-      get('services?select=id,name,duration_minutes&is_active=eq.true&order=sort_order,name'),
-      get('doctor_services?select=doctor_id,service_id'),
-      get('working_hours?select=doctor_id,weekday')]);
-    st.svcs=svcs;st.links=links;st.hours=hours;
-    st.docs=docs.filter(d=>svcsFor(d.id).length&&hours.some(h=>h.doctor_id===d.id));
-    if(!st.docs.length)return fallback();
-    st.ready=true;
-    if(st.docs.length===1)st.doc=st.docs[0].id;
-    $('rbLoading').hidden=true;$('rbBody').hidden=false;
-    if(st.pick)applyPick(st.pick);else render();
-  }catch(e){console.warn('Online randevu yüklenemedi, WhatsApp formuna geçildi.',e);fallback()}
-}
-
-function applyPick(name){
-  const s=st.svcs.find(x=>norm(x.name)===norm(name));
-  if(!s){render();return}
-  if(!st.doc||!svcsFor(st.doc).some(x=>x.id===s.id)){const d=st.docs.find(d=>svcsFor(d.id).some(x=>x.id===s.id));if(!d){render();return}st.doc=d.id}
-  selectSvc(s.id);
-}
-window.KK_pick=name=>{st.pick=name;if(st.ready)applyPick(name)};
-
-function selectSvc(id){st.svc=id;st.slot=null;st.slots={};render();loadDays()}
-
-async function loadDays(){
-  if(!st.doc||!st.svc)return;
-  const my=++st.req,doc=st.doc,svc=st.svc,t=todayTZ();st.loading=true;render();
-  const days=[...Array(DAYS)].map((_,i)=>addD(t,i));
-  const res=await Promise.all(days.map(d=>works(doc,d)
-    ?rpc('get_available_slots',{p_doctor_id:doc,p_service_id:svc,p_date:d}).catch(()=>[])
-    :Promise.resolve(null)));
-  if(my!==st.req)return;
-  st.slots={};days.forEach((d,i)=>st.slots[d]=res[i]);st.loading=false;
-  if(!st.day||!(st.slots[st.day]||[]).length)st.day=days.find(d=>(st.slots[d]||[]).length)||null;
-  render();
-}
-async function reloadDay(day){
-  const r=await rpc('get_available_slots',{p_doctor_id:st.doc,p_service_id:st.svc,p_date:day}).catch(()=>null);
-  if(r)st.slots[day]=r;st.slot=null;render();
-}
-
-function render(){
-  const d=docOf(st.doc),s=svcOf(st.svc);
-  // doktor
-  $('rbDocStep').hidden=st.docs.length<2;
-  $('rbDocs').innerHTML=st.docs.map(x=>`<button type="button" class="rb-doc" data-rb="doc" data-id="${x.id}" aria-pressed="${x.id===st.doc}"><span class="av" style="--c:${esc(x.color)}">${esc(initials(x.full_name))}</span><span>${esc((x.title?x.title+' ':'')+x.full_name)}<small>${esc(x.specialty||'')}</small></span></button>`).join('');
-  // işlem
-  $('rbSvcs').innerHTML=d?svcsFor(d.id).map(x=>`<button type="button" class="rb-chip" data-rb="svc" data-id="${x.id}" aria-pressed="${x.id===st.svc}">${esc(x.name)}<small>${x.duration_minutes} dk</small></button>`).join(''):'<p class="rb-hint">Önce doktor seçin.</p>';
-  // gün
-  let dh;
-  if(!s)dh='<p class="rb-hint">Önce işlem seçin.</p>';
-  else if(st.loading)dh='<p class="rb-hint">Boş saatler kontrol ediliyor… ⏳</p>';
-  else{
-    const days=Object.keys(st.slots);
-    if(!days.some(k=>(st.slots[k]||[]).length))dh='<p class="rb-hint">Önümüzdeki 3 haftada bu işlem için boş saat kalmadı. WhatsApp\'tan yazın, sizin için yer açalım.</p>';
-    else dh='<div class="rb-days">'+days.map(k=>{const v=st.slots[k],n=v?v.length:0,dd=new Date(k+'T12:00:00Z');
-      return `<button type="button" class="rb-day" data-rb="day" data-d="${k}" aria-pressed="${k===st.day}" ${n?'':'disabled'} aria-label="${longD(k)}, ${n?n+' boş saat':v?'dolu':'kapalı'}"><span>${DOW[dow(k)-1]}</span><b>${dd.getUTCDate()}</b><span>${MON[dd.getUTCMonth()]}</span><em>${n?n+' boş':v?'Dolu':'Kapalı'}</em></button>`}).join('')+'</div>';
-  }
-  $('rbDays').innerHTML=dh;
-  // saat
-  let sh;
-  if(!st.day||st.loading)sh='<p class="rb-hint">Önce gün seçin.</p>';
-  else{const list=st.slots[st.day]||[];
-    const grp=(t,a)=>a.length?`<div class="rb-slot-g"><h4>${t}</h4><div class="rb-slots">${a.map(x=>`<button type="button" class="rb-slot" data-rb="slot" data-s="${esc(x.slot_start)}" aria-pressed="${x.slot_start===st.slot}">${hm(x.slot_start)}</button>`).join('')}</div></div>`:'';
-    sh=list.length?grp('🌅 Sabah',list.filter(x=>hourOf(x.slot_start)<12))+grp('☀️ Öğleden sonra',list.filter(x=>hourOf(x.slot_start)>=12)):'<p class="rb-hint">Bu günde boş saat kalmadı.</p>'}
-  $('rbSlots').innerHTML=sh;
-  // durum, numaralar, özet
-  $('rbDocStep').classList.toggle('ok',!!d);$('rbSvcStep').classList.toggle('ok',!!s);
-  $('rbDayStep').classList.toggle('ok',!!st.day&&!st.loading);$('rbSlotStep').classList.toggle('ok',!!st.slot);
-  [...app.querySelectorAll('.rb-step:not([hidden]) .rb-n')].forEach((b,i)=>b.textContent=i+1);
-  $('rbSum').innerHTML=st.slot&&d&&s?`📋 <b>${esc((d.title?d.title+' ':'')+d.full_name)}</b> · ${esc(s.name)} · <b>${longD(st.day)}, ${hm(st.slot)}</b>`:'';
-}
-
-app.addEventListener('click',e=>{
-  const b=e.target.closest('[data-rb]');if(!b)return;err.textContent='';
-  const k=b.dataset.rb;
-  if(k==='doc'&&st.doc!==b.dataset.id){st.doc=b.dataset.id;if(!svcsFor(st.doc).some(x=>x.id===st.svc)){st.svc=null;st.slots={};st.day=null}st.slot=null;render();if(st.svc)loadDays()}
-  else if(k==='svc'&&st.svc!==b.dataset.id)selectSvc(b.dataset.id);
-  else if(k==='day'){st.day=b.dataset.d;st.slot=null;render()}
-  else if(k==='slot'){st.slot=b.dataset.s;render();const n=$('rbName');if(!n.value)n.focus({preventScroll:true});$('rbInfoStep').scrollIntoView({behavior:'smooth',block:'center'})}
-  else if(k==='new'){st.slot=null;$('rbDone').hidden=true;$('rbBody').hidden=false;render();loadDays();app.scrollIntoView({behavior:'smooth',block:'start'})}
-});
-app.querySelectorAll('input[name=rbWho]').forEach(r=>r.addEventListener('change',()=>$('rbAgeWrap').hidden=r.value!=='Çocuk'||!r.checked));
-
-app.addEventListener('submit',async e=>{
-  e.preventDefault();err.textContent='';
-  const d=docOf(st.doc),s=svcOf(st.svc);
-  if(!d||!s||!st.slot){err.textContent='Lütfen işlem, gün ve saat seçin.';return}
-  const name=$('rbName').value.trim(),phone=normPhone($('rbPhone').value);
-  if(name.length<3){err.textContent='Lütfen adınızı ve soyadınızı yazın.';$('rbName').focus();return}
-  if(!phone){err.textContent='Lütfen geçerli bir cep telefonu yazın (05xx xxx xx xx).';$('rbPhone').focus();return}
-  if(!$('rbOk').checked){err.textContent='Devam etmek için KVKK onay kutusunu işaretleyin.';return}
-  const who=app.querySelector('input[name=rbWho]:checked').value,age=$('rbAge').value.trim(),note=$('rbNote').value.trim();
-  const fullNote=[`Hasta: ${who}${who==='Çocuk'&&age?` (${age} yaş)`:''}`,note&&`Not: ${note}`].filter(Boolean).join(' · ');
-  const btn=$('rbSubmit');btn.disabled=true;btn.textContent='Gönderiliyor…';
-  try{
-    const r=await rpc('book_appointment',{p_doctor_id:d.id,p_service_id:s.id,p_starts_at:st.slot,p_full_name:name,p_phone:phone,p_email:null,p_kvkk_consent:true,p_note:fullNote});
-    const row=Array.isArray(r)?r[0]:r, ok=row&&row.status==='confirmed', when=`${longD(st.day)}, ${hm(st.slot)}`;
-    const waTxt=`Merhaba Klinikids 👋 Sitenizden randevu aldım.\n\n👤 ${name}\n🦷 ${s.name}\n📅 ${when}\n👨‍⚕️ ${(d.title?d.title+' ':'')+d.full_name}`;
-    $('rbDone').innerHTML=`<span class="big">${ok?'✅':'🎉'}</span><h3>${ok?'Randevunuz onaylandı!':'Randevu talebiniz alındı!'}</h3>
-      <dl><div><dt>Hasta</dt><dd>${esc(name)}${who==='Çocuk'?' 🧒':''}</dd></div><div><dt>Doktor</dt><dd>${esc((d.title?d.title+' ':'')+d.full_name)}</dd></div>
-      <div><dt>İşlem</dt><dd>${esc(s.name)}</dd></div><div><dt>Tarih</dt><dd>${when}</dd></div></dl>
-      <p>${ok?'Sizi bekliyoruz! Randevunuza gelemeyecekseniz lütfen bize haber verin.':'Saatiniz sizin için ayrıldı. Ekibimiz kısa süre içinde sizi arayarak randevunuzu teyit edecek.'}</p>
-      <div class="form-foot"><a class="btn btn-wa" href="https://wa.me/905464217141?text=${encodeURIComponent(waTxt)}" target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg> WhatsApp'tan Yaz</a><button type="button" class="btn btn-ghost" data-rb="new">➕ Yeni Randevu</button></div>`;
-    $('rbBody').hidden=true;$('rbDone').hidden=false;
-    ['rbName','rbPhone','rbNote','rbAge'].forEach(id=>$(id).value='');$('rbOk').checked=false;st.slot=null;
-    app.scrollIntoView({behavior:'smooth',block:'start'});
-    if(typeof confetti==='function')confetti();
-  }catch(ex){
-    err.textContent=ex.message;
-    if(/müsait|doldu/i.test(ex.message))reloadDay(st.day);
-  }finally{btn.disabled=false;btn.textContent='📅 Randevuyu Oluştur'}
-});
-
-init();
-})();
+const L=[['K','#EF4E45',-6],['L','#FF8A3D',4],['İ','#E8AE1C',-3],['N','#5FAF33',5],['İ','#45B4EA',-4],['K','#9C7CF0',3],['İ','#FF6F9C',-5],['D','#1FA59B',4],['S','#FF8A3D',-6]];
+document.getElementById('logoWord').innerHTML=L.map(l=>`<b style="--c:${l[1]};--r:${l[2]}deg">${l[0]}</b>`).join('');
+document.querySelectorAll('[data-wa]').forEach(a=>a.href='https://wa.me/905464217141?text='+encodeURIComponent('Merhaba Klinikids! Bilgi almak istiyorum.'));
+document.querySelectorAll('[data-maps]').forEach(a=>a.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent('Mehmet Ali Paşa Mahallesi Erkan Sokak RBG İş Merkezi No 7B İzmit Kocaeli'));
 </script>
 </body>
 </html>

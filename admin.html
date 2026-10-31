@@ -231,6 +231,7 @@ const SDAYS = ['','Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
 const STATUS = {pending:'Onay bekliyor',confirmed:'Onaylandı',completed:'Geldi',no_show:'Gelmedi',cancelled:'İptal'};
 const SOURCE = {online:'Online',phone:'Telefon',walk_in:'Kapıdan'};
 const ROLES = {admin:'Yönetici',receptionist:'Sekreter',doctor:'Doktor'};
+const CLINICS = {cocuk:'🧒 Çocuk kliniği',yetiskin:'🧑 Yetişkin kliniği',ikisi:'🧒🧑 Her iki klinik'};
 const initials = n => String(n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]?.toLocaleUpperCase('tr-TR')||'').join('');
 function normPhone(p){ let v=String(p||'').replace(/\D/g,''); if(/^90\d{10}$/.test(v)) v=v.slice(2); else if(/^0\d{10}$/.test(v)) v=v.slice(1); return /^5\d{9}$/.test(v)?v:null; }
 const fmtPhone = p => p && p.length===10 ? `0${p.slice(0,3)} ${p.slice(3,6)} ${p.slice(6,8)} ${p.slice(8)}` : (p||'');
@@ -713,7 +714,7 @@ async function viewDoctors(main){
       return `<div class="card" style="${d.is_active?'':'opacity:.6'}">
         <div class="row" style="padding-top:0">
           <div class="avatar" style="--c:${esc(d.color)}">${esc(initials(d.full_name))}</div>
-          <div class="grow"><b>${esc(docName(d))} ${d.is_active?'':'<span class="pill cancelled">Pasif</span>'}</b><span class="muted small">${esc(d.specialty||'')}</span></div>
+          <div class="grow"><b>${esc(docName(d))} ${d.is_active?'':'<span class="pill cancelled">Pasif</span>'}</b><span class="muted small">${esc(CLINICS[d.clinic]||'')}${d.specialty?' · '+esc(d.specialty):''}</span></div>
           ${isAdmin()?`<button class="btn sm" data-edit="${d.id}">✏️ Düzenle</button>`:''}
           <button class="btn sm" data-hours="${d.id}">🕘 Saatler</button>
         </div>
@@ -736,6 +737,7 @@ function doctorForm(d){
       <label class="f">Uzmanlık<input class="in" id="dSpec" value="${esc(d?.specialty||'')}" placeholder="Ortodonti, Pedodonti…"></label>
       <label class="f">Sıra<input class="in" type="number" id="dSort" value="${d?.sort_order??S.doctors.length+1}"></label>
     </div>
+    <label class="f">Hangi klinikte?<select class="in" id="dClinic">${Object.entries(CLINICS).map(([k,v])=>`<option value="${k}" ${(d?.clinic||'ikisi')===k?'selected':''}>${v}</option>`).join('')}</select></label>
     <label class="f">Takvim rengi<div class="chips" id="dColors">${COLORS.map(c=>`<button type="button" data-c="${c}" style="width:30px;height:30px;border-radius:9px;background:${c};outline:${(d?.color||COLORS[0])===c?'3px solid var(--ink)':'none'};outline-offset:2px"></button>`).join('')}</div></label>
     <label class="f">Verdiği hizmetler<div class="chips">${S.services.filter(s=>s.is_active||mine.has(s.id)).map(s=>`<label class="chip check"><input type="checkbox" value="${s.id}" ${mine.has(s.id)?'checked':''}> ${esc(s.name)}</label>`).join('') || '<span class="muted small">Önce Hizmetler sayfasından hizmet ekleyin.</span>'}</div></label>
     ${d?`<label class="check"><input type="checkbox" id="dActive" ${d.is_active?'checked':''}> Aktif (sitede görünsün, randevu alınabilsin)</label>`:''}
@@ -746,7 +748,7 @@ function doctorForm(d){
   m.el.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { color=b.dataset.c; m.el.querySelectorAll('[data-c]').forEach(x=>x.style.outline = x===b?'3px solid var(--ink)':'none'); });
   m.el.querySelector('#dSave').onclick = async () => {
     const err = m.el.querySelector('#dErr'); err.hidden=true;
-    const rec = { title: m.el.querySelector('#dTitle').value, full_name: m.el.querySelector('#dName').value.trim(), specialty: m.el.querySelector('#dSpec').value.trim()||null, sort_order: +m.el.querySelector('#dSort').value||0, color };
+    const rec = { title: m.el.querySelector('#dTitle').value, full_name: m.el.querySelector('#dName').value.trim(), specialty: m.el.querySelector('#dSpec').value.trim()||null, sort_order: +m.el.querySelector('#dSort').value||0, color, clinic: m.el.querySelector('#dClinic').value };
     if(d) rec.is_active = m.el.querySelector('#dActive').checked;
     if(rec.full_name.length<3){ err.textContent='Doktorun adını girin.'; err.hidden=false; return; }
     const chosen = [...m.el.querySelectorAll('.chips input[type=checkbox]:checked')].map(x=>x.value);

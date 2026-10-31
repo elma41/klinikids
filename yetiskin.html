@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Yetişkin Kliniği – Klinikids Ağız ve Diş Sağlığı | İzmit</title>
+<meta name="description" content="Klinikids Yetişkin Kliniği, İzmit: gülüş tasarımı, diş beyazlatma, lamine ve E-max, implant, köprü ve protez, şeffaf plak, diş eti tedavisi. Online randevu.">
+<meta name="theme-color" content="#0F2A44">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Baloo+2:wght@800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="randevu.css">
+<style>
+:root{
+  --navy:#0F2A44; --navy2:#16395B; --ink:#14263A; --ink2:#55677B; --ink3:#8696A8;
+  --gold:#B8955A; --gold-soft:#F5EEE2;
+  --teal:#1C8C88; --teal-soft:#E1F2F1;
+  --mist:#F4F7FA; --line:#E2E8EF; --white:#fff;
+  --red:#C9473F; --wa:#25D366;
+  --r:18px; --shadow:0 18px 40px -24px rgba(15,42,68,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);background:#fff;line-height:1.6;font-size:16px;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;border:0;background:none;color:inherit}
+img,svg{display:block;max-width:100%}
+.wrap{width:min(1280px,100% - 32px);margin-inline:auto}
+section{padding:96px 0;position:relative}
+h1,h2,h3{line-height:1.15;letter-spacing:-.02em}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.eyebrow::before{content:"";width:28px;height:2px;background:var(--gold)}
+.sec-head{max-width:720px;margin-bottom:48px}
+.sec-head.center{text-align:center;margin-inline:auto}
+.sec-head.center .eyebrow::after{content:"";width:28px;height:2px;background:var(--gold)}
+.sec-head h2{font-size:clamp(30px,4vw,46px);font-weight:800;margin:12px 0 14px}
+.sec-head p{color:var(--ink2);font-size:18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 26px;border-radius:12px;font-weight:700;font-size:16px;transition:transform .2s,background .2s,box-shadow .2s;white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn svg{width:20px;height:20px}
+.btn-dark{background:var(--navy);color:#fff;box-shadow:0 10px 24px -12px rgba(15,42,68,.6)}
+.btn-dark:hover{background:var(--navy2)}
+.btn-light{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.btn-wa{background:var(--wa);color:#fff}
+.btn-gold{background:var(--gold);color:#fff}
+
+/* Üst bilgi + menü */
+.topbar{background:var(--navy);color:#C5D3E1;font-size:13.5px}
+.topbar .wrap{display:flex;justify-content:space-between;gap:12px;padding:9px 0;flex-wrap:wrap}
+.topbar a:hover{color:#fff}
+.topbar .r{display:flex;gap:20px;flex-wrap:wrap}
+.topbar .kid{color:#FFD46B;font-weight:700}
+@media (max-width:700px){.topbar .r a:not(.kid){display:none}.topbar .wrap{justify-content:center}}
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s}
+header.scrolled{border-color:var(--line);box-shadow:0 10px 30px -24px rgba(15,42,68,.5)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:76px;gap:16px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo svg{width:36px;height:40px}
+.logo .w{font-family:'Baloo 2';font-weight:800;font-size:26px;line-height:1;display:inline-flex}
+.logo .w b{color:var(--c);display:inline-block;transform:rotate(var(--r))}
+.logo small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);font-weight:700;margin-top:3px}
+.prop{transform-origin:50px 10px;transform-box:view-box;animation:prop .35s linear infinite}
+@keyframes prop{0%,100%{transform:scaleX(1)}50%{transform:scaleX(-1)}}
+.menu{display:flex;gap:2px;align-items:center}
+.menu a{padding:9px 11px;border-radius:10px;font-weight:600;font-size:15px;color:var(--ink2);white-space:nowrap}
+.menu a:hover{color:var(--navy);background:var(--mist)}
+.menu .kidlink{background:#FFC83D;color:#173A5E!important;font-weight:800;border-radius:99px;padding:8px 14px;margin-left:6px}
+.menu .kidlink:hover{background:#FFB547!important}
+.burger{display:none;width:46px;height:46px;border-radius:12px;border:1px solid var(--line)}
+.burger span{display:block;width:20px;height:2px;background:var(--navy);margin:5px auto;border-radius:2px}
+@media (max-width:900px){
+  .menu{position:fixed;inset:76px 16px auto 16px;flex-direction:column;align-items:stretch;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow);transform:translateY(-10px);opacity:0;pointer-events:none;transition:.25s}
+  .menu.open{transform:none;opacity:1;pointer-events:auto}
+  .menu a{padding:13px;text-align:center}
+  .burger{display:block}
+  .nav>.btn{display:none}
+}
+header.collapsed .menu{position:fixed;inset:76px 16px auto 16px;flex-direction:column;align-items:stretch;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;box-shadow:var(--shadow);transform:translateY(-10px);opacity:0;pointer-events:none;transition:.25s}
+header.collapsed .menu.open{transform:none;opacity:1;pointer-events:auto}
+header.collapsed .menu a{padding:13px;text-align:center}
+header.collapsed .burger{display:block}
+header.collapsed .nav>.btn{display:none}
+
+/* Hero */
+.hero{padding:72px 0 88px;background:linear-gradient(180deg,var(--mist),#fff);overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(40px,5.6vw,68px);font-weight:800;margin:16px 0 18px}
+.hero h1 em{font-style:normal;color:var(--teal)}
+.hero .lead{font-size:19px;color:var(--ink2);max-width:540px}
+.hero .ctas{display:flex;flex-wrap:wrap;gap:12px;margin:30px 0 34px}
+.trust{display:flex;flex-wrap:wrap;gap:12px 26px;color:var(--ink2);font-weight:600;font-size:15px}
+.trust span{display:inline-flex;align-items:center;gap:8px}
+.trust i{width:22px;height:22px;border-radius:50%;background:var(--teal-soft);color:var(--teal);display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:800}
+.visual{position:relative;aspect-ratio:1/1.05;max-width:520px;width:100%;margin-inline:auto}
+.visual .ph{position:absolute;inset:0 0 8% 10%;border-radius:28px;overflow:hidden;background:linear-gradient(150deg,var(--navy2),var(--navy));box-shadow:var(--shadow);display:grid;place-items:center}
+.visual .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.visual .ph svg.mark{width:46%;opacity:.95}
+.visual .card{position:absolute;background:#fff;border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center;font-weight:700;font-size:14px}
+.visual .card small{display:block;color:var(--ink3);font-weight:600;font-size:12px}
+.visual .card .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--gold-soft);font-size:20px;flex:none}
+.visual .c1{left:0;bottom:16%}
+.visual .c2{right:-4%;top:10%}
+@media (max-width:920px){.hero-grid{grid-template-columns:1fr}.visual{max-width:420px}.hero{text-align:center}.hero .lead{margin-inline:auto}.hero .ctas,.trust{justify-content:center}.eyebrow{justify-content:center}}
+@media (max-width:480px){.visual .c2{right:0}}
+
+/* Neden biz */
+.feats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.feat{border:1px solid var(--line);border-radius:var(--r);padding:28px 24px;background:#fff;transition:transform .25s,box-shadow .25s}
+.feat:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.feat .ic{width:52px;height:52px;border-radius:14px;background:var(--mist);display:grid;place-items:center;font-size:24px;margin-bottom:18px}
+.feat h3{font-size:19px;margin-bottom:8px}
+.feat p{color:var(--ink2);font-size:15px}
+@media (max-width:980px){.feats{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.feats{grid-template-columns:1fr}}
+
+/* Tedaviler */
+.treat{background:var(--mist)}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.tcat{background:#fff;border-radius:var(--r);padding:28px;box-shadow:0 1px 0 var(--line);display:flex;flex-direction:column}
+.tcat .top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.tcat .ic{width:48px;height:48px;border-radius:14px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:22px;flex:none}
+.tcat h3{font-size:20px}
+.tcat p{color:var(--ink2);font-size:15px;margin-bottom:14px}
+.tcat ul{list-style:none;display:grid;gap:4px;margin-top:auto}
+.tcat li button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;font-weight:600;font-size:15px;text-align:left;transition:background .2s}
+.tcat li button:hover{background:var(--mist)}
+.tcat li button span{color:var(--teal);font-weight:700;font-size:13px;white-space:nowrap}
+@media (max-width:980px){.tgrid{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.tgrid{grid-template-columns:1fr}}
+
+/* Gülüş tasarımı */
+.smile-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.ba{background:var(--mist);border-radius:24px;padding:28px}
+.ba-stage{position:relative;user-select:none;touch-action:none}
+.mouth{width:100%;aspect-ratio:2.1;border-radius:48% 48% 50% 50%/32% 32% 68% 68%;border:14px solid #E8A0AE;background:radial-gradient(ellipse at 50% 55%,#4c1023,#7d2238);display:flex;flex-direction:column;justify-content:space-between;padding:7% 8%;overflow:hidden}
+.row{display:flex;gap:2.5%;justify-content:center;height:44%}
+.row i{flex:1;max-width:12%;border-radius:8px 8px 45% 45%;background:var(--tooth);box-shadow:inset -4px -6px 0 rgba(0,0,0,.06)}
+.row.low i{border-radius:45% 45% 8px 8px}
+.row i:nth-child(4),.row i:nth-child(5){flex:1.35;max-width:15%}
+.row.up{align-items:flex-start}.row.low{align-items:flex-end}
+.row.up i:nth-child(1),.row.up i:nth-child(8){height:70%}
+.row.up i:nth-child(2),.row.up i:nth-child(7){height:84%}
+.row.up i:nth-child(3),.row.up i:nth-child(6){height:94%}
+.row.up i:nth-child(4),.row.up i:nth-child(5){height:100%}
+.row.low i{height:80%}
+.ba-layer{position:absolute;inset:0}
+.ba-before{--tooth:linear-gradient(#EAD6A6,#D3B874)}
+.ba-after{--tooth:linear-gradient(#fff,#EAF2F8);clip-path:inset(0 0 0 50%)}
+.ba-handle{position:absolute;top:-8px;bottom:-8px;left:50%;width:3px;background:var(--navy);transform:translateX(-50%);pointer-events:none}
+.ba-handle::after{content:"⇆";position:absolute;top:50%;left:50%;width:42px;height:42px;transform:translate(-50%,-50%);border-radius:50%;background:#fff;border:3px solid var(--navy);display:grid;place-items:center;font-weight:800}
+.ba input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize}
+.ba-labels{display:flex;justify-content:space-between;margin-top:14px;font-weight:700;font-size:14px;color:var(--ink2)}
+.steps{display:grid;gap:14px;margin:26px 0 30px}
+.steps>div{display:flex;gap:16px;align-items:flex-start}
+.steps b.n{flex:none;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);display:grid;place-items:center;font-weight:800}
+.steps h4{font-size:17px}
+.steps p{color:var(--ink2);font-size:15px}
+@media (max-width:900px){.smile-grid{grid-template-columns:1fr;gap:40px}}
+
+/* Diş eti */
+.gum{background:var(--navy);color:#fff}
+.gum .sec-head p{color:#B9C8D8}
+.gum-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.gcard{border:1px solid rgba(255,255,255,.14);border-radius:var(--r);padding:22px;background:rgba(255,255,255,.03)}
+.gcard .dot{width:12px;height:12px;border-radius:50%;background:var(--c);margin-bottom:14px;box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 25%,transparent)}
+.gcard h3{font-size:17px;margin-bottom:6px}
+.gcard p{color:#B9C8D8;font-size:14.5px}
+@media (max-width:1060px){.gum-grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:700px){.gum-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:440px){.gum-grid{grid-template-columns:1fr}}
+
+/* Hekimler */
+.docs{display:grid;grid-template-columns:1.4fr .6fr;gap:22px;align-items:stretch}
+.dcard{display:grid;grid-template-columns:260px 1fr;gap:32px;border:1px solid var(--line);border-radius:24px;padding:28px;background:#fff}
+.dphoto{position:relative;border-radius:18px;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(160deg,var(--navy2),var(--navy));display:grid;place-items:center}
+.dphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dphoto .ini{font-size:64px;font-weight:800;color:#fff;opacity:.85}
+.dcard .role{color:var(--teal);font-weight:700;font-size:14px;letter-spacing:.04em;margin:6px 0 14px}
+.dcard h3{font-size:clamp(24px,2.6vw,32px)}
+.dcard p{color:var(--ink2)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 22px}
+.tags span{border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+.dcard .ctas{display:flex;flex-wrap:wrap;gap:10px}
+.kidcard{border-radius:24px;padding:28px;background:#FFF8E6;display:flex;flex-direction:column;justify-content:space-between;gap:18px;border:1px solid #F3E3B8}
+.kidcard h3{font-size:22px}
+.kidcard p{color:var(--ink2);font-size:15px}
+.kidcard .btn{align-self:flex-start;background:#FF6F9C;color:#fff}
+@media (max-width:1000px){.docs{grid-template-columns:1fr}}
+@media (max-width:700px){.dcard{grid-template-columns:1fr;padding:20px}.dphoto{max-width:300px;width:100%;margin-inline:auto}}
+
+/* Doğru bilinen yanlışlar */
+.myths{background:var(--mist)}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.myth{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:box-shadow .2s}
+.myth[open]{box-shadow:var(--shadow)}
+.myth summary{list-style:none;cursor:pointer;display:flex;gap:14px;align-items:flex-start;padding:20px 22px;font-weight:700;font-size:16.5px;line-height:1.4}
+.myth summary::-webkit-details-marker{display:none}
+.myth .x{flex:none;font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--red);background:#FBEAE8;border-radius:6px;padding:4px 7px;margin-top:2px}
+.myth .pl{margin-left:auto;flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:700;color:var(--ink3);transition:transform .25s}
+.myth[open] .pl{transform:rotate(45deg);border-color:var(--teal);color:var(--teal)}
+.myth .ans{padding:0 22px 20px 22px;color:var(--ink2);font-size:15.5px;border-top:1px dashed var(--line);padding-top:14px;margin:0 22px 0;padding-left:0;padding-right:0}
+.myth .ans b{color:var(--teal);display:block;font-size:12px;letter-spacing:.1em;margin-bottom:4px}
+@media (max-width:820px){.mgrid{grid-template-columns:1fr}}
+.src-note{margin-top:22px;font-size:13.5px;color:var(--ink3)}
+.src-note a{color:var(--teal);font-weight:700}
+
+/* Randevu */
+.booking{background:linear-gradient(180deg,#fff,var(--mist))}
+.book-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
+.book-grid>*{min-width:0}
+.cards{display:grid;gap:12px;margin-top:26px}
+.cc{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff;transition:border-color .2s,transform .2s}
+.cc:hover{border-color:var(--navy);transform:translateX(4px)}
+.cc .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;color:#fff;background:var(--bg);flex:none}
+.cc .ic svg{width:22px;height:22px}
+.cc small{display:block;color:var(--ink3);font-weight:600;font-size:13px}
+.cc b{font-size:16px;word-break:break-word}
+.rb-host{background:#fff;border:1px solid var(--line);border-radius:24px;padding:30px;box-shadow:var(--shadow);
+  --rb-accent:var(--navy);--rb-accent-soft:#E7EEF6;--rb-line:var(--line);--rb-field:var(--mist);--rb-ink:var(--ink);--rb-ink2:var(--ink2);--rb-num:var(--gold-soft);--rb-num-ink:var(--gold);--rb-r:14px;--rb-btn-r:12px}
+@media (max-width:900px){.book-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.rb-host{padding:20px 14px}}
+
+/* SSS */
+.faq{max-width:860px;margin-inline:auto;display:grid;gap:10px}
+.faq details{border:1px solid var(--line);border-radius:14px;background:#fff}
+.faq summary{list-style:none;cursor:pointer;padding:18px 22px;font-weight:700;display:flex;justify-content:space-between;gap:14px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";flex:none;font-size:22px;color:var(--ink3);transition:transform .25s}
+.faq details[open] summary::after{transform:rotate(45deg);color:var(--teal)}
+.faq details p{padding:0 22px 20px;color:var(--ink2)}
+
+/* İletişim */
+.contact{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.cbox{background:var(--navy);color:#fff;border-radius:24px;padding:36px;display:flex;flex-direction:column;gap:14px}
+.cbox h3{font-size:28px}
+.cbox p{color:#B9C8D8}
+.cbox .btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:8px}
+.cbox .btn-light{background:transparent;color:#fff;border-color:rgba(255,255,255,.3)}
+.map{border-radius:24px;overflow:hidden;min-height:320px;background:var(--mist);position:relative;border:1px solid var(--line)}
+.map iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media (max-width:860px){.contact{grid-template-columns:1fr}}
+
+/* Footer */
+footer{background:#0B2034;color:#AFC0D2;padding:64px 0 28px;font-size:15px}
+.foot{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:36px}
+footer h4{color:#fff;font-size:16px;margin-bottom:14px}
+footer ul{list-style:none;display:grid;gap:8px}
+footer a:hover{color:#fff}
+footer .logo small{color:#8FA3B8}
+.copy{border-top:1px solid rgba(255,255,255,.1);margin-top:40px;padding-top:20px;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+@media (max-width:760px){.foot{grid-template-columns:1fr}}
+
+/* Yüzen düğmeler */
+.fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;display:flex;flex-direction:column;gap:10px}
+.fab a{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;box-shadow:0 10px 24px -8px rgba(0,0,0,.4);transition:transform .2s}
+.fab a:hover{transform:scale(1.08)}
+.fab svg{width:28px;height:28px}
+.fab .wa{background:var(--wa)}
+.fab .ig{background:radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%);width:48px;height:48px;align-self:flex-end}
+.fab .ig svg{width:22px;height:22px}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+@media (max-width:640px){section{padding:68px 0}.sec-head{margin-bottom:34px}.sec-head p{font-size:16px}}
+
+/* Yukarı / aşağı kaydırma düğmeleri */
+.scrollnav{position:fixed;left:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;display:flex;flex-direction:column;gap:8px}
+.scrollnav button{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:#fff;color:var(--SN,#173A5E);border:1.5px solid rgba(23,58,94,.15);box-shadow:0 10px 24px -12px rgba(0,0,0,.45);font-size:20px;font-weight:800;cursor:pointer;transition:opacity .25s,transform .2s}
+.scrollnav button:hover{transform:translateY(-2px)}
+.scrollnav button[hidden]{display:none}
+@media (max-width:700px){.scrollnav{left:10px}.scrollnav button{width:38px;height:38px;font-size:17px;opacity:.88}#snDown{display:none}}
+
+/* ====== Kompakt yerleşim: her bölüm tek ekrana sığsın ====== */
+section{padding:64px 0}
+.sec-head{margin-bottom:28px}
+.sec-head h2{font-size:clamp(28px,3vw,38px);margin:8px 0 8px}
+.sec-head p{font-size:16px}
+.hero{padding:44px 0 56px}
+.hero h1{font-size:clamp(36px,4.6vw,58px);margin:12px 0 14px}
+.hero .lead{font-size:17px}
+.hero .ctas{margin:22px 0 24px}
+.visual{max-width:430px}
+.btn{padding:13px 22px;font-size:15px}
+.feat{padding:22px 20px}.feat .ic{width:46px;height:46px;margin-bottom:12px}.feat h3{font-size:17px}.feat p{font-size:14.5px}
+@media (min-width:1100px){.tgrid{grid-template-columns:repeat(4,1fr);gap:14px}}
+.tcat{padding:22px 20px}.tcat .top{margin-bottom:8px}.tcat .ic{width:42px;height:42px;font-size:19px}.tcat h3{font-size:17.5px}.tcat p{font-size:14px;margin-bottom:10px}
+.tcat li button{padding:8px 10px;font-size:14.5px}
+.smile-grid{gap:44px}.ba{padding:20px}
+.steps{margin:18px 0 22px;gap:10px}
+.gcard{padding:18px}
+@media (min-width:701px){.dcard{grid-template-columns:220px 1fr;gap:26px;padding:22px}}
+.tags{margin:14px 0 18px}
+.kidcard{padding:24px}
+.myth summary{padding:15px 18px;font-size:15.5px}
+.mgrid{gap:10px}
+.book-grid{gap:30px}
+.cards{margin-top:18px;gap:10px}.cc{padding:12px 14px}
+.rb-host{padding:24px 26px}
+.faq summary{padding:15px 20px}
+.cbox{padding:28px}.map{min-height:280px}
+footer{padding:48px 0 24px}
+@media (min-width:1100px){.book-grid{grid-template-columns:.62fr 1.38fr}}
+
+/* Randevu alanı alttaki bölümle yumuşak birleşsin, SSS tam genişlikte */
+.booking{background:linear-gradient(180deg,#fff 0%,var(--mist) 45%,#fff 100%)}
+.faq{max-width:none;grid-template-columns:1fr 1fr;gap:10px 14px;align-items:start}
+@media (max-width:860px){.faq{grid-template-columns:1fr}}
+#sss{padding-top:40px}
+#sss .sec-head.center{text-align:left;margin-inline:0}
+#sss .sec-head.center .eyebrow::after{display:none}
+
+/* Randevu kartı ile soldaki iletişim kartları alt kenarda hizalı */
+@media (min-width:901px){
+  .booking .book-grid{align-items:stretch}
+  .booking .book-grid>div:first-child{display:flex;flex-direction:column}
+  .booking .cards{margin-top:auto}
+}
+
+/* ====== Bölümler içerikleri kadar; menüden gidince tam başına otursun ====== */
+html{scroll-padding-top:77px}
+body > section > .wrap{width:min(1280px,100% - 32px)}
+
+/* ====== Bölüm zeminleri: açık–koyu ritim, net geçişler ====== */
+:root{--z-ice:#EAF0F6;--z-mist:#F4F7FA;--z-sand:#FAF6EE;--z-mint:#EDF5F3}
+body > section{border-top:1px solid rgba(15,42,68,.07)}
+.hero{background:linear-gradient(180deg,var(--z-ice) 0%,var(--z-mist) 100%);border-top:0}
+#neden{background:#fff}
+#tedaviler{background:var(--z-mist)}
+#gulus{background:var(--z-sand)}
+#gulus .ba{background:#fff;box-shadow:var(--shadow)}
+.gum{border-top:0}
+#hekimlerimiz{background:#fff;border-top:0}
+#galeri{background:var(--z-mist)}
+#yanlislar{background:var(--z-sand)}
+#randevu{background:var(--z-mint)}
+#randevu .cc{background:#fff}
+#sss{background:#fff;padding-top:64px}
+#konum{background:#fff}
+footer{margin-top:0}
+/* bölüm başlıklarında küçük altın çizgi vurgusu */
+.sec-head h2::after{content:"";display:block;width:56px;height:3px;border-radius:3px;background:var(--gold);margin-top:14px;opacity:.85}
+.sec-head.center h2::after{margin-inline:auto}
+
+/* ====== Hekim kartları ====== */
+.hk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:18px;align-items:start}
+.hk{display:grid;grid-template-columns:180px 1fr;gap:22px;background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;position:relative;overflow:hidden}
+.hk::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--c)}
+.hk-photo{position:relative;border-radius:14px;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(160deg,var(--navy2),var(--navy));display:grid;place-items:center;align-self:start}
+.hk-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.hk-ini{font-size:52px;font-weight:800;color:#fff;opacity:.85}
+.hk-badge{display:none}
+.hk h3{font-size:clamp(21px,2vw,26px)}
+.hk-role{color:var(--c);font-weight:700;font-size:12.5px;letter-spacing:.06em;margin:4px 0 10px}
+.hk-intro{color:var(--ink2);font-size:15px}
+.hk-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+.hk-facts div{border:1px solid var(--line);border-radius:12px;padding:8px 10px}
+.hk-facts b{display:block;font-size:17px;line-height:1.2}
+.hk-facts span{font-size:12px;color:var(--ink3);font-weight:600}
+.hk-tags{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.hk-tags span{border:1px solid var(--line);border-radius:99px;padding:4px 10px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.hk-more{border:1px solid var(--line);border-radius:12px;margin-top:4px}
+.hk-more summary{list-style:none;cursor:pointer;padding:10px 14px;font-weight:700;font-size:14.5px;display:flex;justify-content:space-between}
+.hk-more summary::-webkit-details-marker{display:none}
+.hk-more summary::after{content:"+";color:var(--ink3)}
+.hk-more[open] summary::after{content:"–"}
+.hk-mbody{padding:0 14px 12px}
+.hk-mbody h4{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin:10px 0 4px}
+.hk-mbody p{color:var(--ink2);font-size:14.5px}
+.hk-tl{list-style:none;padding:0}
+.hk-tl li{padding:4px 0;font-size:14px;color:var(--ink2);border-bottom:1px dashed var(--line)}
+.hk-tl li:last-child{border-bottom:0}
+.hk-tl li b{color:var(--ink);display:inline-block;min-width:100px}
+.hk-ctas{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.hk-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:10px;font-weight:700;font-size:14.5px}
+.hk-btn svg{width:18px;height:18px}
+.hk-main{background:var(--navy);color:#fff}
+.hk-sub{border:1px solid var(--line);color:var(--navy)}
+.kidbar{margin-top:18px;display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:14px;background:#FFF8E6;border:1px solid #F3E3B8;font-size:15px;color:var(--ink2)}
+.kidbar>span:first-child{font-size:26px}
+.kidbar b{color:var(--ink);margin-right:6px}
+.kidbar .go{margin-left:auto;font-weight:700;color:#C2547A;white-space:nowrap}
+@media (max-width:560px){.hk{grid-template-columns:1fr;padding:16px}.hk-photo{max-width:220px;width:100%;margin-inline:auto}.hk-tl li b{display:block}.kidbar{flex-wrap:wrap}.kidbar .go{margin-left:0}}
+
+/* ====== Anlaşmalı kurumlar ====== */
+#anlasmali{background:var(--z-mist)}
+.kr-grid{list-style:none;display:grid;grid-template-columns:repeat(8,1fr);gap:14px}
+@media (max-width:1100px){.kr-grid{grid-template-columns:repeat(4,1fr)}}
+.kr{aspect-ratio:1;background:#fff;border:1px solid var(--line);border-radius:16px;display:grid;place-items:center;padding:20px;transition:box-shadow .2s,transform .2s}
+.kr:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.kr img{max-width:100%;max-height:100%;object-fit:contain;filter:grayscale(1);opacity:.8;transition:filter .25s,opacity .25s}
+.kr:hover img{filter:none;opacity:1}
+.kr-ph{font-weight:600;font-size:14px;color:var(--ink3);text-align:center}
+.kr:not(.has-logo){border-style:dashed;background:rgba(255,255,255,.6)}
+.kr.has-logo .kr-ph{display:none}
+@media (max-width:560px){.kr-grid{grid-template-columns:repeat(3,1fr);gap:10px}.kr{padding:10px;border-radius:12px}}
+
+/* Randevu Al: üst menüden alındı, sağ altta sabit */
+.fab{align-items:flex-end}
+.fab .rdv{width:auto;height:auto;border-radius:12px;padding:14px 22px;background:var(--navy);color:#fff;font-weight:700;font-size:15px;box-shadow:0 14px 30px -12px rgba(15,42,68,.7);white-space:nowrap;transition:opacity .25s,transform .25s}
+.fab .rdv:hover{transform:translateY(-2px);background:var(--navy2)}
+.fab .rdv.off{opacity:0;pointer-events:none;transform:translateY(10px)}
+.menu{margin-left:auto}
+@media (max-width:560px){.fab{right:10px;gap:8px}.fab .rdv{padding:9px 13px;font-size:13.5px}.fab a.wa{width:50px;height:50px}.fab a.ig{width:42px;height:42px}}
+
+/* Randevu Al: hafif nefes alma efekti */
+.breathe{animation:breathe 2.8s ease-in-out infinite}
+.breathe:hover{animation-play-state:paused}
+@keyframes breathe{0%,100%{scale:1}50%{scale:1.06}}
+
+/* Açılış ekranı tam dolsun, yazılar biraz daha büyük */
+@media (min-width:921px) and (min-height:600px){
+  .hero{min-height:calc(100svh - var(--topH,117px));display:flex;align-items:center;padding:40px 0}
+  .hero>.wrap{width:min(1280px,100% - 32px)}
+  .hero h1{font-size:clamp(44px,5vw,74px)}
+  .hero .lead{font-size:clamp(17px,1.3vw,20px);max-width:600px}
+  .hero .btn{padding:15px 26px;font-size:16px}
+  .trust{font-size:16px}
+  .visual{max-width:clamp(420px,32vw,540px)}
+  .visual .card{font-size:15px;padding:16px 18px}
+}
+
+/* Hekim kartları yan yana eşit boy */
+@media (min-width:561px){
+  .hk-grid{align-items:stretch}
+  .hk-photo{align-self:stretch;aspect-ratio:auto;min-height:280px}
+  .hk-body{display:flex;flex-direction:column}
+  .hk-ctas{margin-top:auto;padding-top:12px}
+}
+
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="logo-tooth" viewBox="0 0 100 110">
+      <path d="M20 46c0-14 12-18 30-14 18-4 30 0 30 14 0 17-6 25-8 43-2 16-12 16-14 2-2-10-4-16-8-16s-6 6-8 16c-2 14-12 14-14-2-2-18-8-26-8-43Z" fill="#FFC83D" stroke="#173A5E" stroke-width="3.5" stroke-linejoin="round"/>
+      <clipPath id="dome"><path d="M21 44a29 27 0 0 1 58 0Z"/></clipPath>
+      <g clip-path="url(#dome)"><rect x="20" y="10" width="16" height="40" fill="#EF4E45"/><rect x="36" y="10" width="14" height="40" fill="#45B4EA"/><rect x="50" y="10" width="14" height="40" fill="#7CC94F"/><rect x="64" y="10" width="16" height="40" fill="#FF8A3D"/></g>
+      <path d="M21 44a29 27 0 0 1 58 0Z" fill="none" stroke="#173A5E" stroke-width="3.5" stroke-linejoin="round"/>
+      <line x1="50" y1="17" x2="50" y2="10" stroke="#173A5E" stroke-width="3.5"/>
+      <g class="prop"><ellipse cx="39" cy="10" rx="11" ry="3.6" fill="#45B4EA" stroke="#173A5E" stroke-width="2"/><ellipse cx="61" cy="10" rx="11" ry="3.6" fill="#FF6F9C" stroke="#173A5E" stroke-width="2"/></g>
+      <circle cx="50" cy="10" r="3" fill="#173A5E"/>
+    </symbol>
+    <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91A9.85 9.85 0 0 0 12.04 2Zm5.8 14.06c-.24.68-1.41 1.3-1.95 1.35-.5.05-.97.23-3.27-.68-2.77-1.09-4.52-3.92-4.66-4.1-.13-.18-1.11-1.48-1.11-2.82s.7-2 .95-2.27c.25-.27.54-.34.72-.34h.52c.17 0 .39-.06.61.47.23.54.77 1.88.84 2.02.07.13.11.29.02.47-.09.18-.13.29-.27.45-.13.16-.28.35-.4.47-.13.13-.27.28-.12.55.16.27.7 1.15 1.5 1.86 1.03.92 1.9 1.2 2.17 1.34.27.13.43.11.59-.07.16-.18.68-.79.86-1.06.18-.27.36-.23.61-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.11.07.66-.17 1.33Z"/></symbol>
+    <symbol id="i-ig" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 2.5h10A4.5 4.5 0 0 1 21.5 7v10a4.5 4.5 0 0 1-4.5 4.5H7A4.5 4.5 0 0 1 2.5 17V7A4.5 4.5 0 0 1 7 2.5Z"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path fill="currentColor" d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/></symbol>
+  </defs>
+</svg>
+
+<div class="topbar"><div class="wrap">
+  <span>Özel Klinikids Ağız ve Diş Sağlığı Polikliniği · Yetişkin Kliniği</span>
+  <span class="r"><a href="tel:+905464217141">0546 421 71 41</a><a data-wa="Merhaba Klinikids!" target="_blank" rel="noopener">WhatsApp</a><a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener">Instagram</a></span>
+</div></div>
+
+<header id="hdr"><div class="wrap nav">
+  <a href="index.html" class="logo" aria-label="Klinikids ana sayfa">
+    <svg><use href="#logo-tooth"/></svg>
+    <span><span class="w" data-logo></span><small>Yetişkin Kliniği</small></span>
+  </a>
+  <nav class="menu" id="menu">
+    <a href="#tedaviler">Tedaviler</a>
+    <a href="#gulus">Gülüş Tasarımı</a>
+    <a href="#hekimlerimiz">Hekimlerimiz</a>
+    <a href="#yanlislar">Doğru Bilinen Yanlışlar</a>
+    <a href="#galeri">Galeri</a>
+    <a href="#sss">SSS</a>
+    <a href="#anlasmali">Kurumlar</a>
+    <a href="#iletisim">İletişim</a>
+    <a href="cocuk.html" class="kidlink">🧒 Çocuk Kliniği</a>
+  </nav>
+  <button class="burger" id="burger" aria-label="Menüyü aç" aria-expanded="false"><span></span><span></span><span></span></button>
+</div></header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Klinikids Yetişkin Kliniği · İzmit</span>
+      <h1>Sağlıklı, estetik ve <em>güvenli</em> gülüşler.</h1>
+      <p class="lead">Estetik diş hekimliğinden implant ve protez çözümlerine, ortodontiden koruyucu bakıma kadar. Her tedavi muayene, açık iletişim ve kişiye özel planlamayla başlar.</p>
+      <div class="ctas">
+        <a href="#randevu" class="btn btn-dark breathe">Randevu Al</a>
+        <a href="#tedaviler" class="btn btn-light">Tedavilerimizi İnceleyin</a>
+      </div>
+      <div class="trust">
+        <span><i>✓</i>Muayene ile başlayan planlama</span>
+        <span><i>✓</i>Steril ve hijyenik ortam</span>
+        <span><i>✓</i>Tüm aile tek çatı altında</span>
+      </div>
+    </div>
+    <div class="visual" aria-hidden="true">
+      <div class="ph">
+        <svg class="mark" viewBox="0 0 120 130" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"><path d="M24 40c0-17 15-22 36-17 21-5 36 0 36 17 0 20-7 30-9 51-3 19-14 19-17 2-2-12-5-19-10-19s-8 7-10 19c-3 17-14 17-17-2-2-21-9-31-9-51Z"/><path d="M42 36c5-3 12-3 18 0" opacity=".6"/></svg>
+        <img src="foto/yetiskin-klinik.jpg" alt="" onerror="this.remove()">
+      </div>
+      <div class="card c1"><span class="ic">✨</span><span>Gülüş tasarımı<small>Sonucu önceden görün</small></span></div>
+      <div class="card c2"><span class="ic">🦷</span><span>İmplant & protez<small>Kişiye özel planlama</small></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- NEDEN -->
+<section id="neden">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Neden Klinikids</span><h2>Tedavinizin her adımında yanınızdayız</h2><p>Karar vermeden önce seçeneklerinizi, sürecin nasıl ilerleyeceğini ve beklentileri açıkça konuşuruz.</p></div>
+    <div class="feats">
+      <div class="feat reveal"><div class="ic">🩺</div><h3>Önce muayene</h3><p>Ağız içi muayene ve gerekli görüntülemelerle doğru teşhis; plan ondan sonra.</p></div>
+      <div class="feat reveal"><div class="ic">🧼</div><h3>Önce hijyen</h3><p>Sterilizasyon ve kişisel koruma kurallarına her hastada aynı titizlikle uyulur.</p></div>
+      <div class="feat reveal"><div class="ic">💬</div><h3>Açık iletişim</h3><p>Seçenekler, süre ve bakım önerileri anlaşılır bir dille anlatılır; sorularınıza zaman ayrılır.</p></div>
+      <div class="feat reveal"><div class="ic">👨‍👩‍👧</div><h3>Tüm aile için</h3><p>Siz yetişkin kliniğimizde, çocuğunuz çocuk kliniğimizde. Aynı adres, aynı ekip anlayışı.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TEDAVİLER -->
+<section class="treat" id="tedaviler">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Tedavilerimiz</span><h2>İhtiyacınıza uygun çözümler</h2><p>Bir tedaviye dokunun; randevu formunda seçili olarak gelsin. Hangisinin size uygun olduğuna muayene sonrası birlikte karar veririz.</p></div>
+    <div class="tgrid" id="tgrid"></div>
+  </div>
+</section>
+
+<!-- GÜLÜŞ TASARIMI -->
+<section id="gulus">
+  <div class="wrap smile-grid">
+    <div class="ba reveal">
+      <div class="ba-stage">
+        <div class="mouth ba-layer ba-before" style="position:relative"><div class="row up"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="row low"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="mouth ba-layer ba-after" id="baAfter"><div class="row up"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="row low"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="ba-handle" id="baHandle"></div>
+        <input type="range" min="0" max="100" value="50" id="baRange" aria-label="Öncesi ve sonrası karşılaştırma">
+      </div>
+      <div class="ba-labels"><span>Öncesi</span><span>Sonrası</span></div>
+    </div>
+    <div class="reveal">
+      <span class="eyebrow">Gülüş Tasarımı</span>
+      <h2 style="font-size:clamp(30px,4vw,44px);margin:12px 0 14px">Gülüşünüzü tedaviden önce görün</h2>
+      <p style="color:var(--ink2);font-size:17px"><b>Mockup</b>, planlanan gülüş tasarımının tedaviye başlamadan önce ağız içinde geçici olarak oluşturulmasıdır. Diş formunu, boyutunu ve rengini birlikte değerlendirir, kararı birlikte veririz.</p>
+      <div class="steps">
+        <div><b class="n">1</b><div><h4>Analiz</h4><p>Yüz, dudak ve diş oranları; diş eti ve ısırma değerlendirilir.</p></div></div>
+        <div><b class="n">2</b><div><h4>Tasarım ve mockup</h4><p>Planlanan gülüş ağız içinde geçici olarak denenir, beğeninize göre düzenlenir.</p></div></div>
+        <div><b class="n">3</b><div><h4>Uygulama</h4><p>Beyazlatma, lamine veya E-max gibi uygun tedavilerle plan hayata geçirilir.</p></div></div>
+      </div>
+      <a href="#randevu" class="btn btn-dark" data-pick="Mockup / Gülüş Tasarımı">Gülüş planı için randevu</a>
+    </div>
+  </div>
+</section>
+
+<!-- DİŞ ETİ -->
+<section class="gum">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Diş Eti Sağlığı</span><h2>Diş etleriniz size ne anlatıyor?</h2><p>Gülüşünüzün temeli diş etlerinizdir. Aşağıdaki belirtilerden birini fark ettiyseniz kontrol için randevu almayı ertelemeyin.</p></div>
+    <div class="gum-grid">
+      <div class="gcard reveal" style="--c:#5FBF73"><span class="dot"></span><h3>Sağlıklı</h3><p>Pembe, sıkı ve fırçalarken kanamayan diş etleri.</p></div>
+      <div class="gcard reveal" style="--c:#E0584F"><span class="dot"></span><h3>Kızarıklık ve kanama</h3><p>Çoğu zaman diş eti iltihabının ilk belirtisidir; normal değildir.</p></div>
+      <div class="gcard reveal" style="--c:#F0A04B"><span class="dot"></span><h3>Şişlik</h3><p>Hassasiyet ve şişlik, diş eti hastalığının habercisi olabilir.</p></div>
+      <div class="gcard reveal" style="--c:#5BA8E0"><span class="dot"></span><h3>Çekilme</h3><p>Kök yüzeyleri açığa çıkar, dişler hassaslaşabilir.</p></div>
+      <div class="gcard reveal" style="--c:#A88AE8"><span class="dot"></span><h3>Ağız kokusu</h3><p>Geçmeyen ağız kokusu diş eti sorunlarının işareti olabilir.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HEKİMLER -->
+<section id="hekimlerimiz">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Hekimlerimiz</span><h2>Yetişkin Kliniği Hekimimiz</h2><p>Deneyimli hekimlerimizle muayeneden tedavi planına kadar her adımda yanınızdayız.</p></div>
+    <div class="hk-grid" id="hekimler"></div>
+    <a class="kidbar reveal" href="cocuk.html#hekimimiz"><span>🧒</span><span><b>Çocuk Kliniği hekimlerimiz</b> Dt. Ayşe Gül Aydın Çetinkaya ve Dt. Arya Koç Kuş</span><span class="go">Tanışın →</span></a>
+  </div>
+</section>
+
+<!-- GALERİ -->
+<section id="galeri">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Galeri</span><h2>Kliniğimizden kareler</h2><p>Kliniğimizi ve ekibimizi yakından tanıyın. Büyütmek için bir fotoğrafa tıklayın.</p></div>
+    <div id="galeriApp" data-theme="yetiskin"></div>
+  </div>
+</section>
+
+<!-- DOĞRU BİLİNEN YANLIŞLAR -->
+<section class="myths" id="yanlislar">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Bilgi</span><h2>Diş sağlığında doğru bilinen yanlışlar</h2><p>Kulaktan kulağa yayılan inanışlar ve doğruları. Bir maddenin üzerine gelin (telefonda dokunun), doğrusu açılsın.</p></div>
+    <div class="mgrid" id="mgrid"></div>
+    <p class="src-note">Bilgiler genel bilgilendirme amaçlıdır; size özel öneri için muayene gerekir. Kaynaklar: <a href="https://www.ada.org/en/resources/ada-library/oral-health-topics/pregnancy" target="_blank" rel="noopener">Amerikan Diş Hekimleri Birliği (ADA)</a>, <a href="https://www.mouthhealthy.org/" target="_blank" rel="noopener">MouthHealthy</a>.</p>
+  </div>
+</section>
+
+<!-- RANDEVU -->
+<section class="booking" id="randevu">
+  <div class="wrap book-grid">
+    <div class="reveal">
+      <span class="eyebrow">Online Randevu</span>
+      <h2 style="font-size:clamp(30px,4vw,44px);margin:12px 0 14px">Size uygun saati seçin</h2>
+      <p style="color:var(--ink2);font-size:17px">Takvimdeki boş saatlerden birini seçin; saatiniz anında ayrılır. Ekibimiz sizi arayarak randevunuzu teyit eder.</p>
+      <div class="cards" id="iletisim">
+        <a class="cc" href="tel:+905464217141"><span class="ic" style="--bg:var(--navy)"><svg><use href="#i-phone"/></svg></span><span><small>Telefon</small><b>0546 421 71 41</b></span></a>
+        <a class="cc" data-wa="Merhaba Klinikids! Randevu almak istiyorum." target="_blank" rel="noopener"><span class="ic" style="--bg:var(--wa)"><svg><use href="#i-wa"/></svg></span><span><small>WhatsApp</small><b>Mesaj gönderin</b></span></a>
+        <a class="cc" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener"><span class="ic" style="--bg:#C13584"><svg><use href="#i-ig"/></svg></span><span><small>Instagram</small><b>@ozelklinikids_agizvedissagligi</b></span></a>
+      </div>
+    </div>
+    <div class="rb-host reveal" id="randevuApp" data-clinic="yetiskin"></div>
+  </div>
+</section>
+
+<!-- SSS -->
+<section id="sss">
+  <div class="wrap">
+    <div class="sec-head center reveal"><span class="eyebrow">SSS</span><h2>Sık sorulan sorular</h2></div>
+    <div class="faq reveal">
+      <details><summary>Diş beyazlatma dişlere zarar verir mi?</summary><p>Hekim kontrolünde, uygun yöntemle yapılan beyazlatma güvenlidir. İşlem sırasında ve sonrasında geçici hassasiyet olabilir. Dolgu ve kaplamaların rengi değişmez; bu nedenle uygunluğunu muayenede değerlendiririz.</p></details>
+      <details><summary>Eksik dişlerim için hangi seçenekler var?</summary><p>İmplant, köprü, hareketli protez ve tam protez başlıca seçeneklerdir. Eksik dişler yalnızca estetiği değil; çiğneme, konuşma ve komşu dişlerin konumunu da etkiler. Size uygun çözüm muayene ve görüntüleme sonrası belirlenir.</p></details>
+      <details><summary>Lamine ile E-max arasındaki fark nedir?</summary><p>Lamine, dişin ön yüzeyine uygulanan ince porselen kaplamadır. E-max ise lityum disilikat seramikten üretilen, ışık geçirgenliği yüksek bir materyaldir; lamine ya da tam kaplama olarak kullanılabilir. Hangisinin uygun olduğu dişin durumuna göre belirlenir.</p></details>
+      <details><summary>Mockup nedir, neden önemli?</summary><p>Mockup, planlanan gülüşün tedaviden önce ağız içinde geçici olarak denenmesidir. Form, boy ve renk önceden görülür; karar sürecine siz de aktif olarak katılırsınız.</p></details>
+      <details><summary>Şeffaf plak tedavisi dışarıdan belli olur mu?</summary><p>Şeffaf plaklar kişiye özel üretilir ve konuşurken çoğu zaman fark edilmez. Etkili olması için günün büyük bölümünde takılması gerekir; süreyi hekiminiz belirler.</p></details>
+      <details><summary>Ne sıklıkla kontrole gelmeliyim?</summary><p>Genellikle 6 ayda bir kontrol ve gerektiğinde diş taşı temizliği önerilir. Diş eti hastalığı ya da yüksek çürük riski varsa bu aralık hekiminiz tarafından kısaltılabilir.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ANLAŞMALI KURUMLAR -->
+<section id="anlasmali">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Anlaşmalı Kurumlar</span><h2>Anlaşmalı kurumlarımız</h2><p>Anlaşmalı kurumlar ve indirim koşulları için randevu öncesi bizi arayabilir ya da WhatsApp'tan yazabilirsiniz.</p></div>
+    <ul class="kr-grid reveal" id="kurumlar"></ul>
+  </div>
+</section>
+
+<!-- İLETİŞİM -->
+<section id="konum">
+  <div class="wrap contact">
+    <div class="cbox reveal">
+      <span class="eyebrow">İletişim</span>
+      <h3>Bizi ziyaret edin</h3>
+      <p>Mehmet Ali Paşa Mahallesi, Erkan Sokak<br>RBG İş Merkezi No 7B, İzmit / Kocaeli</p>
+      <div class="btns">
+        <a class="btn btn-gold" data-maps target="_blank" rel="noopener">Yol tarifi al</a>
+        <a class="btn btn-light" href="tel:+905464217141">0546 421 71 41</a>
+        <a class="btn btn-light" data-review target="_blank" rel="noopener">Google'da değerlendirin</a>
+      </div>
+    </div>
+    <div class="map reveal"><iframe title="Klinikids konumu" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Mehmet+Ali+Pa%C5%9Fa+Mahallesi+Erkan+Sokak+No+7B+%C4%B0zmit+Kocaeli&output=embed"></iframe></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a href="index.html" class="logo"><svg><use href="#logo-tooth"/></svg><span><span class="w" data-logo></span><small>İzmit Diş Sanatı</small></span></a>
+        <p style="margin-top:16px;max-width:360px">Özel Klinikids Ağız ve Diş Sağlığı Polikliniği. Çocuk ve yetişkin kliniği tek çatı altında.</p>
+      </div>
+      <div><h4>Tedaviler</h4><ul id="footSvc"></ul></div>
+      <div><h4>Klinikids</h4><ul>
+        <li><a href="index.html">Ana sayfa</a></li>
+        <li><a href="cocuk.html">Çocuk Kliniği</a></li>
+        <li><a href="#randevu">Online randevu</a></li>
+        <li><a href="tel:+905464217141">0546 421 71 41</a></li>
+        <li><a data-wa="Merhaba Klinikids!" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener">Instagram</a></li>
+      </ul></div>
+    </div>
+    <div class="copy"><span>© <span id="yr"></span> Klinikids İzmit Diş Sanatı · Özel Ağız ve Diş Sağlığı Polikliniği</span><span>Sitedeki bilgiler genel bilgilendirme amaçlıdır; tedavi kararı muayene sonrası hekim tarafından verilir.</span></div>
+  </div>
+</footer>
+
+<div class="fab">
+  <a class="rdv" id="rdvBtn" href="#randevu">Randevu Al</a>
+  <a class="ig" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>
+  <a class="wa" data-wa="Merhaba Klinikids! Randevu almak istiyorum." target="_blank" rel="noopener" aria-label="WhatsApp"><svg><use href="#i-wa"/></svg></a>
+</div>
+
+<script>
+const waLink=t=>'https://wa.me/905464217141?text='+encodeURIComponent(t);
+const ADDRESS='Mehmet Ali Paşa Mahallesi Erkan Sokak RBG İş Merkezi No 7B İzmit Kocaeli';
+document.querySelectorAll('[data-wa]').forEach(a=>a.href=waLink(a.dataset.wa));
+document.querySelectorAll('[data-maps]').forEach(a=>a.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(ADDRESS));
+document.querySelectorAll('[data-review]').forEach(a=>a.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent('Klinikids İzmit Diş Sanatı'));
+document.getElementById('yr').textContent=new Date().getFullYear();
+const L=[['K','#EF4E45',-6],['L','#FF8A3D',4],['İ','#E8AE1C',-3],['N','#5FAF33',5],['İ','#45B4EA',-4],['K','#9C7CF0',3],['İ','#FF6F9C',-5],['D','#1FA59B',4],['S','#FF8A3D',-6]];
+document.querySelectorAll('[data-logo]').forEach(el=>el.innerHTML=L.map(l=>`<b style="--c:${l[1]};--r:${l[2]}deg">${l[0]}</b>`).join(''));
+
+/* Tedaviler — p: randevu listesindeki işlem adı */
+const T=[
+ {ic:'✨',t:'Estetik Diş Hekimliği',d:'Daha parlak, doğal ve uyumlu bir gülüş için.',i:[['Diş Beyazlatma'],['Lamine'],['E-max'],['Mockup / Gülüş Tasarımı']]},
+ {ic:'🦷',t:'Eksik Diş Çözümleri',d:'Çiğneme, konuşma ve estetiği yeniden kazanın.',i:[['İmplant'],['Köprü'],['Hareketli Protez'],['Tam Protez']]},
+ {ic:'🌿',t:'Koruyucu Bakım & Diş Eti',d:'Sorunlar büyümeden önlem alın.',i:[['Muayene / Kontrol'],['Diş Taşı Temizliği'],['Diş Eti Tedavisi'],['Flor Uygulaması']]},
+ {ic:'😬',t:'Ortodonti',d:'Modern ve neredeyse görünmez seçenekler.',i:[['Şeffaf Plak']]},
+];
+document.getElementById('tgrid').innerHTML=T.map(c=>`<div class="tcat reveal"><div class="top"><span class="ic">${c.ic}</span><h3>${c.t}</h3></div><p>${c.d}</p><ul>${c.i.map(x=>`<li><button type="button" data-pick="${x[0]}" data-go>${x[0].replace(' / Gülüş Tasarımı','')}<span>Randevu →</span></button></li>`).join('')}</ul></div>`).join('');
+document.getElementById('footSvc').innerHTML=['Diş Beyazlatma','Lamine & E-max','Gülüş Tasarımı','İmplant','Şeffaf Plak','Diş Eti Tedavisi'].map(x=>`<li><a href="#tedaviler">${x}</a></li>`).join('');
+document.addEventListener('click',e=>{if(e.target.closest('[data-go]'))document.getElementById('randevu').scrollIntoView({behavior:'smooth'})});
+
+/* Doğru bilinen yanlışlar */
+const M=[
+ ['Diş eti kanaması normaldir, önemsenmez.','Fırçalarken ya da kendiliğinden kanayan diş eti çoğu zaman iltihap belirtisidir. Erken dönemde profesyonel temizlik ve doğru bakımla tamamen geri döndürülebilir; ihmal edilirse diş kaybına kadar ilerleyebilir.'],
+ ['Sert fırça dişleri daha iyi temizler.','Sert kıllı fırça ve bastırarak fırçalamak diş eti çekilmesine ve diş yüzeyinde aşınmaya yol açabilir. Yumuşak kıllı fırça ve doğru teknik yeterlidir.'],
+ ['Diş taşı temizliği mineyi aşındırır, dişleri seyreltir.','Temizlik mineye zarar vermez. Sonrasında fark edilen aralıklar, daha önce taşın ve şişmiş diş etinin doldurduğu boşluklardır. Kısa süreli hassasiyet olabilir.'],
+ ['Hamilelikte diş tedavisi yapılmaz.','Muayene, diş taşı temizliği ve gerekli tedaviler hamilelikte yapılabilir; planlı işlemler için en rahat dönem genellikle ikinci üç aydır. Ağrı ve enfeksiyon gibi acil durumlar ertelenmemelidir. Hekiminize hamile olduğunuzu mutlaka söyleyin.'],
+ ['Her doğum bir diş götürür.','Bebek, ihtiyaç duyduğu kalsiyumu annenin dişlerinden çekmez. Hamilelikte hormonlar diş eti hassasiyetini, bulantı ve kusma ise asit atağını artırabilir; düzenli bakım ve kontrolle bu riskler azaltılır.'],
+ ['Üst dişlerin çekimi gözlere zarar verir.','Üst dişlerin çekimi ile göz sağlığı arasında böyle bir ilişki yoktur. Bu yaygın inanış nedeniyle çekilmesi gereken bir dişi bekletmek, enfeksiyonun yayılmasına yol açabilir.'],
+ ['Ağrı yoksa dişlerde sorun yoktur.','Çürük ve diş eti hastalıkları çoğu zaman uzun süre ağrısız ilerler. Ağrı başladığında tedavi genellikle daha kapsamlı olur; bu yüzden düzenli kontrol önemlidir.'],
+ ['Beyazlatma dişin minesine zarar verir.','Hekim kontrolünde uygulanan beyazlatma mineye zarar vermez. Geçici hassasiyet görülebilir. Dolgu ve kaplamaların rengi değişmediği için önce uygunluk değerlendirilir.'],
+ ['Kanal tedavisi çok acı verir.','Kanal tedavisi lokal anestezi altında yapılır ve çoğu zaman var olan ağrıyı gideren tedavidir. Sonrasında birkaç gün hafif hassasiyet olabilir.'],
+ ['İmplant herkese yapılamaz, yaşlılara hiç yapılmaz.','İmplant için belirleyici olan yaş değil; genel sağlık durumu ve çene kemiğinin uygunluğudur. Uygunluk muayene ve görüntüleme ile değerlendirilir.'],
+];
+document.getElementById('mgrid').innerHTML=M.map(m=>`<details class="myth reveal"><summary><span class="x">YANLIŞ</span><span>“${m[0]}”</span><span class="pl">+</span></summary><div class="ans"><b>DOĞRUSU</b>${m[1]}</div></details>`).join('');
+
+/* Önce/sonra */
+const baR=document.getElementById('baRange'),baA=document.getElementById('baAfter'),baH=document.getElementById('baHandle');
+const ba=v=>{baA.style.clipPath=`inset(0 0 0 ${v}%)`;baH.style.left=v+'%'};baR.oninput=e=>ba(e.target.value);
+let demo=true,t0=null;function anim(ts){if(!demo)return;t0??=ts;const v=50+26*Math.sin((ts-t0)/900);ba(v);baR.value=v;requestAnimationFrame(anim)}
+new IntersectionObserver((en,o)=>{if(en[0].isIntersecting){requestAnimationFrame(anim);setTimeout(()=>demo=false,3600);o.disconnect()}},{threshold:.5}).observe(baR);
+baR.addEventListener('pointerdown',()=>demo=false);
+
+/* Menü */
+const hdr=document.getElementById('hdr');addEventListener('scroll',()=>hdr.classList.toggle('scrolled',scrollY>10),{passive:true});
+const burger=document.getElementById('burger'),menu=document.getElementById('menu');
+burger.onclick=()=>{const o=menu.classList.toggle('open');burger.setAttribute('aria-expanded',o)};
+menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');burger.setAttribute('aria-expanded',false)}));
+
+const io=new IntersectionObserver(en=>en.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+<div class="scrollnav" aria-label="Sayfada gezin"><button type="button" id="snUp" aria-label="Sayfanın başına çık" hidden>↑</button><button type="button" id="snDown" aria-label="Sonraki bölüme in">↓</button></div>
+<script>
+/* Menü sığmazsa otomatik ☰ moduna geç */
+(()=>{const h=document.getElementById('hdr'),n=h.querySelector('.wrap');
+ const fit=()=>{h.classList.remove('collapsed');if(n.scrollWidth>n.clientWidth+1)h.classList.add('collapsed')};
+ fit();addEventListener('resize',fit);addEventListener('load',fit);document.fonts&&document.fonts.ready.then(fit)})();
+/* Doğru bilinen yanlışlar ve SSS: üzerine gelince aç, çıkınca kapat (dokunmatikte dokunarak) */
+if(matchMedia('(hover:hover)').matches)document.querySelectorAll('details.myth, .faq details').forEach(d=>{
+ d.addEventListener('mouseenter',()=>d.open=true);d.addEventListener('mouseleave',()=>d.open=false);
+ d.querySelector('summary').addEventListener('click',e=>e.preventDefault())});
+/* Yukarı / aşağı kaydır */
+(()=>{const up=document.getElementById('snUp'),dn=document.getElementById('snDown');
+ const secs=()=>[...document.querySelectorAll('main section, body > section, footer')].filter(s=>!s.hidden&&s.offsetHeight>0);
+ up.onclick=()=>scrollTo({top:0,behavior:'smooth'});
+ dn.onclick=()=>{const y=scrollY+document.getElementById('hdr').offsetHeight+20,n=secs().find(s=>s.getBoundingClientRect().top+scrollY>y+10);scrollTo({top:n?n.getBoundingClientRect().top+scrollY-document.getElementById('hdr').offsetHeight:document.body.scrollHeight,behavior:'smooth'})};
+ const upd=()=>{up.hidden=scrollY<300;dn.hidden=innerHeight+scrollY>=document.documentElement.scrollHeight-40};
+ upd();addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd)})();
+</script>
+<script>window.HEKIMLER=[{"name": "Mehtap Uysal", "title": "Dt.", "role": "DİŞ HEKİMİ · YETİŞKİN KLİNİĞİ", "color": "#B8955A", "photo": "foto/mehtap-uysal.jpg", "photoAlt": "https://pixel-p2.s3.eu-central-1.amazonaws.com/doctor/avatar/a81303ec/a81303ec-079a-4464-bcae-7025bf0348f2_large.jpg", "intro": "2003 yılında Ankara Üniversitesi Diş Hekimliği Fakültesi'nden mezun oldu. Özel sağlık kuruluşları ve Kocaeli Acıbadem Hastanesi'ndeki çalışmalarının ardından 2008'den itibaren İzmit'te kendi muayenehanesinde hasta kabul etti. 2026'dan bu yana Klinikids yetişkin kliniğinde hastalarını kabul ediyor.", "facts": [["2003", "Ankara Üniv. mezuniyeti"], ["20+ yıl", "Mesleki deneyim"], ["TR · EN", "Konuştuğu diller"]], "tags": ["Gülüş tasarımı", "Lamine, E-max, zirkonyum", "İmplant", "Kanal tedavisi", "Diş eti tedavileri", "Şeffaf plak", "Gömülü / 20 yaş dişleri", "Bruksizm & çene eklemi"], "edu": [["2003", "Ankara Üniversitesi Diş Hekimliği Fakültesi"]], "exp": [["2026 –", "Özel Klinikids Ağız ve Diş Sağlığı Polikliniği, İzmit"], ["2008 – 2025", "Kendi muayenehanesi, İzmit"], ["2006 – 2008", "Kocaeli Acıbadem Hastanesi"], ["2004 – 2006", "Alanya Özel Hayat Hastanesi"], ["2003 – 2004", "Dentfam Ağız ve Diş Sağlığı Merkezi"]], "lang": "Türkçe, İngilizce", "waMsg": "Merhaba Mehtap Hanım, bilgi almak istiyorum."}];</script>
+<script src="hekimler.js" defer></script>
+<script src="kurumlar.js" defer></script>
+<script>
+/* Sağ alttaki Randevu Al düğmesi: randevu bölümü ekrandayken gizlensin */
+(()=>{const b=document.getElementById('rdvBtn'),r=document.getElementById('randevu');if(!b||!r)return;
+ new IntersectionObserver(e=>b.classList.toggle('off',e[0].isIntersecting),{threshold:.15}).observe(r)})();
+</script>
+<script>
+(()=>{const set=()=>{const t=(document.querySelector('.topbar')?.offsetHeight||0)+(document.getElementById('hdr')?.offsetHeight||0);document.documentElement.style.setProperty('--topH',t+'px')};set();addEventListener('resize',set);addEventListener('load',set);document.fonts&&document.fonts.ready.then(set)})();
+</script>
+<script src="randevu.js" defer></script>
+<script src="galeri.js" defer></script>
+</body>
+</html>

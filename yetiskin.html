@@ -495,6 +495,13 @@ footer{margin-top:0}
   .contact{gap:14px}.cbox{padding:22px}.map{min-height:220px}
   footer{padding:36px 0 20px}
 }
+/* Telefonda: kartlar fotoğrafın üstüne binmesin, altında yan yana dursun */
+@media (max-width:700px){
+  .visual{aspect-ratio:auto;max-width:380px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .visual .ph{position:relative;inset:auto;grid-column:1/-1;aspect-ratio:1.6}
+  .visual .card{position:static;inset:auto;text-align:left;justify-content:flex-start;padding:10px 12px;font-size:13px;line-height:1.25}
+  .visual .card small{font-size:11.5px;margin-top:2px}
+}
 </style>
 </head>
 <body>

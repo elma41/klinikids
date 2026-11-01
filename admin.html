@@ -762,6 +762,7 @@ async function viewDoctors(main){
           <div class="grow"><b>${esc(docName(d))} ${d.is_active?'':'<span class="pill cancelled">Pasif</span>'}</b><span class="muted small">${esc(CLINICS[d.clinic]||'')}${d.specialty?' · '+esc(d.specialty):''}</span></div>
           ${isAdmin()?`<button class="btn sm" data-edit="${d.id}">✏️ Düzenle</button>`:''}
           <button class="btn sm" data-hours="${d.id}">🕘 Saatler</button>
+          ${isAdmin()?`<button class="btn sm danger" data-del="${d.id}">🗑 Sil</button>`:''}
         </div>
         <div class="chips" style="margin:8px 0">${svcsOf(d.id).map(s=>`<span class="chip">${esc(s.name)}</span>`).join('') || '<span class="muted small">Hizmet atanmamış — online randevuda görünmez.</span>'}</div>
         <div class="muted small">${[1,2,3,4,5,6,7].map(w => { const x=h.filter(y=>y.weekday===w); return x.length?`<b>${SDAYS[w]}</b> ${x.map(y=>y.start_time.slice(0,5)+'–'+y.end_time.slice(0,5)).join(', ')}`:null; }).filter(Boolean).join(' · ') || 'Çalışma saati girilmemiş — online randevuda görünmez.'}</div>
@@ -769,6 +770,25 @@ async function viewDoctors(main){
   if($('dNew')) $('dNew').onclick = () => doctorForm(null);
   main.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => doctorForm(docOf(b.dataset.edit)));
   main.querySelectorAll('[data-hours]').forEach(b => b.onclick = () => hoursForm(docOf(b.dataset.hours), hours.filter(h => h.doctor_id===b.dataset.hours)));
+  main.querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteDoctor(docOf(b.dataset.del)));
+}
+async function deleteDoctor(d){
+  if(!d) return;
+  try {
+    const {count, error} = await sb.from('appointments').select('id', {count:'exact', head:true}).eq('doctor_id', d.id);
+    if(error) throw error;
+    if(count){
+      // Randevusu olan doktor silinemez (geçmiş kayıtlar ve raporlar bozulmasın); pasife almayı öner
+      if(!d.is_active){ toast(`${docName(d)} adına ${count} randevu kayıtlı olduğu için silinemiyor. Zaten pasif; sitede görünmüyor.`, true); return; }
+      if(!(await confirmBox(`${docName(d)} adına ${count} randevu kayıtlı olduğu için kalıcı olarak silinemez (geçmiş kayıtlar ve raporlar korunur). Bunun yerine pasife alınsın mı? Sitede görünmez ve yeni randevu alınamaz.`, 'Pasife al', false))) return;
+      await q(sb.from('doctors').update({is_active:false}).eq('id', d.id).select('id'));
+      toast('Doktor pasife alındı'); go('doctors'); return;
+    }
+    const linked = (await q(sb.from('staff_profiles').select('user_id').eq('doctor_id', d.id))).length;
+    if(!(await confirmBox(`${docName(d)} kalıcı olarak silinecek; çalışma saatleri, izinleri ve hizmet bağlantıları da silinir.${linked?' Bu doktora bağlı personel hesabı doktorsuz kalacak.':''} Bu işlem geri alınamaz.`, 'Kalıcı olarak sil'))) return;
+    await q(sb.from('doctors').delete().eq('id', d.id).select('id'));
+    toast('Doktor silindi'); go('doctors');
+  } catch(e){ toast(friendly(e), true); }
 }
 function doctorForm(d){
   const COLORS = ['#1FA59B','#45B4EA','#FF6F9C','#9C7CF0','#FF8A3D','#7CC94F','#EF4E45','#173A5E'];

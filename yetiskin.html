@@ -428,6 +428,57 @@ footer{margin-top:0}
   .hk-ctas{margin-top:auto;padding-top:12px}
 }
 
+
+/* ====== TELEFON DÜZENİ ====== */
+.mbar{display:none}
+@media (max-width:700px){
+  .topbar{display:none}
+  .fab,.scrollnav{display:none!important}
+  body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+  .mbar{display:grid;grid-template-columns:1fr 1fr 1.5fr 1fr 1fr;align-items:center;gap:2px;position:fixed;left:0;right:0;bottom:0;z-index:90;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid rgba(23,58,94,.1);box-shadow:0 -8px 24px -14px rgba(23,58,94,.35)}
+  .mbar a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;color:var(--ink);padding:4px 0}
+  .mbar svg{width:22px;height:22px}
+  .mbar a:nth-child(2) svg{color:#25D366}
+  .mbar a:nth-child(4) svg{color:#D6249F}
+  .mbar .mb-e{font-size:20px;line-height:22px}
+  .mbar .mb-main{flex-direction:row;white-space:nowrap;justify-content:center;background:var(--navy);color:#fff;border-radius:14px;padding:12px 6px;font-size:14px;font-weight:800;margin:0 4px}
+  section{padding:44px 0!important}
+}
+
+@media (max-width:700px){
+  .sec-head{margin-bottom:22px}.sec-head h2{font-size:27px}.sec-head p{font-size:15px}
+  .hero{padding:24px 0 40px!important;text-align:left}
+  .hero-grid{gap:22px}
+  .hero h1{font-size:36px!important}
+  .hero .lead{font-size:15.5px}
+  .hero .ctas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+  .hero .ctas .btn{padding:13px 8px;font-size:14.5px}
+  .trust{font-size:14px;gap:6px 14px;justify-content:flex-start}
+  .eyebrow{justify-content:flex-start}
+  .hero{text-align:left}
+  .visual{max-width:300px;aspect-ratio:1.25}
+  .visual .ph{inset:0 4% 6% 8%}
+  .visual .card{font-size:12.5px;padding:10px 12px}.visual .card .ic{width:32px;height:32px;font-size:16px}
+  .feats{grid-template-columns:1fr 1fr;gap:10px}
+  .feat{padding:16px 14px}.feat .ic{width:38px;height:38px;font-size:19px;margin-bottom:8px}.feat h3{font-size:15.5px}.feat p{font-size:13px}
+  .tcat{padding:18px 16px}
+  .smile-grid{gap:24px}
+  .gum-grid{grid-template-columns:1fr 1fr!important;gap:10px}
+  .gcard{padding:14px}.gcard h3{font-size:15px}.gcard p{font-size:13px}
+  .hk{grid-template-columns:110px 1fr!important;gap:14px;padding:14px}
+  .hk-photo{max-width:none!important;margin:0!important}
+  .hk-body{min-width:0}.hk-btn{white-space:nowrap}
+  .hk-facts{display:flex!important;flex-wrap:wrap;gap:6px 14px!important}.hk-facts div{border:0!important;border-left:2px solid #E2C58F!important;border-radius:0!important;padding:0 0 0 8px!important}.hk-facts b{font-size:14.5px!important}.hk-facts span{font-size:11.5px!important}
+  .hk-ctas{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}.hk-btn{justify-content:center;padding:9px 6px!important}
+  .hk h3{font-size:18px}.hk-intro{font-size:13.5px}
+  .hk-facts{grid-template-columns:1fr 1fr 1fr;gap:6px}.hk-facts div{padding:6px 8px}.hk-facts b{font-size:15px}
+  .hk-tags{display:none}
+  .hk-ctas,.hk-more,.hk-facts{grid-column:1/-1}
+  .hk-ctas{flex-wrap:nowrap}
+  .kidbar{font-size:13.5px}
+  .contact{gap:14px}.cbox{padding:22px}.map{min-height:220px}
+  footer{padding:36px 0 20px}
+}
 </style>
 </head>
 <body>
@@ -667,6 +718,13 @@ footer{margin-top:0}
   </div>
 </footer>
 
+<nav class="mbar" aria-label="Hızlı erişim">
+  <a href="tel:+905464217141"><svg><use href="#i-phone"/></svg><span>Ara</span></a>
+  <a data-wa="Merhaba Klinikids! Randevu almak istiyorum." target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg><span>WhatsApp</span></a>
+  <a href="#randevu" class="mb-main">Randevu Al</a>
+  <a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener"><svg><use href="#i-ig"/></svg><span>Instagram</span></a>
+  <a href="cocuk.html"><span class="mb-e">🧒</span><span>Çocuk</span></a>
+</nav>
 <div class="fab">
   <a class="rdv" id="rdvBtn" href="#randevu">Randevu Al</a>
   <a class="ig" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>

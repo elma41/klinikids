@@ -700,6 +700,71 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
 .hk-sub{border:1px solid #F1E7CC;background:#fff}
 @media (max-width:560px){.hk{grid-template-columns:1fr!important}.hk-photo{max-width:200px}}
 
+
+/* ====== TELEFON DÜZENİ ====== */
+.mbar{display:none}
+@media (max-width:700px){
+  .topbar{display:none}
+  .fab,.scrollnav{display:none!important}
+  body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+  .mbar{display:grid;grid-template-columns:1fr 1fr 1.5fr 1fr 1fr;align-items:center;gap:2px;position:fixed;left:0;right:0;bottom:0;z-index:90;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid rgba(23,58,94,.1);box-shadow:0 -8px 24px -14px rgba(23,58,94,.35)}
+  .mbar a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;color:var(--ink);padding:4px 0}
+  .mbar svg{width:22px;height:22px}
+  .mbar a:nth-child(2) svg{color:#25D366}
+  .mbar a:nth-child(4) svg{color:#D6249F}
+  .mbar .mb-e{font-size:20px;line-height:22px}
+  .mbar .mb-main{flex-direction:row;white-space:nowrap;justify-content:center;background:var(--pink);color:#fff;border-radius:14px;padding:12px 6px;font-size:14px;font-weight:800;margin:0 4px}
+  section{padding:44px 0!important}
+}
+
+@media (max-width:700px){
+  .mbar .mb-main{font-family:'Baloo 2';font-size:15px;box-shadow:0 4px 0 #D84C79}
+  .head{margin-bottom:22px}.head .hand{font-size:20px}.head h2{font-size:30px}.head p{font-size:15px}
+  /* Açılış */
+  .hero{padding:12px 0 54px!important;text-align:left}
+  .hero-grid{gap:8px}
+  .hero-art{max-width:210px!important;margin:0 auto}
+  .speech{font-size:17px;padding:6px 10px}
+  .orbit span{width:46px;height:46px;font-size:22px;margin-left:-23px!important}
+  .orbit span:nth-child(1){margin-left:-23px}
+  .hero h1{font-size:36px!important;text-align:center}
+  .hero p.lead{font-size:15.5px;text-align:center;margin-bottom:16px}
+  .hero .ctas{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .hero .ctas .btn{padding:12px 8px;font-size:15px;justify-content:center}
+  .hero .chips{display:none}
+  .quick{margin-top:6px;gap:8px}
+  .qk{padding:8px 10px}.qk .qe{width:34px;height:34px;font-size:18px}
+  .marquee{margin-top:-24px}.marquee-track{font-size:18px}
+  /* Kutucuklar 2'li */
+  .kid-tiles{grid-template-columns:1fr 1fr;gap:10px}
+  .tile{padding:14px 12px}.tile .ico{width:40px;height:40px;font-size:20px;margin-bottom:8px}.tile h3{font-size:16px}.tile p{font-size:13px;line-height:1.45}
+  /* Tedaviler: yatay kaydırmalı */
+  .services .grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 -16px;padding:4px 16px 14px;scrollbar-width:none}
+  .services .grid::-webkit-scrollbar{display:none}
+  .services .card{flex:0 0 72%;height:230px;scroll-snap-align:start}
+  .services .head::after{content:"← kaydırarak tüm tedavileri görün →";display:block;font-size:13px;font-weight:800;color:var(--teal);margin-top:6px}
+  /* Hekimler: yan yana küçük foto */
+  .hk{grid-template-columns:110px 1fr!important;gap:14px;padding:14px}
+  .hk-photo{max-width:none!important;margin:0!important;align-self:start!important}
+  .hk-body{min-width:0}.hk-btn{white-space:nowrap}
+  .hk-facts{display:flex!important;flex-wrap:wrap;gap:6px 14px!important}.hk-facts div{border:0!important;border-left:2px solid #E2C58F!important;border-radius:0!important;padding:0 0 0 8px!important}.hk-facts b{font-size:14.5px!important}.hk-facts span{font-size:11.5px!important}
+  .hk-ctas{display:grid!important;grid-template-columns:1fr 1fr;gap:8px}.hk-btn{justify-content:center;padding:9px 6px!important}
+  .hk h3{font-size:18px}.hk-intro{font-size:13.5px}
+  .hk-facts{gap:10px}.hk-tags{display:none}
+  .hk-ctas{grid-column:1/-1;flex-wrap:nowrap}
+  .hk-btn{padding:8px 14px;font-size:14px}
+  /* İlk ziyaret 2'li */
+  .steps{grid-template-columns:1fr 1fr!important;gap:22px 10px}
+  .stp{padding:16px 12px 12px}.stp h3{font-size:16px}.stp p{font-size:12.5px}.stp .e{font-size:22px}
+  .sos{padding:20px 16px!important;border-radius:24px}
+  /* Oyun */
+  .game-box{padding:18px 14px!important}
+  .timer{width:min(230px,100%)}
+  /* Galeri, kurumlar */
+  .gl-grid{gap:6px!important}
+  .loc{gap:14px}.mapart{min-height:200px}
+  footer{border-radius:32px 32px 0 0;padding:36px 0 20px}
+}
 </style>
 </head>
 <body id="top">
@@ -993,6 +1058,13 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
   </div>
 </footer>
 
+<nav class="mbar" aria-label="Hızlı erişim">
+  <a href="tel:+905464217141"><svg><use href="#i-phone"/></svg><span>Ara</span></a>
+  <a data-wa="Merhaba Klinikids! Çocuğum için randevu almak istiyorum 😊" target="_blank" rel="noopener"><svg><use href="#i-wa"/></svg><span>WhatsApp</span></a>
+  <a href="#randevu" class="mb-main">📅 Randevu</a>
+  <a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener"><svg><use href="#i-ig"/></svg><span>Instagram</span></a>
+  <a href="yetiskin.html"><span class="mb-e">🧑</span><span>Yetişkin</span></a>
+</nav>
 <div class="fab">
   <a class="rdv" id="rdvBtn" href="#randevu">📅 Randevu Al</a>
   <a class="ig" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-ig"/></svg></a>

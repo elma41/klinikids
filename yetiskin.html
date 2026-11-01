@@ -258,10 +258,17 @@ footer ul{list-style:none;display:grid;gap:8px}
 footer a:hover{color:#fff}
 footer .logo small{color:#8FA3B8}
 .copy{border-top:1px solid rgba(255,255,255,.1);margin-top:40px;padding-top:20px;font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.copy{justify-content:center!important;align-items:center;text-align:center;column-gap:14px}
+.madeby{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;opacity:.9;transition:opacity .2s}
+.madeby:hover{opacity:1}
+.madeby img{height:30px;width:auto;display:block}
 @media (max-width:760px){.foot{grid-template-columns:1fr}}
 
 /* Yüzen düğmeler */
 .fab{position:fixed;right:18px;bottom:calc(18px + env(safe-area-inset-bottom));z-index:60;display:flex;flex-direction:column;gap:10px}
+.fab{transition:opacity .3s,transform .3s}
+.fab,.scrollnav{transition:opacity .3s,transform .3s}
+.fab.away,.scrollnav.away{opacity:0!important;transform:translateY(24px)!important;pointer-events:none!important}
 .fab a{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;box-shadow:0 10px 24px -8px rgba(0,0,0,.4);transition:transform .2s}
 .fab a:hover{transform:scale(1.08)}
 .fab svg{width:28px;height:28px}
@@ -676,7 +683,7 @@ footer{margin-top:0}
 <!-- ANLAŞMALI KURUMLAR -->
 <section id="anlasmali">
   <div class="wrap">
-    <div class="sec-head reveal"><span class="eyebrow">Anlaşmalı Kurumlar</span><h2>Anlaşmalı kurumlarımız</h2><p>Anlaşmalı kurumlar ve indirim koşulları için randevu öncesi bizi arayabilir ya da WhatsApp'tan yazabilirsiniz.</p></div>
+    <div class="sec-head center reveal"><h2>Anlaşmalı kurumlarımız</h2><p>Anlaşmalı kurumlar ve indirim koşulları için randevu öncesi bizi arayabilir ya da WhatsApp'tan yazabilirsiniz.</p></div>
     <ul class="kr-grid reveal" id="kurumlar"></ul>
   </div>
 </section>
@@ -717,7 +724,7 @@ footer{margin-top:0}
         <li><a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener">Instagram</a></li>
       </ul></div>
     </div>
-    <div class="copy"><span>© <span id="yr"></span> Klinikids İzmit Diş Sanatı · Özel Ağız ve Diş Sağlığı Polikliniği</span><span>Sitedeki bilgiler genel bilgilendirme amaçlıdır; tedavi kararı muayene sonrası hekim tarafından verilir.</span></div>
+    <div class="copy"><span>© <span id="yr"></span> Klinikids Tüm Hakları Saklıdır.</span> <a class="madeby" href="https://elmabaski.com" target="_blank" rel="noopener" aria-label="Tasarım ve yazılım: elmabaski.com">Tasarım &amp; Yazılım <img src="foto/elmabaski-logo-beyaz.png" alt="elmabaski.com" width="430" height="96" loading="lazy"></a></div>
   </div>
 </footer>
 
@@ -815,5 +822,10 @@ if(matchMedia('(hover:hover)').matches)document.querySelectorAll('details.myth, 
 </script>
 <script src="randevu.js" defer></script>
 <script src="galeri.js" defer></script>
+<script>
+/* Sayfanın en altına (telif satırına) gelince yüzen düğmeler çekilir, yazının önü açılır */
+(()=>{const fs=document.querySelectorAll('.fab,.scrollnav'),c=document.querySelector('footer .copy');if(!fs.length||!c||!('IntersectionObserver'in window))return;
+new IntersectionObserver(e=>fs.forEach(f=>f.classList.toggle('away',e[0].isIntersecting)),{rootMargin:'0px 0px -10px 0px'}).observe(c);})();
+</script>
 </body>
 </html>

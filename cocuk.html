@@ -400,11 +400,18 @@ footer ul{list-style:none;display:grid;gap:6px}
 .socials a:hover{background:var(--yellow);color:var(--ink);transform:rotate(-8deg)}
 .socials svg{width:22px;height:22px}
 .copy{border-top:1px solid rgba(255,255,255,.12);margin-top:40px;padding-top:22px;font-size:14px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.copy{justify-content:center!important;align-items:center;text-align:center;column-gap:14px}
+.madeby{display:inline-flex;align-items:center;gap:10px;color:inherit;text-decoration:none;opacity:.9;transition:opacity .2s}
+.madeby:hover{opacity:1}
+.madeby img{height:30px;width:auto;display:block}
 footer .logo-word{font-size:34px}
 @media (max-width:760px){.foot{grid-template-columns:1fr}}
 
 /* ---------- Floating ---------- */
 .fab{position:fixed;right:18px;bottom:18px;z-index:60;display:flex;flex-direction:column;gap:12px;align-items:flex-end}
+.fab{transition:opacity .3s,transform .3s}
+.fab,.scrollnav{transition:opacity .3s,transform .3s}
+.fab.away,.scrollnav.away{opacity:0!important;transform:translateY(24px)!important;pointer-events:none!important}
 .fab a{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;color:#fff;box-shadow:0 10px 24px -8px rgba(0,0,0,.4);transition:transform .2s;position:relative}
 .fab a:hover{transform:scale(1.1) rotate(-8deg)}
 .fab svg{width:30px;height:30px}
@@ -1067,7 +1074,7 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
         <li>📍 Mehmet Ali Paşa Mah. Erkan Sok. RBG İş Merkezi No 7B İzmit / Kocaeli</li>
       </ul></div>
     </div>
-    <div class="copy"><span>© <span id="yr"></span> Klinikids İzmit Diş Sanatı · Özel Ağız ve Diş Sağlığı Polikliniği</span><span>Bu sitedeki bilgiler genel bilgilendirme amaçlıdır; tedavi kararı muayene sonrası hekim tarafından verilir.</span></div>
+    <div class="copy"><span>© <span id="yr"></span> Klinikids Tüm Hakları Saklıdır.</span> <a class="madeby" href="https://elmabaski.com" target="_blank" rel="noopener" aria-label="Tasarım ve yazılım: elmabaski.com">Tasarım &amp; Yazılım <img src="foto/elmabaski-logo-beyaz.png" alt="elmabaski.com" width="430" height="96" loading="lazy"></a></div>
   </div>
 </footer>
 
@@ -1203,5 +1210,10 @@ if(matchMedia('(hover:hover)').matches)document.querySelectorAll('details.myth, 
 <script src="randevu.js" defer></script>
 <script src="galeri.js" defer></script>
 
+<script>
+/* Sayfanın en altına (telif satırına) gelince yüzen düğmeler çekilir, yazının önü açılır */
+(()=>{const fs=document.querySelectorAll('.fab,.scrollnav'),c=document.querySelector('footer .copy');if(!fs.length||!c||!('IntersectionObserver'in window))return;
+new IntersectionObserver(e=>fs.forEach(f=>f.classList.toggle('away',e[0].isIntersecting)),{rootMargin:'0px 0px -10px 0px'}).observe(c);})();
+</script>
 </body>
 </html>

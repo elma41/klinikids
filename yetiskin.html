@@ -772,8 +772,9 @@ document.getElementById('mgrid').innerHTML=M.map(m=>`<details class="myth reveal
 /* Önce/sonra */
 const baR=document.getElementById('baRange'),baA=document.getElementById('baAfter'),baH=document.getElementById('baHandle');
 const ba=v=>{baA.style.clipPath=`inset(0 0 0 ${v}%)`;baH.style.left=v+'%'};baR.oninput=e=>ba(e.target.value);
-let demo=true,t0=null;function anim(ts){if(!demo)return;t0??=ts;const v=50+26*Math.sin((ts-t0)/900);ba(v);baR.value=v;requestAnimationFrame(anim)}
-new IntersectionObserver((en,o)=>{if(en[0].isIntersecting){requestAnimationFrame(anim);setTimeout(()=>demo=false,3600);o.disconnect()}},{threshold:.5}).observe(baR);
+// Bir tam salınım (sağa → sola → ortaya) yapar ve tam ortada (%50) durur
+const BA_T=4000;let demo=true,t0=null;function anim(ts){if(!demo)return;t0??=ts;const p=Math.min((ts-t0)/BA_T,1);const v=p<1?50+26*Math.sin(p*2*Math.PI):50;ba(v);baR.value=v;if(p<1)requestAnimationFrame(anim);else demo=false}
+new IntersectionObserver((en,o)=>{if(en[0].isIntersecting){requestAnimationFrame(anim);o.disconnect()}},{threshold:.5}).observe(baR);
 baR.addEventListener('pointerdown',()=>demo=false);
 
 /* Menü */

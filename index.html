@@ -33,6 +33,12 @@ img,svg{display:block}
 .brand{text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
 .brand .logo{display:flex;align-items:center;gap:12px}
 .brand .logo svg{width:clamp(46px,6vw,64px);height:auto;aspect-ratio:100/110}
+.logo-box{position:relative;display:block;line-height:0}
+.logo-img{display:block;width:auto}
+.logo-rotor{position:absolute;left:0;top:0;width:16.52%;height:auto;transform-origin:50% 50%;animation:rotor .32s ease-in-out infinite alternate}
+@keyframes rotor{from{transform:scaleX(1)}to{transform:scaleX(-1)}}
+@media (prefers-reduced-motion:reduce){.logo-rotor{animation:none}}
+.brand .logo-img{height:clamp(64px,9vw,104px);max-width:88vw;object-fit:contain}
 .brand .w{font-family:'Baloo 2';font-weight:800;font-size:clamp(40px,6.4vw,72px);line-height:1;display:inline-flex;letter-spacing:-1px}
 .brand .w b{color:var(--c);display:inline-block;transform:rotate(var(--r));text-shadow:0 3px 0 rgba(0,0,0,.07)}
 .brand .script{font-family:'Dancing Script';font-size:clamp(20px,2.4vw,26px);margin-top:-4px}
@@ -133,7 +139,7 @@ img,svg{display:block}
 
 <main class="page">
   <header class="brand">
-    <div class="logo"><svg><use href="#logo-tooth"/></svg><span class="w" id="logoWord" aria-label="Klinikids"></span></div>
+    <div class="logo"><span class="logo-box"><img class="logo-img" src="foto/klinikids-logo.png" alt="Klinikids" width="852" height="200"><img class="logo-rotor" src="foto/klinikids-pervane.png" alt="" aria-hidden="true"></span></div>
     <div class="script">İzmit Diş Sanatı</div>
     <p>Tüm aile için ağız ve diş sağlığı · Hangi kliniğimize gitmek istersiniz?</p>
   </header>
@@ -181,7 +187,7 @@ img,svg{display:block}
 
 <script>
 const L=[['K','#EF4E45',-6],['L','#FF8A3D',4],['İ','#E8AE1C',-3],['N','#5FAF33',5],['İ','#45B4EA',-4],['K','#9C7CF0',3],['İ','#FF6F9C',-5],['D','#1FA59B',4],['S','#FF8A3D',-6]];
-document.getElementById('logoWord').innerHTML=L.map(l=>`<b style="--c:${l[1]};--r:${l[2]}deg">${l[0]}</b>`).join('');
+document.getElementById('logoWord')&&(document.getElementById('logoWord').innerHTML=L.map(l=>`<b style="--c:${l[1]};--r:${l[2]}deg">${l[0]}</b>`).join(''));
 document.querySelectorAll('[data-wa]').forEach(a=>a.href='https://wa.me/905464217141?text='+encodeURIComponent('Merhaba Klinikids! Bilgi almak istiyorum.'));
 document.querySelectorAll('[data-maps]').forEach(a=>a.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent('Mehmet Ali Paşa Mahallesi Erkan Sokak RBG İş Merkezi No 7B İzmit Kocaeli'));
 </script>

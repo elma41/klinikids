@@ -56,6 +56,12 @@ header.scrolled{border-color:var(--line);box-shadow:0 10px 30px -24px rgba(15,42
 .nav{display:flex;align-items:center;justify-content:space-between;height:76px;gap:16px}
 .logo{display:flex;align-items:center;gap:10px}
 .logo svg{width:36px;height:40px}
+.logo-img{display:block;height:62px;width:auto}
+@media (max-width:560px){.logo-img{height:46px}}
+footer .logo-img{height:64px}
+.logo-box{position:relative;display:block;line-height:0}
+.logo-rotor{position:absolute;left:0;top:0;width:16.55%;height:auto;transform-origin:50% 50%;animation:rotor .32s ease-in-out infinite alternate}
+@keyframes rotor{from{transform:scaleX(1)}to{transform:scaleX(-1)}}
 .logo .w{font-family:'Baloo 2';font-weight:800;font-size:26px;line-height:1;display:inline-flex}
 .logo .w b{color:var(--c);display:inline-block;transform:rotate(var(--r))}
 .logo small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);font-weight:700;margin-top:3px}
@@ -209,7 +215,8 @@ header.collapsed .nav>.btn{display:none}
 
 /* Randevu */
 .booking{background:linear-gradient(180deg,#fff,var(--mist))}
-.book-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
+.book-grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:start}
+.book-grid>.reveal:first-child{max-width:720px}
 .book-grid>*{min-width:0}
 .cards{display:grid;gap:12px;margin-top:26px}
 .cc{display:flex;align-items:center;gap:14px;padding:16px;border:1px solid var(--line);border-radius:16px;background:#fff;transition:border-color .2s,transform .2s}
@@ -303,7 +310,7 @@ section{padding:64px 0}
 .faq summary{padding:15px 20px}
 .cbox{padding:28px}.map{min-height:280px}
 footer{padding:48px 0 24px}
-@media (min-width:1100px){.book-grid{grid-template-columns:.62fr 1.38fr}}
+/* randevu tek sütun: üstte başlık, altta tam genişlik form */
 
 /* Randevu alanı alttaki bölümle yumuşak birleşsin, SSS tam genişlikte */
 .booking{background:linear-gradient(180deg,#fff 0%,var(--mist) 45%,#fff 100%)}
@@ -391,8 +398,7 @@ footer{margin-top:0}
 @media (max-width:1100px){.kr-grid{grid-template-columns:repeat(4,1fr)}}
 .kr{aspect-ratio:1;background:#fff;border:1px solid var(--line);border-radius:16px;display:grid;place-items:center;padding:20px;transition:box-shadow .2s,transform .2s}
 .kr:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
-.kr img{max-width:100%;max-height:100%;object-fit:contain;filter:grayscale(1);opacity:.8;transition:filter .25s,opacity .25s}
-.kr:hover img{filter:none;opacity:1}
+.kr img{max-width:100%;max-height:100%;object-fit:contain}
 .kr-ph{font-weight:600;font-size:14px;color:var(--ink3);text-align:center}
 .kr:not(.has-logo){border-style:dashed;background:rgba(255,255,255,.6)}
 .kr.has-logo .kr-ph{display:none}
@@ -510,16 +516,15 @@ footer{margin-top:0}
 </div></div>
 
 <header id="hdr"><div class="wrap nav">
-  <a href="index.html" class="logo" aria-label="Klinikids ana sayfa">
-    <svg><use href="#logo-tooth"/></svg>
-    <span><span class="w" data-logo></span><small>Yetişkin Kliniği</small></span>
+  <a href="index.html" class="logo" aria-label="İzmit Diş Sanatı ana sayfa">
+    <span class="logo-box"><img class="logo-img" src="foto/izmit-dis-sanati-logo.png" alt="İzmit Diş Sanatı" width="545" height="128"><img class="logo-rotor" src="foto/logo-pervane.png" alt="" aria-hidden="true"></span>
   </a>
   <nav class="menu" id="menu">
     <a href="#tedaviler">Tedaviler</a>
     <a href="#gulus">Gülüş Tasarımı</a>
     <a href="#hekimlerimiz">Hekimlerimiz</a>
-    <a href="#yanlislar">Doğru Bilinen Yanlışlar</a>
     <a href="#galeri">Galeri</a>
+    <a href="#yanlislar">Doğru Bilinen Yanlışlar</a>
     <a href="#sss">SSS</a>
     <a href="#anlasmali">Kurumlar</a>
     <a href="#iletisim">İletişim</a>
@@ -532,7 +537,6 @@ footer{margin-top:0}
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow">Klinikids Yetişkin Kliniği · İzmit</span>
       <h1>Sağlıklı, estetik ve <em>güvenli</em> gülüşler.</h1>
       <p class="lead">Estetik diş hekimliğinden implant ve protez çözümlerine, ortodontiden koruyucu bakıma kadar. Her tedavi muayene, açık iletişim ve kişiye özel planlamayla başlar.</p>
       <div class="ctas">
@@ -649,11 +653,6 @@ footer{margin-top:0}
       <span class="eyebrow">Online Randevu</span>
       <h2 style="font-size:clamp(30px,4vw,44px);margin:12px 0 14px">Size uygun saati seçin</h2>
       <p style="color:var(--ink2);font-size:17px">Takvimdeki boş saatlerden birini seçin; saatiniz anında ayrılır. Ekibimiz sizi arayarak randevunuzu teyit eder.</p>
-      <div class="cards" id="iletisim">
-        <a class="cc" href="tel:+905464217141"><span class="ic" style="--bg:var(--navy)"><svg><use href="#i-phone"/></svg></span><span><small>Telefon</small><b>0546 421 71 41</b></span></a>
-        <a class="cc" data-wa="Merhaba Klinikids! Randevu almak istiyorum." target="_blank" rel="noopener"><span class="ic" style="--bg:var(--wa)"><svg><use href="#i-wa"/></svg></span><span><small>WhatsApp</small><b>Mesaj gönderin</b></span></a>
-        <a class="cc" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener"><span class="ic" style="--bg:#C13584"><svg><use href="#i-ig"/></svg></span><span><small>Instagram</small><b>@ozelklinikids_agizvedissagligi</b></span></a>
-      </div>
     </div>
     <div class="rb-host reveal" id="randevuApp" data-clinic="yetiskin"></div>
   </div>
@@ -685,13 +684,15 @@ footer{margin-top:0}
 <!-- İLETİŞİM -->
 <section id="konum">
   <div class="wrap contact">
-    <div class="cbox reveal">
+    <div class="cbox reveal" id="iletisim">
       <span class="eyebrow">İletişim</span>
       <h3>Bizi ziyaret edin</h3>
       <p>Mehmet Ali Paşa Mahallesi, Erkan Sokak<br>RBG İş Merkezi No 7B, İzmit / Kocaeli</p>
       <div class="btns">
         <a class="btn btn-gold" data-maps target="_blank" rel="noopener">Yol tarifi al</a>
         <a class="btn btn-light" href="tel:+905464217141">0546 421 71 41</a>
+        <a class="btn btn-light" data-wa="Merhaba Klinikids! Randevu almak istiyorum." target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn btn-light" href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener">Instagram</a>
         <a class="btn btn-light" data-review target="_blank" rel="noopener">Google'da değerlendirin</a>
       </div>
     </div>
@@ -703,7 +704,7 @@ footer{margin-top:0}
   <div class="wrap">
     <div class="foot">
       <div>
-        <a href="index.html" class="logo"><svg><use href="#logo-tooth"/></svg><span><span class="w" data-logo></span><small>İzmit Diş Sanatı</small></span></a>
+        <a href="index.html" class="logo" aria-label="İzmit Diş Sanatı ana sayfa"><span class="logo-box"><img class="logo-img" src="foto/izmit-dis-sanati-logo-beyaz.png" alt="İzmit Diş Sanatı" width="545" height="128"><img class="logo-rotor" src="foto/logo-pervane-beyaz.png" alt="" aria-hidden="true"></span></a>
         <p style="margin-top:16px;max-width:360px">Özel Klinikids Ağız ve Diş Sağlığı Polikliniği. Çocuk ve yetişkin kliniği tek çatı altında.</p>
       </div>
       <div><h4>Tedaviler</h4><ul id="footSvc"></ul></div>

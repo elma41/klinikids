@@ -144,12 +144,15 @@ header.collapsed .nav>.btn{display:none}
 .row.up i:nth-child(4),.row.up i:nth-child(5){height:100%}
 .row.low i{height:80%}
 .ba-layer{position:absolute;inset:0}
-.ba-before{--tooth:linear-gradient(#EAD6A6,#D3B874)}
-.ba-after{--tooth:linear-gradient(#fff,#EAF2F8);clip-path:inset(0 0 0 50%)}
-.ba-handle{position:absolute;top:-8px;bottom:-8px;left:50%;width:3px;background:var(--navy);transform:translateX(-50%);pointer-events:none}
+.ba-pic{border-radius:18px;overflow:hidden;position:relative}
+.ba-pic.ba-layer{position:absolute}
+.ba-tag{position:absolute;top:12px;left:12px;background:rgba(23,32,51,.78);color:#fff;font-weight:700;font-size:13px;padding:5px 12px;border-radius:999px;pointer-events:none}
+.ba-tag.r{left:auto;right:12px;background:rgba(255,255,255,.92);color:var(--navy)}
+.ba-img{display:block;width:100%;height:auto;aspect-ratio:994/530;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+.ba-after{clip-path:inset(0 0 0 50%)}
+.ba-handle{position:absolute;top:0;bottom:0;left:50%;width:3px;background:#fff;box-shadow:0 0 6px rgba(0,0,0,.3);transform:translateX(-50%);pointer-events:none}
 .ba-handle::after{content:"⇆";position:absolute;top:50%;left:50%;width:42px;height:42px;transform:translate(-50%,-50%);border-radius:50%;background:#fff;border:3px solid var(--navy);display:grid;place-items:center;font-weight:800}
 .ba input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize}
-.ba-labels{display:flex;justify-content:space-between;margin-top:14px;font-weight:700;font-size:14px;color:var(--ink2)}
 .steps{display:grid;gap:14px;margin:26px 0 30px}
 .steps>div{display:flex;gap:16px;align-items:flex-start}
 .steps b.n{flex:none;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--gold);color:var(--gold);display:grid;place-items:center;font-weight:800}
@@ -579,12 +582,11 @@ footer{margin-top:0}
   <div class="wrap smile-grid">
     <div class="ba reveal">
       <div class="ba-stage">
-        <div class="mouth ba-layer ba-before" style="position:relative"><div class="row up"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="row low"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
-        <div class="mouth ba-layer ba-after" id="baAfter"><div class="row up"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="row low"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="ba-pic"><img class="ba-img" src="foto/gulus-oncesi.jpg" alt="Tedavi öncesi sararmış dişler" width="994" height="530" loading="lazy"><span class="ba-tag">Öncesi</span></div>
+        <div class="ba-pic ba-layer ba-after" id="baAfter"><img class="ba-img" src="foto/gulus-sonrasi.jpg" alt="Tedavi sonrası beyaz dişler" width="994" height="530" loading="lazy"><span class="ba-tag r">Sonrası</span></div>
         <div class="ba-handle" id="baHandle"></div>
         <input type="range" min="0" max="100" value="50" id="baRange" aria-label="Öncesi ve sonrası karşılaştırma">
       </div>
-      <div class="ba-labels"><span>Öncesi</span><span>Sonrası</span></div>
     </div>
     <div class="reveal">
       <span class="eyebrow">Gülüş Tasarımı</span>

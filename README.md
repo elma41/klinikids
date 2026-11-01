@@ -5,6 +5,7 @@
 | Dosya | Ne işe yarar |
 |---|---|
 | `01_schema.sql` | Tablolar, yetkiler (RLS), boş saat hesabı, randevu alma ve iptal fonksiyonları |
+| `03_kurumlar.sql` | Anlaşmalı kurumlar tablosu ve logo deposu (admin panelindeki **Kurumlar** sayfası için). Bir kez çalıştır. |
 | `02_seed.sql` | Test için 3 örnek doktor, 4 hizmet ve çalışma saatleri. Gerçek kurulumda çalıştırma. |
 
 ## Kurulum

@@ -149,6 +149,8 @@ textarea.in{min-height:70px;resize:vertical}
 .row:last-child{border-bottom:0}
 .row .grow{flex:1;min-width:0}
 .row .grow b{display:block}
+.klogo{width:64px;height:64px;border-radius:12px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;padding:6px;flex-shrink:0;overflow:hidden;font-size:11px;color:var(--ink3);text-align:center}
+.klogo img{max-width:100%;max-height:100%;object-fit:contain}
 .avatar{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--c,var(--teal));flex-shrink:0;font-size:14px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{background:var(--cream);border:1.5px solid var(--line);border-radius:99px;padding:3px 10px;font-size:13px;font-weight:700}
@@ -316,6 +318,7 @@ const TABS = [
   {id:'timeoff',  ic:'🏖️', label:'İzinler',    show:()=>true},
   {id:'doctors',  ic:'👩‍⚕️', label:'Doktorlar',  show:()=>true},
   {id:'services', ic:'🦷', label:'Hizmetler',  show:()=>isAdmin()},
+  {id:'kurumlar', ic:'🤝', label:'Kurumlar',   show:()=>isAdmin()},
   {id:'staff',    ic:'🔑', label:'Personel',   show:()=>isAdmin()},
   {id:'settings', ic:'⚙️', label:'Ayarlar',    show:()=>isAdmin()},
 ];
@@ -873,6 +876,80 @@ function hoursForm(d, hours){
 }
 
 /* =========================================================
+   ANLAŞMALI KURUMLAR (sitede logo olarak görünür)
+   ========================================================= */
+const KBUCKET = 'kurum-logolari';
+const kLogo = p => p ? sb.storage.from(KBUCKET).getPublicUrl(p).data.publicUrl : '';
+const kFriendly = e => /institutions|PGRST205|42P01|Bucket not found/i.test((e?.message||'')+(e?.code||''))
+  ? 'Kurumlar tablosu henüz kurulmamış. Supabase SQL Editor’da 03_kurumlar.sql dosyasını bir kez çalıştırın.' : friendly(e);
+async function viewKurumlar(main){
+  let list;
+  try { list = await q(sb.from('institutions').select('*').order('sort_order').order('name')); }
+  catch(e){ main.innerHTML = `<div class="top"><h1>Anlaşmalı kurumlar</h1></div><div class="card"><div class="err">${esc(kFriendly(e))}</div></div>`; return; }
+  main.innerHTML = `<div class="top"><h1>Anlaşmalı kurumlar</h1><button class="btn primary" id="kNew">＋ Kurum ekle</button></div>
+    <p class="muted small" style="margin:-6px 0 14px">Buradaki aktif kurumların logoları çocuk ve yetişkin sayfalarındaki “Anlaşmalı Kurumlarımız” bölümünde görünür. Anlaşma bittiğinde kurumu silin ya da pasife alın.</p>
+    <div class="card"><div class="list">${list.map(k => `<div class="row" style="${k.is_active?'':'opacity:.55'}">
+      <div class="klogo">${k.logo_path?`<img src="${esc(kLogo(k.logo_path))}" alt="">`:'Logo yok'}</div>
+      <div class="grow"><b>${esc(k.name)} ${k.is_active?'':'<span class="pill cancelled">Pasif</span>'}</b><span class="muted small">Sıra: ${k.sort_order}</span></div>
+      <button class="btn sm" data-ke="${k.id}">✏️ Düzenle</button>
+      <button class="btn sm danger" data-kd="${k.id}">🗑 Sil</button></div>`).join('') || '<div class="empty">Henüz anlaşmalı kurum yok. Eklediğiniz kurumlar sitede görünür; hiç kurum yoksa bölüm sitede gizlenir.</div>'}</div></div>`;
+  $('kNew').onclick = () => kurumForm(null, list);
+  main.querySelectorAll('[data-ke]').forEach(b => b.onclick = () => kurumForm(list.find(k=>k.id===b.dataset.ke), list));
+  main.querySelectorAll('[data-kd]').forEach(b => b.onclick = async () => {
+    const k = list.find(x=>x.id===b.dataset.kd);
+    if(!(await confirmBox(`${k.name} anlaşmalı kurumlardan kaldırılacak ve logosu siteden silinecek.`, 'Sil'))) return;
+    try {
+      await q(sb.from('institutions').delete().eq('id', k.id).select('id'));
+      if(k.logo_path) await sb.storage.from(KBUCKET).remove([k.logo_path]);
+      toast('Kurum silindi'); go('kurumlar');
+    } catch(e){ toast(kFriendly(e), true); }
+  });
+}
+function kurumForm(k, list){
+  const m = modal(k ? 'Kurumu düzenle' : 'Yeni anlaşmalı kurum', `
+    <label class="f">Kurum adı<input class="in" id="kName" value="${esc(k?.name||'')}" placeholder="Örn. Allianz Sigorta"></label>
+    <div class="grid2">
+      <label class="f">Logo (PNG, JPG, WEBP veya SVG · en fazla 2 MB)<input class="in" type="file" id="kFile" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label>
+      <label class="f">Sıra<input class="in" type="number" id="kSort" value="${k?.sort_order ?? (list.length ? Math.max(...list.map(x=>x.sort_order))+1 : 1)}"></label>
+    </div>
+    <div class="row" style="border:0;padding-top:0"><div class="klogo" id="kPrev">${k?.logo_path?`<img src="${esc(kLogo(k.logo_path))}" alt="">`:'Önizleme'}</div><span class="muted small">Şeffaf arka planlı, yatay ya da kare logo en iyi sonucu verir.${k?.logo_path?' Yeni dosya seçmezseniz mevcut logo kalır.':''}</span></div>
+    ${k?`<label class="check"><input type="checkbox" id="kActive" ${k.is_active?'checked':''}> Aktif (sitede görünsün)</label>`:''}
+    <div class="err" id="kErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="kSave">Kaydet</button></div>`);
+  const fileIn = m.el.querySelector('#kFile'), err = m.el.querySelector('#kErr');
+  fileIn.onchange = () => { const f = fileIn.files[0]; if(f) m.el.querySelector('#kPrev').innerHTML = `<img src="${URL.createObjectURL(f)}" alt="">`; };
+  m.el.querySelector('#kSave').onclick = async () => {
+    err.hidden = true;
+    const name = m.el.querySelector('#kName').value.trim(), f = fileIn.files[0];
+    if(name.length < 2){ err.textContent='Kurumun adını girin.'; err.hidden=false; return; }
+    if(!k && !f){ err.textContent='Kurumun logosunu seçin.'; err.hidden=false; return; }
+    if(f && f.size > 2*1024*1024){ err.textContent='Logo en fazla 2 MB olabilir.'; err.hidden=false; return; }
+    if(f && !/^image\/(png|jpeg|webp|svg\+xml)$/.test(f.type)){ err.textContent='Logo PNG, JPG, WEBP veya SVG olmalı.'; err.hidden=false; return; }
+    const btn = m.el.querySelector('#kSave'); btn.disabled = true; btn.textContent = 'Kaydediliyor…';
+    let newPath = null;
+    try {
+      if(f){
+        const ext = ({'image/png':'png','image/jpeg':'jpg','image/webp':'webp','image/svg+xml':'svg'})[f.type];
+        newPath = `${crypto.randomUUID()}.${ext}`;
+        const {error} = await sb.storage.from(KBUCKET).upload(newPath, f, {contentType: f.type, cacheControl: '31536000'});
+        if(error){ newPath = null; throw error; }
+      }
+      const rec = { name, sort_order: +m.el.querySelector('#kSort').value || 0 };
+      if(newPath) rec.logo_path = newPath;
+      if(k){
+        rec.is_active = m.el.querySelector('#kActive').checked;
+        await q(sb.from('institutions').update(rec).eq('id', k.id).select('id'));
+        if(newPath && k.logo_path) await sb.storage.from(KBUCKET).remove([k.logo_path]);
+      } else await q(sb.from('institutions').insert(rec).select('id'));
+      m.close(); toast('Kurum kaydedildi'); go('kurumlar');
+    } catch(e){
+      if(newPath) await sb.storage.from(KBUCKET).remove([newPath]);
+      err.textContent = kFriendly(e); err.hidden=false; btn.disabled=false; btn.textContent='Kaydet';
+    }
+  };
+}
+
+/* =========================================================
    HİZMETLER
    ========================================================= */
 async function viewServices(main){
@@ -1188,7 +1265,7 @@ async function exportPatients(){
     'Son randevu': stat[p.id]?.last ? ymd(stat[p.id].last).split('-').reverse().join('.') : '', 'Notlar': p.notes||'' }))]], `klinikids-hastalar-${today()}.xlsx`);
 }
 
-const VIEWS = {reports:viewReports, appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, staff:viewStaff, settings:viewSettings};
+const VIEWS = {reports:viewReports, appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, kurumlar:viewKurumlar, staff:viewStaff, settings:viewSettings};
 
 sb.auth.onAuthStateChange(ev => { if(ev==='SIGNED_OUT'){ $('appView').hidden=true; $('loginView').hidden=false; } });
 boot();

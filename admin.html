@@ -216,7 +216,7 @@ textarea.in{min-height:70px;resize:vertical}
     <label class="f">Şifre<input class="in" type="password" id="lgPass" autocomplete="current-password" required></label>
     <div class="err" id="lgErr" hidden></div>
     <button class="btn primary" id="lgBtn" type="submit" style="padding:12px">Giriş yap</button>
-    <p class="muted small">Şifrenizi unuttuysanız klinik yöneticisine başvurun.</p>
+    <p class="muted small">Şifrenizi unuttuysanız klinik yöneticisine başvurun; size yeni bir geçici şifre verir.</p>
   </form>
 </div>
 
@@ -319,6 +319,12 @@ const TABS = [
   {id:'doctors',  ic:'👩‍⚕️', label:'Doktorlar',  show:()=>true},
   {id:'services', ic:'🦷', label:'Hizmetler',  show:()=>isAdmin()},
   {id:'kurumlar', ic:'🤝', label:'Kurumlar',   show:()=>isAdmin()},
+  {id:'profil', ic:'🪪', label:'Site profili', show:()=>isAdmin()||isDoctor()},
+  {id:'sertifikalar', ic:'🏅', label:'Sertifikalar', show:()=>isAdmin()||isDoctor()},
+  {id:'sss', ic:'❓', label:'Sık Sorulan Sorular', show:()=>isAdmin()},
+  {id:'galeri', ic:'🖼️', label:'Galeri', show:()=>isAdmin()},
+  {id:'yanlislar', ic:'💡', label:'Doğru Bilinen Yanlışlar', show:()=>isAdmin()},
+  {id:'kvkk', ic:'🔒', label:'KVKK metinleri', show:()=>isAdmin()},
   {id:'staff',    ic:'🔑', label:'Personel',   show:()=>isAdmin()},
   {id:'settings', ic:'⚙️', label:'Ayarlar',    show:()=>isAdmin()},
 ];
@@ -351,6 +357,7 @@ async function boot(){
   $('loginView').hidden=true; $('appView').hidden=false;
   $('meName').textContent = staff.full_name;
   $('meRole').textContent = ROLES[staff.role] + ' · ' + S.user.email;
+  if(S.user.user_metadata?.must_change_password) await forcePasswordChange();
   await loadRefs();
   go(S.tab);
 }
@@ -365,6 +372,8 @@ async function loadRefs(){
   Object.assign(S, {doctors, services, links, settings: settings[0]});
 }
 const docOf = id => S.doctors.find(d => d.id===id);
+const hasSvcClinic = () => S.services.some(s => 'clinic' in s);
+const SVC_CL = {cocuk:'🧒 Çocuk', yetiskin:'🧑 Yetişkin', ikisi:'🧒🧑 İkisi'};
 const svcsOf = docId => S.services.filter(s => S.links.some(l => l.doctor_id===docId && l.service_id===s.id));
 
 /* ---------------- gezinme ---------------- */
@@ -702,10 +711,11 @@ async function viewTimeoff(main){
   const rows = await q(qq);
   const docs = isDoctor() ? S.doctors.filter(d => d.id===S.staff.doctor_id) : S.doctors.filter(d => d.is_active);
   main.innerHTML = `<div class="top"><h1>İzinler ve tatiller</h1></div>
+    <p class="muted small" style="margin:-6px 0 14px">Eklenen izinler sitede hekim kartında (“🏖️ İzinde”) görünür ve o saatlere randevu alınamaz. <b>Tüm doktorlar</b> seçilirse sitede “kliniğimiz kapalıdır” duyurusu çıkar.</p>
     <div class="card"><h3>Yeni izin ekle</h3>
       <div class="grid2">
         <label class="f">Doktor<select class="in" id="tDoc">${isDoctor()?'':'<option value="__all">Tüm doktorlar (resmi tatil)</option>'}${docs.map(d=>`<option value="${d.id}">${esc(docName(d))}</option>`).join('')}</select></label>
-        <label class="f">Açıklama<input class="in" id="tReason" placeholder="Yıllık izin, kongre, bayram…"></label>
+        <label class="f">Açıklama <span class="muted small">(sitede görünür)</span><input class="in" id="tReason" placeholder="Yıllık izin, Kongre, Cumhuriyet Bayramı…"></label>
       </div>
       <div class="grid3" style="margin-top:12px">
         <label class="f">Başlangıç<input class="in" type="date" id="tFrom" value="${today()}"></label>
@@ -805,9 +815,11 @@ function doctorForm(d){
       <label class="f">Uzmanlık<input class="in" id="dSpec" value="${esc(d?.specialty||'')}" placeholder="Ortodonti, Pedodonti…"></label>
       <label class="f">Sıra<input class="in" type="number" id="dSort" value="${d?.sort_order??S.doctors.length+1}"></label>
     </div>
-    <label class="f">Hangi klinikte?<select class="in" id="dClinic">${Object.entries(CLINICS).map(([k,v])=>`<option value="${k}" ${(d?.clinic||'ikisi')===k?'selected':''}>${v}</option>`).join('')}</select></label>
+    <label class="f">Görev yaptığı klinikler <span class="muted small">(birden fazla seçilebilir)</span><div class="chips" id="dClinics" style="margin-top:6px">
+      <label class="chip check"><input type="checkbox" value="cocuk" ${!d||['cocuk','ikisi'].includes(d.clinic)?'checked':''}> 🧒 Çocuk kliniği</label>
+      <label class="chip check"><input type="checkbox" value="yetiskin" ${!d||['yetiskin','ikisi'].includes(d.clinic)?'checked':''}> 🧑 Yetişkin kliniği</label></div></label>
     <label class="f">Takvim rengi<div class="chips" id="dColors">${COLORS.map(c=>`<button type="button" data-c="${c}" style="width:30px;height:30px;border-radius:9px;background:${c};outline:${(d?.color||COLORS[0])===c?'3px solid var(--ink)':'none'};outline-offset:2px"></button>`).join('')}</div></label>
-    <label class="f">Verdiği hizmetler<div class="chips">${S.services.filter(s=>s.is_active||mine.has(s.id)).map(s=>`<label class="chip check"><input type="checkbox" value="${s.id}" ${mine.has(s.id)?'checked':''}> ${esc(s.name)}</label>`).join('') || '<span class="muted small">Önce Hizmetler sayfasından hizmet ekleyin.</span>'}</div></label>
+    <label class="f">Verdiği hizmetler<div class="chips" id="dSvcs">${S.services.filter(s=>s.is_active||mine.has(s.id)).map(s=>`<label class="chip check"><input type="checkbox" value="${s.id}" ${mine.has(s.id)?'checked':''}> ${esc(s.name)}${hasSvcClinic()&&s.clinic&&s.clinic!=='ikisi'?` <span class="muted">${s.clinic==='cocuk'?'🧒':'🧑'}</span>`:''}</label>`).join('') || '<span class="muted small">Önce Hizmetler sayfasından hizmet ekleyin.</span>'}</div></label>
     ${d?`<label class="check"><input type="checkbox" id="dActive" ${d.is_active?'checked':''}> Aktif (sitede görünsün, randevu alınabilsin)</label>`:''}
     ${d?'':'<p class="muted small">Kaydettikten sonra “🕘 Saatler” düğmesinden çalışma saatlerini girin; Pzt–Cum 09:00–18:00 varsayılan olarak eklenir.</p>'}
     <div class="err" id="dErr" hidden></div>
@@ -816,10 +828,11 @@ function doctorForm(d){
   m.el.querySelectorAll('[data-c]').forEach(b => b.onclick = () => { color=b.dataset.c; m.el.querySelectorAll('[data-c]').forEach(x=>x.style.outline = x===b?'3px solid var(--ink)':'none'); });
   m.el.querySelector('#dSave').onclick = async () => {
     const err = m.el.querySelector('#dErr'); err.hidden=true;
-    const rec = { title: m.el.querySelector('#dTitle').value, full_name: m.el.querySelector('#dName').value.trim(), specialty: m.el.querySelector('#dSpec').value.trim()||null, sort_order: +m.el.querySelector('#dSort').value||0, color, clinic: m.el.querySelector('#dClinic').value };
+    const rec = { title: m.el.querySelector('#dTitle').value, full_name: m.el.querySelector('#dName').value.trim(), specialty: m.el.querySelector('#dSpec').value.trim()||null, sort_order: +m.el.querySelector('#dSort').value||0, color, clinic: (c => c.length===2 ? 'ikisi' : c[0])([...m.el.querySelectorAll('#dClinics input:checked')].map(x=>x.value)) };
     if(d) rec.is_active = m.el.querySelector('#dActive').checked;
     if(rec.full_name.length<3){ err.textContent='Doktorun adını girin.'; err.hidden=false; return; }
-    const chosen = [...m.el.querySelectorAll('.chips input[type=checkbox]:checked')].map(x=>x.value);
+    if(!rec.clinic){ err.textContent='Doktorun görev yaptığı en az bir kliniği seçin.'; err.hidden=false; return; }
+    const chosen = [...m.el.querySelectorAll('#dSvcs input[type=checkbox]:checked')].map(x=>x.value);
     try {
       let id = d?.id;
       if(d) await q(sb.from('doctors').update(rec).eq('id', id).select('id'));
@@ -950,6 +963,518 @@ function kurumForm(k, list){
 }
 
 /* =========================================================
+   DOĞRU BİLİNEN YANLIŞLAR (çocuk ve yetişkin sayfalarında görünür)
+   ========================================================= */
+const YCL = {cocuk:'🧒 Çocuk Kliniği', yetiskin:'🧑 Yetişkin Kliniği'};
+const yFriendly = e => /myths|PGRST205|42P01/i.test((e?.message||'')+(e?.code||''))
+  ? 'Yanlışlar tablosu henüz kurulmamış. Supabase SQL Editor’da 04_yanlislar.sql dosyasını bir kez çalıştırın.' : friendly(e);
+async function viewYanlislar(main){
+  S.yClinic = S.yClinic || 'cocuk';
+  let all;
+  try { all = await q(sb.from('myths').select('*').order('sort_order').order('created_at')); }
+  catch(e){ main.innerHTML = `<div class="top"><h1>Doğru bilinen yanlışlar</h1></div><div class="card"><div class="err">${esc(yFriendly(e))}</div></div>`; return; }
+  const list = all.filter(x => x.clinic === S.yClinic);
+  const kids = S.yClinic === 'cocuk';
+  main.innerHTML = `<div class="top"><h1>Doğru bilinen yanlışlar</h1><button class="btn primary" id="yNew">＋ Madde ekle</button></div>
+    <p class="muted small" style="margin:-6px 0 14px">Buradaki aktif maddeler sitedeki “Doğru Bilinen Yanlışlar” bölümünde, bu sıralamayla görünür. Bir maddeyi geçici olarak kaldırmak için pasife alın; hiç aktif madde kalmazsa bölüm sitede gizlenir.</p>
+    <div class="seg" style="margin-bottom:14px">${Object.entries(YCL).map(([k,v])=>`<button data-yc="${k}" class="${k===S.yClinic?'on':''}">${v} <span style="opacity:.7">(${all.filter(x=>x.clinic===k).length})</span></button>`).join('')}</div>
+    <div class="card"><div class="list">${list.map((m,i) => `<div class="row" style="align-items:flex-start;${m.is_active?'':'opacity:.55'}">
+      <div class="avatar" style="--c:${kids?'var(--yellow)':'var(--red)'};color:${kids?'var(--ink)':'#fff'};font-size:${kids?'20px':'13px'}">${kids?esc(m.emoji||'🦷'):'✗'}</div>
+      <div class="grow" style="min-width:0"><b>“${esc(m.myth)}” ${m.is_active?'':'<span class="pill cancelled">Pasif</span>'}</b>
+        <span class="muted small" style="display:block;margin-top:3px"><b style="color:var(--teal-dark)">Doğrusu:</b> ${esc(m.truth)}</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex:none">
+        <button class="btn sm" data-yu="${i}" ${i===0?'disabled':''} title="Yukarı taşı">↑</button>
+        <button class="btn sm" data-yd="${i}" ${i===list.length-1?'disabled':''} title="Aşağı taşı">↓</button>
+        <button class="btn sm" data-ye="${m.id}">✏️ Düzenle</button>
+        <button class="btn sm danger" data-yx="${m.id}">🗑 Sil</button></div></div>`).join('') || '<div class="empty">Bu klinik için henüz madde yok. Eklediğiniz maddeler sitede görünür; hiç madde yoksa bölüm sitede gizlenir.</div>'}</div></div>`;
+  main.querySelectorAll('[data-yc]').forEach(b => b.onclick = () => { S.yClinic = b.dataset.yc; go('yanlislar'); });
+  $('yNew').onclick = () => yanlisForm(null, list);
+  main.querySelectorAll('[data-ye]').forEach(b => b.onclick = () => yanlisForm(list.find(m=>m.id===b.dataset.ye), list));
+  const move = async (i, d) => {
+    const arr = list.slice(); [arr[i], arr[i+d]] = [arr[i+d], arr[i]];
+    try {
+      await Promise.all(arr.map((m, k) => m.sort_order === k+1 ? null : q(sb.from('myths').update({sort_order:k+1}).eq('id', m.id).select('id'))).filter(Boolean));
+      go('yanlislar');
+    } catch(e){ toast(yFriendly(e), true); }
+  };
+  main.querySelectorAll('[data-yu]').forEach(b => b.onclick = () => move(+b.dataset.yu, -1));
+  main.querySelectorAll('[data-yd]').forEach(b => b.onclick = () => move(+b.dataset.yd, 1));
+  main.querySelectorAll('[data-yx]').forEach(b => b.onclick = async () => {
+    const m = list.find(x=>x.id===b.dataset.yx);
+    if(!(await confirmBox(`“${m.myth}” maddesi siteden kalıcı olarak silinecek. Sadece gizlemek isterseniz Düzenle’den pasife alabilirsiniz.`, 'Sil'))) return;
+    try { await q(sb.from('myths').delete().eq('id', m.id).select('id')); toast('Madde silindi'); go('yanlislar'); }
+    catch(e){ toast(yFriendly(e), true); }
+  });
+}
+function yanlisForm(m, list){
+  const clinic = m?.clinic || S.yClinic;
+  const md = modal(m ? 'Maddeyi düzenle' : 'Yeni madde', `
+    <div class="grid2">
+      <label class="f">Klinik<select class="in" id="yClinic">${Object.entries(YCL).map(([k,v])=>`<option value="${k}" ${k===clinic?'selected':''}>${v}</option>`).join('')}</select></label>
+      <label class="f" id="yEmojiBox">Simge (emoji)<input class="in" id="yEmoji" maxlength="8" value="${esc(m?.emoji||'')}" placeholder="🦷"></label>
+    </div>
+    <label class="f">Yanlış inanış<textarea class="in" id="yMyth" placeholder="Örn. Süt dişleri nasılsa düşecek, tedavi etmeye gerek yok.">${esc(m?.myth||'')}</textarea></label>
+    <label class="f">Doğrusu<textarea class="in" id="yTruth" style="min-height:110px" placeholder="Doğru bilgiyi kısa ve anlaşılır biçimde yazın.">${esc(m?.truth||'')}</textarea></label>
+    <div class="grid2">
+      <label class="f">Sıra<input class="in" type="number" id="ySort" value="${m?.sort_order ?? (list.length ? Math.max(...list.map(x=>x.sort_order))+1 : 1)}"></label>
+      <label class="check" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="yActive" ${!m||m.is_active?'checked':''}> Aktif (sitede görünsün)</label>
+    </div>
+    <p class="muted small">Simge sadece çocuk sayfasında görünür. Tırnak işaretlerini yazmanıza gerek yok; sitede otomatik eklenir.</p>
+    <div class="err" id="yErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="ySave">Kaydet</button></div>`, {wide:true});
+  const el = id => md.el.querySelector('#'+id);
+  const sync = () => el('yEmojiBox').style.visibility = el('yClinic').value === 'cocuk' ? '' : 'hidden';
+  el('yClinic').onchange = sync; sync();
+  el('ySave').onclick = async () => {
+    const err = el('yErr'); err.hidden = true;
+    const strip = s => s.trim().replace(/^["“”']+|["“”']+$/g, '').trim();
+    const rec = { clinic: el('yClinic').value, emoji: el('yEmoji').value.trim() || null, myth: strip(el('yMyth').value), truth: el('yTruth').value.trim(),
+                  sort_order: +el('ySort').value || 0, is_active: el('yActive').checked };
+    if(rec.clinic !== 'cocuk') rec.emoji = m?.emoji ?? null;
+    if(rec.myth.length < 5){ err.textContent='Yanlış inanışı yazın.'; err.hidden=false; return; }
+    if(rec.truth.length < 5){ err.textContent='Doğrusunu yazın.'; err.hidden=false; return; }
+    const btn = el('ySave'); btn.disabled = true; btn.textContent = 'Kaydediliyor…';
+    try {
+      if(m) await q(sb.from('myths').update(rec).eq('id', m.id).select('id'));
+      else await q(sb.from('myths').insert(rec).select('id'));
+      S.yClinic = rec.clinic; md.close(); toast('Madde kaydedildi'); go('yanlislar');
+    } catch(e){ err.textContent = yFriendly(e); err.hidden=false; btn.disabled=false; btn.textContent='Kaydet'; }
+  };
+}
+
+/* =========================================================
+   SERTİFİKALAR (doktor kendi sertifikalarını, admin hepsini yönetir;
+   sitede hekim kartlarında görünür)
+   ========================================================= */
+const CBUCKET = 'sertifikalar';
+const cUrl = p => p ? sb.storage.from(CBUCKET).getPublicUrl(p).data.publicUrl : '';
+const cFriendly = e => /doctor_certificates|PGRST205|42P01|Bucket not found/i.test((e?.message||'')+(e?.code||''))
+  ? 'Sertifikalar tablosu henüz kurulmamış. Supabase SQL Editor’da 05_sertifikalar.sql dosyasını bir kez çalıştırın.' : friendly(e);
+if(!document.getElementById('certCss')){
+  const st=document.createElement('style'); st.id='certCss'; st.textContent=`
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.cc{border:1.5px solid var(--line);border-radius:16px;overflow:hidden;background:#fff;display:flex;flex-direction:column}
+.cc.off{opacity:.55}
+.cc .th{aspect-ratio:4/3;background:var(--cream);display:grid;place-items:center;overflow:hidden;cursor:zoom-in}
+.cc .th img{width:100%;height:100%;object-fit:cover}
+.cc .pdf{font-size:42px;text-align:center;line-height:1.1}.cc .pdf small{display:block;font-size:12px;font-weight:800;color:var(--ink3)}
+.cc .cb{padding:10px 12px;flex:1}.cc .cb b{display:block;line-height:1.3}
+.cc .ca{display:flex;gap:6px;padding:0 12px 12px;flex-wrap:wrap}
+.cprev{width:100%;aspect-ratio:4/3;border:1.5px dashed var(--line);border-radius:14px;display:grid;place-items:center;overflow:hidden;background:var(--cream);color:var(--ink3);font-weight:700}
+.cprev img{width:100%;height:100%;object-fit:contain}`; document.head.appendChild(st);
+}
+/* Fotoğrafları yüklemeden önce küçült (en uzun kenar 1800 px) — site hızlı açılsın */
+async function shrinkImage(f){
+  if(!/^image\/(jpeg|png|webp)$/.test(f.type)) return f;
+  try{
+    const bmp = await createImageBitmap(f);
+    const k = Math.min(1, 1800/Math.max(bmp.width,bmp.height));
+    if(k===1 && f.size < 900*1024) return f;
+    const c = document.createElement('canvas'); c.width=Math.round(bmp.width*k); c.height=Math.round(bmp.height*k);
+    const x = c.getContext('2d'); x.fillStyle='#fff'; x.fillRect(0,0,c.width,c.height); x.drawImage(bmp,0,0,c.width,c.height);
+    const blob = await new Promise(r => c.toBlob(r,'image/jpeg',.86));
+    return blob && blob.size < f.size ? new File([blob], f.name.replace(/\.\w+$/,'')+'.jpg', {type:'image/jpeg'}) : f;
+  }catch(e){ return f; }
+}
+async function viewSertifikalar(main){
+  const docs = S.doctors.filter(d => d.is_active || d.id===S.certDoc);
+  if(isDoctor()){
+    if(!S.staff.doctor_id){ main.innerHTML = `<div class="top"><h1>Sertifikalarım</h1></div><div class="card"><div class="err">Hesabınız bir doktor kaydına bağlı değil. Klinik yöneticisinden Personel sayfasında hesabınızı doktor kaydınıza bağlamasını isteyin.</div></div>`; return; }
+    S.certDoc = S.staff.doctor_id;
+  } else if(!S.certDoc || !docOf(S.certDoc)) S.certDoc = docs[0]?.id;
+  if(!S.certDoc){ main.innerHTML = `<div class="top"><h1>Sertifikalar</h1></div><div class="card"><div class="empty">Önce Doktorlar sayfasından doktor ekleyin.</div></div>`; return; }
+  let list;
+  try { list = await q(sb.from('doctor_certificates').select('*').eq('doctor_id', S.certDoc).order('sort_order').order('created_at')); }
+  catch(e){ main.innerHTML = `<div class="top"><h1>Sertifikalar</h1></div><div class="card"><div class="err">${esc(cFriendly(e))}</div></div>`; return; }
+  const d = docOf(S.certDoc);
+  main.innerHTML = `<div class="top"><h1>${isDoctor()?'Sertifikalarım':'Sertifikalar'}</h1><button class="btn primary" id="cNew">＋ Sertifika yükle</button></div>
+    <p class="muted small" style="margin:-6px 0 14px">Aktif sertifikalar sitede ${esc(docName(d))} kartında küçük resimler olarak görünür; tıklayan büyük hâlini görür. Fotoğraf (JPG, PNG, WEBP) ya da PDF yükleyebilirsiniz.</p>
+    ${isAdmin()?`<label class="f" style="max-width:360px;margin-bottom:14px">Doktor<select class="in" id="cDoc">${docs.map(x=>`<option value="${x.id}" ${x.id===S.certDoc?'selected':''}>${esc(docName(x))}</option>`).join('')}</select></label>`:''}
+    <div class="card">${list.length ? `<div class="cgrid">${list.map((c,i)=>`<div class="cc ${c.is_active?'':'off'}">
+      <a class="th" href="${esc(cUrl(c.file_path))}" target="_blank" rel="noopener">${c.file_type==='pdf'?'<span class="pdf">📄<small>PDF</small></span>':`<img src="${esc(cUrl(c.file_path))}" alt="" loading="lazy">`}</a>
+      <div class="cb"><b>${esc(c.title)}</b><span class="muted small">${esc([c.issuer, c.year].filter(Boolean).join(' · ') || '—')}</span> ${c.is_active?'':'<span class="pill cancelled">Gizli</span>'}</div>
+      <div class="ca"><button class="btn sm" data-cu="${i}" ${i===0?'disabled':''} title="Öne al">←</button><button class="btn sm" data-cd="${i}" ${i===list.length-1?'disabled':''} title="Geri al">→</button>
+        <button class="btn sm" data-ce="${c.id}">✏️ Düzenle</button><button class="btn sm danger" data-cx="${c.id}">🗑</button></div></div>`).join('')}</div>`
+      : '<div class="empty">Henüz sertifika yok. “＋ Sertifika yükle” ile ilk sertifikanızı ekleyin.</div>'}</div>`;
+  if($('cDoc')) $('cDoc').onchange = e => { S.certDoc = e.target.value; go('sertifikalar'); };
+  $('cNew').onclick = () => certForm(null, list);
+  main.querySelectorAll('[data-ce]').forEach(b => b.onclick = () => certForm(list.find(c=>c.id===b.dataset.ce), list));
+  const move = async (i, dir) => {
+    const arr = list.slice(); [arr[i], arr[i+dir]] = [arr[i+dir], arr[i]];
+    try { await Promise.all(arr.map((c,k) => c.sort_order===k+1 ? null : q(sb.from('doctor_certificates').update({sort_order:k+1}).eq('id', c.id).select('id'))).filter(Boolean)); go('sertifikalar'); }
+    catch(e){ toast(cFriendly(e), true); }
+  };
+  main.querySelectorAll('[data-cu]').forEach(b => b.onclick = () => move(+b.dataset.cu, -1));
+  main.querySelectorAll('[data-cd]').forEach(b => b.onclick = () => move(+b.dataset.cd, 1));
+  main.querySelectorAll('[data-cx]').forEach(b => b.onclick = async () => {
+    const c = list.find(x=>x.id===b.dataset.cx);
+    if(!(await confirmBox(`“${c.title}” sertifikası ve dosyası kalıcı olarak silinecek. Sadece sitede gizlemek isterseniz Düzenle’den gizleyebilirsiniz.`, 'Sil'))) return;
+    try { await q(sb.from('doctor_certificates').delete().eq('id', c.id).select('id')); await sb.storage.from(CBUCKET).remove([c.file_path]); toast('Sertifika silindi'); go('sertifikalar'); }
+    catch(e){ toast(cFriendly(e), true); }
+  });
+}
+function certForm(c, list){
+  const m = modal(c ? 'Sertifikayı düzenle' : 'Sertifika yükle', `
+    <div class="grid2">
+      <div>
+        <label class="f">Dosya (JPG, PNG, WEBP veya PDF · en fazla 5 MB)<input class="in" type="file" id="cFile" accept="image/jpeg,image/png,image/webp,application/pdf"></label>
+        <div class="cprev" id="cPrev">${c ? (c.file_type==='pdf' ? '📄 PDF' : `<img src="${esc(cUrl(c.file_path))}" alt="">`) : 'Önizleme'}</div>
+        ${c?'<p class="muted small">Yeni dosya seçmezseniz mevcut dosya kalır.</p>':''}
+      </div>
+      <div>
+        <label class="f">Sertifika adı<input class="in" id="cTitle" value="${esc(c?.title||'')}" placeholder="Örn. İleri İmplantoloji Eğitimi"></label>
+        <label class="f">Veren kurum (isteğe bağlı)<input class="in" id="cIssuer" value="${esc(c?.issuer||'')}" placeholder="Örn. Türk Dental Implant Derneği"></label>
+        <div class="grid2">
+          <label class="f">Yıl<input class="in" type="number" id="cYear" min="1950" max="2100" value="${c?.year ?? ''}" placeholder="${new Date().getFullYear()}"></label>
+          <label class="f">Sıra<input class="in" type="number" id="cSort" value="${c?.sort_order ?? (list.length ? Math.max(...list.map(x=>x.sort_order))+1 : 1)}"></label>
+        </div>
+        <label class="check"><input type="checkbox" id="cActive" ${!c||c.is_active?'checked':''}> Sitede görünsün</label>
+      </div>
+    </div>
+    <div class="err" id="cErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="cSave">Kaydet</button></div>`, {wide:true});
+  const el = id => m.el.querySelector('#'+id), err = el('cErr');
+  el('cFile').onchange = () => {
+    const f = el('cFile').files[0]; if(!f) return;
+    el('cPrev').innerHTML = f.type==='application/pdf' ? '📄 ' + esc(f.name) : `<img src="${URL.createObjectURL(f)}" alt="">`;
+    if(!el('cTitle').value.trim()) el('cTitle').value = f.name.replace(/\.\w+$/,'').replace(/[_-]+/g,' ').trim();
+  };
+  el('cSave').onclick = async () => {
+    err.hidden = true;
+    let f = el('cFile').files[0];
+    const title = el('cTitle').value.trim(), yr = el('cYear').value.trim();
+    if(title.length < 2){ err.textContent='Sertifikanın adını yazın.'; err.hidden=false; return; }
+    if(!c && !f){ err.textContent='Sertifika dosyasını seçin.'; err.hidden=false; return; }
+    if(f && !/^(image\/(jpeg|png|webp)|application\/pdf)$/.test(f.type)){ err.textContent='Dosya JPG, PNG, WEBP veya PDF olmalı.'; err.hidden=false; return; }
+    if(yr && !(+yr>=1950 && +yr<=2100)){ err.textContent='Yılı kontrol edin.'; err.hidden=false; return; }
+    const btn = el('cSave'); btn.disabled = true; btn.textContent = 'Yükleniyor…';
+    let newPath = null;
+    try {
+      if(f){
+        f = await shrinkImage(f);
+        if(f.size > 5*1024*1024) throw new Error('Dosya en fazla 5 MB olabilir.');
+        const ext = ({'image/png':'png','image/jpeg':'jpg','image/webp':'webp','application/pdf':'pdf'})[f.type];
+        newPath = `${S.certDoc}/${crypto.randomUUID()}.${ext}`;
+        const {error} = await sb.storage.from(CBUCKET).upload(newPath, f, {contentType: f.type, cacheControl: '31536000'});
+        if(error){ newPath = null; throw error; }
+      }
+      const rec = { title, issuer: el('cIssuer').value.trim() || null, year: yr ? +yr : null, sort_order: +el('cSort').value || 0, is_active: el('cActive').checked };
+      if(newPath){ rec.file_path = newPath; rec.file_type = f.type==='application/pdf' ? 'pdf' : 'image'; }
+      if(c){
+        await q(sb.from('doctor_certificates').update(rec).eq('id', c.id).select('id'));
+        if(newPath) await sb.storage.from(CBUCKET).remove([c.file_path]);
+      } else await q(sb.from('doctor_certificates').insert({ ...rec, doctor_id: S.certDoc }).select('id'));
+      m.close(); toast('Sertifika kaydedildi'); go('sertifikalar');
+    } catch(e){
+      if(newPath) await sb.storage.from(CBUCKET).remove([newPath]);
+      err.textContent = e?.message?.startsWith('Dosya') ? e.message : cFriendly(e); err.hidden=false; btn.disabled=false; btn.textContent='Kaydet';
+    }
+  };
+}
+
+/* =========================================================
+   ORTAK: sıralı liste yardımcıları
+   ========================================================= */
+async function reorder(table, arr){
+  await Promise.all(arr.map((x,k) => x.sort_order===k+1 ? null : q(sb.from(table).update({sort_order:k+1}).eq('id', x.id).select('id'))).filter(Boolean));
+}
+const tblFriendly = (e, file) => /PGRST205|42P01|does not exist|Bucket not found/i.test((e?.message||'')+(e?.code||''))
+  ? `Bu bölümün tablosu kurulmamış. Supabase SQL Editor’da ${file} dosyasını çalıştırın.` : friendly(e);
+
+/* =========================================================
+   SİTE PROFİLİ (hekim kartı) — doktor kendi kartını, admin hepsini düzenler
+   ========================================================= */
+const HBUCKET = 'hekim-foto';
+const hfUrl = p => sb.storage.from(HBUCKET).getPublicUrl(p).data.publicUrl;
+const hfPathOf = url => { const m = String(url||'').match(/\/object\/public\/hekim-foto\/(.+)$/); return m ? decodeURIComponent(m[1]) : null; };
+if(!document.getElementById('profCss')){
+  const st=document.createElement('style'); st.id='profCss'; st.textContent=`
+.pf-grid{display:grid;grid-template-columns:220px 1fr;gap:20px}
+.pf-photo{aspect-ratio:4/5;border-radius:16px;overflow:hidden;background:var(--cream);display:grid;place-items:center;font-size:42px;font-weight:800;color:var(--ink3);border:1.5px solid var(--line)}
+.pf-photo img{width:100%;height:100%;object-fit:cover;object-position:50% 20%}
+.rows{display:flex;flex-direction:column;gap:6px}
+.rows .r{display:grid;grid-template-columns:150px 1fr 34px;gap:6px}
+.rows .r.f3{grid-template-columns:120px 1fr 34px}
+.rows .r button{border:1.5px solid var(--line);border-radius:10px;background:#fff;font-weight:800;color:var(--ink3);cursor:pointer}
+.pf-sec{border-top:1px dashed var(--line);padding-top:14px;margin-top:14px}
+.pf-sec h3{margin:0 0 4px}
+@media (max-width:760px){.pf-grid{grid-template-columns:1fr}.pf-photo{max-width:220px}.rows .r,.rows .r.f3{grid-template-columns:1fr 1fr 34px}}`; document.head.appendChild(st);
+}
+function rowsEditor(host, rows, ph, cls=''){
+  const draw = () => {
+    host.innerHTML = rows.map((r,i)=>`<div class="r ${cls}"><input class="in" data-i="${i}" data-k="0" value="${esc(r[0]||'')}" placeholder="${esc(ph[0])}"><input class="in" data-i="${i}" data-k="1" value="${esc(r[1]||'')}" placeholder="${esc(ph[1])}"><button type="button" data-x="${i}" title="Satırı sil">✕</button></div>`).join('')
+      + `<div><button type="button" class="btn sm" data-add>＋ Satır ekle</button></div>`;
+    host.querySelectorAll('input').forEach(inp => inp.oninput = () => rows[+inp.dataset.i][+inp.dataset.k] = inp.value);
+    host.querySelectorAll('[data-x]').forEach(b => b.onclick = () => { rows.splice(+b.dataset.x,1); draw(); });
+    host.querySelector('[data-add]').onclick = () => { rows.push(['','']); draw(); const ins = host.querySelectorAll('input'); ins[ins.length-2]?.focus(); };
+  };
+  draw();
+  return () => rows.map(r => [String(r[0]||'').trim(), String(r[1]||'').trim()]).filter(r => r[0] || r[1]);
+}
+async function viewProfil(main){
+  await loadRefs();
+  if(isDoctor()){
+    if(!S.staff.doctor_id){ main.innerHTML = `<div class="top"><h1>Site profilim</h1></div><div class="card"><div class="err">Hesabınız bir doktor kaydına bağlı değil. Yöneticiden Personel sayfasında bağlamasını isteyin.</div></div>`; return; }
+    S.profDoc = S.staff.doctor_id;
+  } else if(!S.profDoc || !docOf(S.profDoc)) S.profDoc = S.doctors.find(d=>d.is_active)?.id;
+  const d = docOf(S.profDoc);
+  if(!d){ main.innerHTML = '<div class="card empty">Önce doktor ekleyin.</div>'; return; }
+  const p = JSON.parse(JSON.stringify(d.profile || {}));
+  let photo = d.photo_url || '', newFile = null;
+  const defRole = `${d.specialty || 'Diş Hekimi'} · ${({cocuk:'Çocuk Kliniği',yetiskin:'Yetişkin Kliniği',ikisi:'Çocuk ve Yetişkin Kliniği'})[d.clinic]||''}`;
+  const pages = d.clinic==='cocuk' ? [['cocuk.html#hekimimiz','Çocuk sayfasında gör']] : d.clinic==='yetiskin' ? [['yetiskin.html#hekimlerimiz','Yetişkin sayfasında gör']] : [['cocuk.html#hekimimiz','Çocuk sayfasında gör'],['yetiskin.html#hekimlerimiz','Yetişkin sayfasında gör']];
+  main.innerHTML = `<div class="top"><h1>${isDoctor()?'Site profilim':'Hekim profilleri'}</h1><div style="display:flex;gap:8px;flex-wrap:wrap">${pages.map(([u,l])=>`<a class="btn" href="${u}" target="_blank" rel="noopener">👁 ${l}</a>`).join('')}</div></div>
+    <p class="muted small" style="margin:-6px 0 14px">Burada yazdıklarınız sitedeki hekim kartında görünür. Boş bıraktığınız bölümler kartta hiç gösterilmez.${isAdmin()?' Hekimin hangi klinikte görüneceğini <b>Doktorlar</b> sayfasından seçin.':''}</p>
+    ${isAdmin()?`<label class="f" style="max-width:360px;margin-bottom:14px">Doktor<select class="in" id="pfDoc">${S.doctors.map(x=>`<option value="${x.id}" ${x.id===S.profDoc?'selected':''}>${esc(docName(x))}${x.is_active?'':' (pasif)'}</option>`).join('')}</select></label>`:''}
+    <div class="card"><div class="pf-grid">
+      <div>
+        <div class="pf-photo" id="pfPhoto">${photo?`<img src="${esc(photo)}" alt="">`:esc(initials(d.full_name))}</div>
+        <label class="btn sm" style="margin-top:10px;display:inline-flex;cursor:pointer">📷 Fotoğraf seç<input type="file" id="pfFile" accept="image/jpeg,image/png,image/webp" hidden></label>
+        ${photo?'<button class="btn sm" id="pfNoPhoto" style="margin-top:10px">Kaldır</button>':''}
+        <p class="muted small">Dik (portre) fotoğraf en iyi sonucu verir; yüz üst kısımda kalır.</p>
+        <label class="f" style="margin-top:8px">Kart rengi<input class="in" type="color" id="pfColor" value="${esc(p.color || d.color || '#1C8C88')}" style="height:42px;padding:4px"></label>
+      </div>
+      <div>
+        <h2 style="margin:0 0 2px">${esc(docName(d))}</h2>
+        <label class="f">Unvan satırı<input class="in" id="pfRole" value="${esc(p.role||'')}" placeholder="${esc(defRole)}"></label>
+        <label class="f">Kısa tanıtım (kartta görünen paragraf)<textarea class="in" id="pfIntro" style="min-height:110px" placeholder="Mezuniyet, uzmanlık ve ilgi alanları — 2-4 cümle">${esc(p.intro||'')}</textarea></label>
+        <div class="pf-sec"><h3>Öne çıkanlar</h3><p class="muted small" style="margin:0 0 8px">En fazla 3 kutu. Örn. “2003” / “Ankara Üniv. mezuniyeti”, “20+ yıl” / “Mesleki deneyim”.</p><div class="rows" id="pfFacts"></div></div>
+        <div class="pf-sec"><h3>Uzmanlık etiketleri</h3><label class="f">Her satıra bir etiket<textarea class="in" id="pfTags" style="min-height:90px" placeholder="İmplant&#10;Gülüş tasarımı">${esc((p.tags||[]).join('\n'))}</textarea></label></div>
+        <div class="pf-sec"><h3>Eğitim</h3><div class="rows" id="pfEdu"></div></div>
+        <div class="pf-sec"><h3>Deneyim</h3><div class="rows" id="pfExp"></div></div>
+        <div class="pf-sec"><h3>Kişisel</h3>
+          <label class="f">Konuştuğu diller<input class="in" id="pfLang" value="${esc(p.lang||'')}" placeholder="Türkçe, İngilizce"></label>
+          <label class="f">Biraz da kendisi<textarea class="in" id="pfAbout" style="min-height:100px">${esc(p.about||'')}</textarea></label>
+          <label class="f">Hobiler (her satıra bir tane; başına emoji koyabilirsiniz)<textarea class="in" id="pfHob" style="min-height:80px" placeholder="🏊 Yüzme&#10;✈️ Seyahat">${esc((p.hobbies||[]).join('\n'))}</textarea></label>
+        </div>
+        <div class="err" id="pfErr" hidden></div>
+        <div class="actions" style="margin-top:14px"><button class="btn primary" id="pfSave">Kaydet</button></div>
+      </div>
+    </div></div>`;
+  if($('pfDoc')) $('pfDoc').onchange = e => { S.profDoc = e.target.value; go('profil'); };
+  const getFacts = rowsEditor($('pfFacts'), (p.facts||[]).map(x=>[...x]), ['Büyük yazı (2003)','Alt yazı (Ankara Üniv.)'], 'f3');
+  const getEdu = rowsEditor($('pfEdu'), (p.edu||[]).map(x=>[...x]), ['Yıl / dönem','Okul, bölüm']);
+  const getExp = rowsEditor($('pfExp'), (p.exp||[]).map(x=>[...x]), ['Yıl / dönem','Kurum, görev']);
+  $('pfFile').onchange = () => { const f = $('pfFile').files[0]; if(!f) return; newFile = f; $('pfPhoto').innerHTML = `<img src="${URL.createObjectURL(f)}" alt="">`; };
+  if($('pfNoPhoto')) $('pfNoPhoto').onclick = () => { photo = ''; newFile = null; $('pfPhoto').textContent = initials(d.full_name); };
+  $('pfSave').onclick = async () => {
+    const err = $('pfErr'); err.hidden = true;
+    const lines = id => $(id).value.split('\n').map(x=>x.trim()).filter(Boolean);
+    const facts = getFacts();
+    if(facts.length > 3){ err.textContent = 'Öne çıkanlar en fazla 3 kutu olabilir.'; err.hidden = false; return; }
+    const prof = { ...p, color: $('pfColor').value, role: $('pfRole').value.trim(), intro: $('pfIntro').value.trim(), facts, tags: lines('pfTags'),
+      edu: getEdu(), exp: getExp(), lang: $('pfLang').value.trim(), about: $('pfAbout').value.trim(), hobbies: lines('pfHob') };
+    Object.keys(prof).forEach(k => { const v = prof[k]; if(v==='' || (Array.isArray(v) && !v.length)) delete prof[k]; });
+    const btn = $('pfSave'); btn.disabled = true; btn.textContent = 'Kaydediliyor…';
+    let uploaded = null;
+    try {
+      let url = photo;
+      if(newFile){
+        const f = await shrinkImage(newFile);
+        if(f.size > 5*1024*1024) throw new Error('Fotoğraf en fazla 5 MB olabilir.');
+        uploaded = `${d.id}/${crypto.randomUUID()}.${f.type==='image/png'?'png':f.type==='image/webp'?'webp':'jpg'}`;
+        const {error} = await sb.storage.from(HBUCKET).upload(uploaded, f, {contentType:f.type, cacheControl:'31536000'});
+        if(error){ uploaded = null; throw error; }
+        url = hfUrl(uploaded);
+      }
+      if(isDoctor()) { const {error} = await sb.rpc('update_my_profile', {p_profile: prof, p_photo_url: url || null}); if(error) throw error; }
+      else await q(sb.from('doctors').update({profile: prof, photo_url: url || null}).eq('id', d.id).select('id'));
+      const old = hfPathOf(d.photo_url);
+      if(old && d.photo_url !== url) await sb.storage.from(HBUCKET).remove([old]);
+      toast('Profil kaydedildi; sitede hemen görünür'); go('profil');
+    } catch(e){
+      if(uploaded) await sb.storage.from(HBUCKET).remove([uploaded]);
+      err.textContent = e?.message?.startsWith('Fotoğraf') ? e.message : tblFriendly(e, '07_site_icerikleri.sql'); err.hidden = false; btn.disabled = false; btn.textContent = 'Kaydet';
+    }
+  };
+}
+
+/* =========================================================
+   SIK SORULAN SORULAR
+   ========================================================= */
+async function viewSSS(main){
+  S.fClinic = S.fClinic || 'cocuk';
+  let all;
+  try { all = await q(sb.from('faqs').select('*').order('sort_order').order('created_at')); }
+  catch(e){ main.innerHTML = `<div class="top"><h1>Sık sorulan sorular</h1></div><div class="card"><div class="err">${esc(tblFriendly(e,'07_site_icerikleri.sql'))}</div></div>`; return; }
+  const list = all.filter(x => x.clinic === S.fClinic);
+  main.innerHTML = `<div class="top"><h1>Sık sorulan sorular</h1><button class="btn primary" id="fNew">＋ Soru ekle</button></div>
+    <p class="muted small" style="margin:-6px 0 14px">Aktif sorular sitedeki “Sık Sorulan Sorular” bölümünde bu sırayla görünür. Hiç aktif soru kalmazsa bölüm gizlenir.</p>
+    <div class="seg" style="margin-bottom:14px">${Object.entries(YCL).map(([k,v])=>`<button data-fc="${k}" class="${k===S.fClinic?'on':''}">${v} <span style="opacity:.7">(${all.filter(x=>x.clinic===k).length})</span></button>`).join('')}</div>
+    <div class="card"><div class="list">${list.map((f,i)=>`<div class="row" style="align-items:flex-start;${f.is_active?'':'opacity:.55'}">
+      <div class="avatar" style="--c:var(--teal)">?</div>
+      <div class="grow" style="min-width:0"><b>${esc(f.question)} ${f.is_active?'':'<span class="pill cancelled">Gizli</span>'}</b><span class="muted small" style="display:block;margin-top:3px">${esc(f.answer)}</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex:none">
+        <button class="btn sm" data-fu="${i}" ${i===0?'disabled':''}>↑</button><button class="btn sm" data-fd="${i}" ${i===list.length-1?'disabled':''}>↓</button>
+        <button class="btn sm" data-fe="${f.id}">✏️ Düzenle</button><button class="btn sm danger" data-fx="${f.id}">🗑</button></div></div>`).join('') || '<div class="empty">Bu klinik için henüz soru yok.</div>'}</div></div>`;
+  main.querySelectorAll('[data-fc]').forEach(b => b.onclick = () => { S.fClinic = b.dataset.fc; go('sss'); });
+  $('fNew').onclick = () => sssForm(null, list);
+  main.querySelectorAll('[data-fe]').forEach(b => b.onclick = () => sssForm(list.find(x=>x.id===b.dataset.fe), list));
+  const mv = async (i,dd) => { const a = list.slice(); [a[i],a[i+dd]] = [a[i+dd],a[i]]; try { await reorder('faqs', a); go('sss'); } catch(e){ toast(friendly(e), true); } };
+  main.querySelectorAll('[data-fu]').forEach(b => b.onclick = () => mv(+b.dataset.fu,-1));
+  main.querySelectorAll('[data-fd]').forEach(b => b.onclick = () => mv(+b.dataset.fd,1));
+  main.querySelectorAll('[data-fx]').forEach(b => b.onclick = async () => {
+    const f = list.find(x=>x.id===b.dataset.fx);
+    if(!(await confirmBox(`“${f.question}” sorusu silinecek.`, 'Sil'))) return;
+    try { await q(sb.from('faqs').delete().eq('id', f.id).select('id')); toast('Soru silindi'); go('sss'); } catch(e){ toast(friendly(e), true); }
+  });
+}
+function sssForm(f, list){
+  const m = modal(f ? 'Soruyu düzenle' : 'Yeni soru', `
+    <label class="f">Klinik<select class="in" id="sqC">${Object.entries(YCL).map(([k,v])=>`<option value="${k}" ${k===(f?.clinic||S.fClinic)?'selected':''}>${v}</option>`).join('')}</select></label>
+    <label class="f">Soru<input class="in" id="sqQ" value="${esc(f?.question||'')}" placeholder="Örn. İmplant tedavisi ne kadar sürer?"></label>
+    <label class="f">Cevap<textarea class="in" id="sqA" style="min-height:130px">${esc(f?.answer||'')}</textarea></label>
+    <div class="grid2"><label class="f">Sıra<input class="in" type="number" id="sqS" value="${f?.sort_order ?? (list.length ? Math.max(...list.map(x=>x.sort_order))+1 : 1)}"></label>
+    <label class="check" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="sqOn" ${!f||f.is_active?'checked':''}> Sitede görünsün</label></div>
+    <div class="err" id="sqErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="sqSave">Kaydet</button></div>`, {wide:true});
+  const el = id => m.el.querySelector('#'+id);
+  el('sqSave').onclick = async () => {
+    const err = el('sqErr'); err.hidden = true;
+    const rec = { clinic: el('sqC').value, question: el('sqQ').value.trim(), answer: el('sqA').value.trim(), sort_order: +el('sqS').value||0, is_active: el('sqOn').checked };
+    if(rec.question.length < 5){ err.textContent='Soruyu yazın.'; err.hidden=false; return; }
+    if(rec.answer.length < 5){ err.textContent='Cevabı yazın.'; err.hidden=false; return; }
+    try {
+      if(f) await q(sb.from('faqs').update(rec).eq('id', f.id).select('id')); else await q(sb.from('faqs').insert(rec).select('id'));
+      S.fClinic = rec.clinic; m.close(); toast('Soru kaydedildi'); go('sss');
+    } catch(e){ err.textContent = friendly(e); err.hidden=false; }
+  };
+}
+
+/* =========================================================
+   GALERİ
+   ========================================================= */
+const GBUCKET = 'galeri';
+const gUrl = g => g.file_path ? sb.storage.from(GBUCKET).getPublicUrl(g.file_path).data.publicUrl : (/gumlet\.io/.test(g.url) ? g.url + '?w=400&compress=smart' : g.url);
+const GCL = {ikisi:'🧒🧑 İki sayfada', cocuk:'🧒 Çocuk', yetiskin:'🧑 Yetişkin'};
+const GOPT = {ikisi:'🧒🧑 Her iki sayfada', cocuk:'🧒 Sadece çocuk sayfasında', yetiskin:'🧑 Sadece yetişkin sayfasında'};
+async function viewGaleri(main){
+  S.gFilter = S.gFilter || 'hepsi';
+  let all;
+  try { all = await q(sb.from('gallery').select('*').order('sort_order').order('created_at')); }
+  catch(e){ main.innerHTML = `<div class="top"><h1>Galeri</h1></div><div class="card"><div class="err">${esc(tblFriendly(e,'07_site_icerikleri.sql'))}</div></div>`; return; }
+  const list = S.gFilter==='hepsi' ? all : all.filter(g => g.clinic===S.gFilter || g.clinic==='ikisi');
+  main.innerHTML = `<div class="top"><h1>Galeri</h1><label class="btn primary" style="cursor:pointer">＋ Fotoğraf yükle<input type="file" id="gFiles" accept="image/jpeg,image/png,image/webp" multiple hidden></label></div>
+    <p class="muted small" style="margin:-6px 0 14px">Birden fazla fotoğrafı aynı anda seçebilirsiniz; büyük fotoğraflar yüklenirken otomatik küçültülür. Sıralamayı oklarla değiştirin; ilk fotoğraflar sitede önce görünür.</p>
+    <div class="seg" style="margin-bottom:14px">${[['hepsi',`Tümü (${all.length})`],['cocuk','🧒 Çocuk sayfası'],['yetiskin','🧑 Yetişkin sayfası']].map(([k,v])=>`<button data-gf="${k}" class="${k===S.gFilter?'on':''}">${v}</button>`).join('')}</div>
+    <div class="card">${list.length?`<div class="cgrid">${list.map((g,i)=>`<div class="cc ${g.is_active?'':'off'}">
+      <a class="th" href="${esc(g.file_path?gUrl(g):g.url)}" target="_blank" rel="noopener"><img src="${esc(gUrl(g))}" alt="" loading="lazy"></a>
+      <div class="cb"><span class="muted small">${GCL[g.clinic]}${g.caption?' · '+esc(g.caption):''}</span> ${g.is_active?'':'<span class="pill cancelled">Gizli</span>'}</div>
+      <div class="ca"><button class="btn sm" data-gu="${i}" ${i===0?'disabled':''} title="Öne al">←</button><button class="btn sm" data-gd="${i}" ${i===list.length-1?'disabled':''} title="Geri al">→</button>
+        <button class="btn sm" data-ge="${g.id}">✏️</button><button class="btn sm danger" data-gx="${g.id}">🗑</button></div></div>`).join('')}</div>`:'<div class="empty">Galeride fotoğraf yok. Hiç fotoğraf yoksa bölüm sitede gizlenir.</div>'}</div>`;
+  main.querySelectorAll('[data-gf]').forEach(b => b.onclick = () => { S.gFilter = b.dataset.gf; go('galeri'); });
+  $('gFiles').onchange = () => galeriUpload([...$('gFiles').files], all);
+  const mv = async (i,dd) => {
+    const a = list.slice(); [a[i],a[i+dd]] = [a[i+dd],a[i]];
+    const order = S.gFilter==='hepsi' ? a : [...a, ...all.filter(x=>!a.includes(x))];
+    try { await reorder('gallery', order); go('galeri'); } catch(e){ toast(friendly(e), true); }
+  };
+  main.querySelectorAll('[data-gu]').forEach(b => b.onclick = () => mv(+b.dataset.gu,-1));
+  main.querySelectorAll('[data-gd]').forEach(b => b.onclick = () => mv(+b.dataset.gd,1));
+  main.querySelectorAll('[data-ge]').forEach(b => b.onclick = () => galeriForm(all.find(x=>x.id===b.dataset.ge)));
+  main.querySelectorAll('[data-gx]').forEach(b => b.onclick = async () => {
+    const g = all.find(x=>x.id===b.dataset.gx);
+    if(!(await confirmBox('Bu fotoğraf galeriden kalıcı olarak silinecek.', 'Sil'))) return;
+    try { await q(sb.from('gallery').delete().eq('id', g.id).select('id')); if(g.file_path) await sb.storage.from(GBUCKET).remove([g.file_path]); toast('Fotoğraf silindi'); go('galeri'); }
+    catch(e){ toast(friendly(e), true); }
+  });
+}
+function galeriUpload(files, all){
+  if(!files.length) return;
+  const m = modal(`${files.length} fotoğraf yükle`, `
+    <label class="f">Hangi sayfada görünsün?<select class="in" id="guC">${Object.entries(GOPT).map(([k,v])=>`<option value="${k}" ${S.gFilter===k?'selected':''}>${v}</option>`).join('')}</select></label>
+    <label class="f">Yeri<select class="in" id="guPos"><option value="start">Galerinin başına</option><option value="end">Galerinin sonuna</option></select></label>
+    <div class="muted small" id="guSt"></div><div class="err" id="guErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="guGo">Yükle</button></div>`);
+  const el = id => m.el.querySelector('#'+id);
+  el('guGo').onclick = async () => {
+    el('guGo').disabled = true; const errs = [];
+    const clinic = el('guC').value, atStart = el('guPos').value === 'start';
+    const min = all.length ? Math.min(...all.map(x=>x.sort_order)) : 1, max = all.length ? Math.max(...all.map(x=>x.sort_order)) : 0;
+    for(let i=0;i<files.length;i++){
+      el('guSt').textContent = `Yükleniyor ${i+1} / ${files.length}…`;
+      try {
+        const f = await shrinkImage(files[i]);
+        if(!/^image\/(jpeg|png|webp)$/.test(f.type)) throw new Error('desteklenmeyen dosya türü');
+        if(f.size > 8*1024*1024) throw new Error('dosya 8 MB’tan büyük');
+        const path = `${crypto.randomUUID()}.${f.type==='image/png'?'png':f.type==='image/webp'?'webp':'jpg'}`;
+        const {error} = await sb.storage.from(GBUCKET).upload(path, f, {contentType:f.type, cacheControl:'31536000'});
+        if(error) throw error;
+        await q(sb.from('gallery').insert({clinic, file_path:path, sort_order: atStart ? min - files.length + i : max + 1 + i}).select('id'));
+      } catch(e){ errs.push(`${files[i].name}: ${e.message||e}`); }
+    }
+    if(errs.length){ el('guErr').innerHTML = 'Yüklenemeyenler:<br>' + errs.map(esc).join('<br>'); el('guErr').hidden = false; el('guSt').textContent=''; el('guGo').disabled=false; el('guGo').textContent='Kapat'; el('guGo').onclick = () => { m.close(); go('galeri'); }; }
+    else { m.close(); toast(`${files.length} fotoğraf eklendi`); go('galeri'); }
+  };
+}
+function galeriForm(g){
+  const m = modal('Fotoğrafı düzenle', `
+    <div class="cprev" style="aspect-ratio:16/10;margin-bottom:12px"><img src="${esc(gUrl(g))}" alt=""></div>
+    <label class="f">Açıklama (isteğe bağlı; büyük görünümde altta yazar)<input class="in" id="gfCap" value="${esc(g.caption||'')}"></label>
+    <label class="f">Hangi sayfada görünsün?<select class="in" id="gfC">${Object.entries(GOPT).map(([k,v])=>`<option value="${k}" ${g.clinic===k?'selected':''}>${v}</option>`).join('')}</select></label>
+    <label class="check"><input type="checkbox" id="gfOn" ${g.is_active?'checked':''}> Sitede görünsün</label>
+    <div class="err" id="gfErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="gfSave">Kaydet</button></div>`);
+  const el = id => m.el.querySelector('#'+id);
+  el('gfSave').onclick = async () => {
+    try { await q(sb.from('gallery').update({caption: el('gfCap').value.trim()||null, clinic: el('gfC').value, is_active: el('gfOn').checked}).eq('id', g.id).select('id')); m.close(); toast('Kaydedildi'); go('galeri'); }
+    catch(e){ el('gfErr').textContent = friendly(e); el('gfErr').hidden = false; }
+  };
+}
+
+/* =========================================================
+   KVKK METİNLERİ (kvkk.html sayfası)
+   ========================================================= */
+async function viewKvkk(main){
+  let list;
+  try { list = await q(sb.from('legal_sections').select('*').order('sort_order').order('title')); }
+  catch(e){ main.innerHTML = `<div class="top"><h1>KVKK metinleri</h1></div><div class="card"><div class="err">${esc(tblFriendly(e,'08_kvkk.sql'))}</div></div>`; return; }
+  main.innerHTML = `<div class="top"><h1>KVKK metinleri</h1><div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="kvkk.html" target="_blank" rel="noopener">👁 Sayfayı aç</a><button class="btn primary" id="kNewSec">＋ Bölüm ekle</button></div></div>
+    <p class="muted small" style="margin:-6px 0 14px">Bu bölümler sitedeki <b>KVKK Aydınlatma Metni</b> sayfasında (her iki kliniğin alt kısmında ve randevu formunda bağlantısı var) bu sırayla görünür. Değişiklikler hemen yayına girer. Hukuki metinleri yayınlamadan önce bir hukukçuya kontrol ettirmenizi öneririz.</p>
+    <div class="card"><div class="list">${list.map((s,i)=>`<div class="row" style="align-items:flex-start;${s.is_active?'':'opacity:.55'}">
+      <div class="avatar" style="--c:var(--teal)">${i+1}</div>
+      <div class="grow" style="min-width:0"><b>${esc(s.title)} ${s.is_active?'':'<span class="pill cancelled">Gizli</span>'}</b>
+        <span class="muted small" style="display:block;margin-top:3px">${esc(s.body.replace(/\*\*|##\s?/g,'').slice(0,180))}${s.body.length>180?'…':''}</span>
+        <span class="muted small">Son değişiklik: ${new Date(s.updated_at).toLocaleDateString('tr-TR')}</span></div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex:none">
+        <button class="btn sm" data-ku="${i}" ${i===0?'disabled':''}>↑</button><button class="btn sm" data-kd="${i}" ${i===list.length-1?'disabled':''}>↓</button>
+        <button class="btn sm" data-ke="${s.id}">✏️ Düzenle</button><button class="btn sm danger" data-kx="${s.id}">🗑</button></div></div>`).join('') || '<div class="empty">Henüz bölüm yok.</div>'}</div></div>`;
+  $('kNewSec').onclick = () => kvkkForm(null, list);
+  main.querySelectorAll('[data-ke]').forEach(b => b.onclick = () => kvkkForm(list.find(x=>x.id===b.dataset.ke), list));
+  const mv = async (i,dd) => { const a = list.slice(); [a[i],a[i+dd]] = [a[i+dd],a[i]]; try { await reorder('legal_sections', a); go('kvkk'); } catch(e){ toast(friendly(e), true); } };
+  main.querySelectorAll('[data-ku]').forEach(b => b.onclick = () => mv(+b.dataset.ku,-1));
+  main.querySelectorAll('[data-kd]').forEach(b => b.onclick = () => mv(+b.dataset.kd,1));
+  main.querySelectorAll('[data-kx]').forEach(b => b.onclick = async () => {
+    const s = list.find(x=>x.id===b.dataset.kx);
+    if(!(await confirmBox(`“${s.title}” bölümü kalıcı olarak silinecek. Sadece sayfadan kaldırmak isterseniz Düzenle’den gizleyebilirsiniz.`, 'Sil'))) return;
+    try { await q(sb.from('legal_sections').delete().eq('id', s.id).select('id')); toast('Bölüm silindi'); go('kvkk'); } catch(e){ toast(friendly(e), true); }
+  });
+}
+function kvkkForm(s, list){
+  const m = modal(s ? 'Bölümü düzenle' : 'Yeni bölüm', `
+    <label class="f">Başlık<input class="in" id="kvT" value="${esc(s?.title||'')}" placeholder="Örn. Güvenlik kamerası kayıtları"></label>
+    <label class="f">Metin<textarea class="in" id="kvB" style="min-height:340px;font-size:14.5px;line-height:1.55">${esc(s?.body||'')}</textarea></label>
+    <div class="muted small" style="background:var(--cream);border-radius:10px;padding:8px 12px;margin-bottom:10px">
+      <b>Yazım ipuçları:</b> Boş satır → yeni paragraf · Satır başına <code>- </code> → madde işareti · <code>## Başlık</code> → ara başlık · <code>**kalın**</code> → kalın yazı
+    </div>
+    <div class="grid2"><label class="f">Sıra<input class="in" type="number" id="kvS" value="${s?.sort_order ?? (list.length ? Math.max(...list.map(x=>x.sort_order))+1 : 1)}"></label>
+    <label class="check" style="align-self:end;padding-bottom:10px"><input type="checkbox" id="kvOn" ${!s||s.is_active?'checked':''}> Sayfada görünsün</label></div>
+    <div class="err" id="kvErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="kvSave">Kaydet</button></div>`, {wide:true});
+  const el = id => m.el.querySelector('#'+id);
+  el('kvSave').onclick = async () => {
+    const err = el('kvErr'); err.hidden = true;
+    const rec = { title: el('kvT').value.trim(), body: el('kvB').value.replace(/\r/g,'').trim(), sort_order: +el('kvS').value||0, is_active: el('kvOn').checked, updated_at: new Date().toISOString() };
+    if(rec.title.length < 2){ err.textContent = 'Başlık yazın.'; err.hidden = false; return; }
+    if(rec.body.length < 10){ err.textContent = 'Metni yazın.'; err.hidden = false; return; }
+    try {
+      if(s) await q(sb.from('legal_sections').update(rec).eq('id', s.id).select('id')); else await q(sb.from('legal_sections').insert(rec).select('id'));
+      m.close(); toast('Kaydedildi; sayfada hemen görünür'); go('kvkk');
+    } catch(e){ err.textContent = friendly(e); err.hidden = false; }
+  };
+}
+
+/* =========================================================
    HİZMETLER
    ========================================================= */
 async function viewServices(main){
@@ -958,7 +1483,7 @@ async function viewServices(main){
     <div class="card"><div class="list">${S.services.map(s => `<div class="row" style="${s.is_active?'':'opacity:.55'}">
       <div class="avatar" style="--c:var(--yellow);color:var(--ink)">${s.duration_minutes}'</div>
       <div class="grow"><b>${esc(s.name)} ${s.is_active?'':'<span class="pill cancelled">Pasif</span>'}</b>
-        <span class="muted small">${s.duration_minutes} dakika · ${S.links.filter(l=>l.service_id===s.id).map(l=>esc(docOf(l.doctor_id)?.full_name)).join(', ') || 'hiçbir doktora atanmamış'}</span></div>
+        <span class="muted small">${s.duration_minutes} dakika${hasSvcClinic()?' · '+(SVC_CL[s.clinic]||SVC_CL.ikisi):''} · ${S.links.filter(l=>l.service_id===s.id).map(l=>esc(docOf(l.doctor_id)?.full_name)).join(', ') || 'hiçbir doktora atanmamış'}</span></div>
       <button class="btn sm" data-s="${s.id}">✏️ Düzenle</button></div>`).join('') || '<div class="empty">Henüz hizmet yok.</div>'}</div></div>`;
   $('sNew').onclick = () => serviceForm(null);
   main.querySelectorAll('[data-s]').forEach(b => b.onclick = () => serviceForm(S.services.find(s=>s.id===b.dataset.s)));
@@ -971,6 +1496,7 @@ function serviceForm(s){
       <label class="f">Süre (dakika)<input class="in" type="number" min="5" step="5" id="sDur" value="${s?.duration_minutes||30}"></label>
       <label class="f">Sıra<input class="in" type="number" id="sSort" value="${s?.sort_order??S.services.length+1}"></label>
     </div>
+    ${hasSvcClinic()?`<label class="f">Hangi sayfanın randevu formunda görünsün?<select class="in" id="sClinic">${Object.entries({ikisi:'🧒🧑 Her iki klinik',cocuk:'🧒 Sadece çocuk kliniği',yetiskin:'🧑 Sadece yetişkin kliniği'}).map(([k,v])=>`<option value="${k}" ${(s?.clinic||'ikisi')===k?'selected':''}>${v}</option>`).join('')}</select></label>`:''}
     <label class="f">Açıklama (isteğe bağlı)<input class="in" id="sDesc" value="${esc(s?.description||'')}"></label>
     <label class="f">Bu hizmeti veren doktorlar<div class="chips">${S.doctors.filter(d=>d.is_active||mine.has(d.id)).map(d=>`<label class="chip check"><input type="checkbox" value="${d.id}" ${mine.has(d.id)||!s?'checked':''}> ${esc(docName(d))}</label>`).join('')}</div></label>
     ${s?`<label class="check"><input type="checkbox" id="sActive" ${s.is_active?'checked':''}> Aktif (sitede görünsün)</label>`:''}
@@ -980,6 +1506,7 @@ function serviceForm(s){
     const err = m.el.querySelector('#sErr'); err.hidden=true;
     const rec = { name: m.el.querySelector('#sName').value.trim(), duration_minutes: +m.el.querySelector('#sDur').value, sort_order: +m.el.querySelector('#sSort').value||0, description: m.el.querySelector('#sDesc').value.trim()||null };
     if(s) rec.is_active = m.el.querySelector('#sActive').checked;
+    if(m.el.querySelector('#sClinic')) rec.clinic = m.el.querySelector('#sClinic').value;
     if(rec.name.length<2){ err.textContent='Hizmet adını girin.'; err.hidden=false; return; }
     if(!(rec.duration_minutes>=5 && rec.duration_minutes<=480)){ err.textContent='Süre 5–480 dakika arasında olmalı.'; err.hidden=false; return; }
     const chosen = [...m.el.querySelectorAll('.chips input:checked')].map(x=>x.value);
@@ -998,35 +1525,91 @@ function serviceForm(s){
 /* =========================================================
    PERSONEL
    ========================================================= */
+async function personelFn(body){
+  const { data, error } = await sb.functions.invoke('personel', { body });
+  if(error){
+    let msg = error.message;
+    try { const j = await error.context.json(); if(j?.error) msg = j.error; } catch(_){}
+    throw new Error(msg);
+  }
+  if(data?.error) throw new Error(data.error);
+  return data;
+}
+const panelUrl = () => location.href.split('#')[0].split('?')[0];
+function showCredentials(name, email, password, isReset){
+  const text = `Merhaba ${name},\nKlinikids yönetim paneli ${isReset ? 'şifreniz sıfırlandı' : 'hesabınız açıldı'}.\n\nGiriş adresi: ${panelUrl()}\nE-posta: ${email}\nGeçici şifre: ${password}\n\nİlk girişte kendi şifrenizi belirlemeniz istenecek.`;
+  const m = modal(isReset ? 'Yeni geçici şifre' : 'Hesap açıldı 🎉', `
+    <p class="muted small" style="margin-top:0">Aşağıdaki bilgileri ${esc(name)} ile paylaşın. Kişi ilk girişte kendi şifresini belirleyecek; bu geçici şifre bir daha gösterilmez.</p>
+    <div class="card" style="margin:0 0 12px;background:var(--cream)">
+      <div class="row" style="border:0;padding:4px 0"><span class="muted small" style="width:110px">Giriş adresi</span><b style="word-break:break-all">${esc(panelUrl())}</b></div>
+      <div class="row" style="border:0;padding:4px 0"><span class="muted small" style="width:110px">E-posta</span><b>${esc(email)}</b></div>
+      <div class="row" style="border:0;padding:4px 0"><span class="muted small" style="width:110px">Geçici şifre</span><b style="font-size:20px;letter-spacing:.04em">${esc(password)}</b></div>
+    </div>
+    <div class="actions"><button class="btn" id="crCopy">📋 Kopyala</button><a class="btn primary" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(text)}">💬 WhatsApp ile gönder</a><button class="btn" data-close>Tamam</button></div>`);
+  m.el.querySelector('#crCopy').onclick = async () => { try { await navigator.clipboard.writeText(text); toast('Kopyalandı'); } catch(_) { toast('Kopyalanamadı; bilgileri elle not edin.', true); } };
+}
 async function viewStaff(main){
   const rows = await q(sb.from('staff_profiles').select('*').order('role').order('full_name'));
-  main.innerHTML = `<div class="top"><h1>Personel</h1><button class="btn primary" id="stNew">＋ Personel ekle</button></div>
-    <div class="card"><div class="list">${rows.map(r => `<div class="row">
+  let users = {}, usersErr = '';
+  try { users = (await personelFn({action:'emails'})).users || {}; } catch(e){ usersErr = e.message; }
+  const linked = new Set(rows.filter(r=>r.doctor_id).map(r=>r.doctor_id));
+  const noAcc = S.doctors.filter(d => d.is_active && !linked.has(d.id));
+  main.innerHTML = `<div class="top"><h1>Personel</h1><button class="btn primary" id="stNew">＋ Hesap aç</button></div>
+    <p class="muted small" style="margin:-6px 0 14px">E-posta adresini yazıp hesap açın; sistem geçici bir şifre üretir, WhatsApp ile tek tıkla gönderirsiniz. Kişi ilk girişte kendi şifresini belirler. Şifresini unutan için “🔑 Şifre sıfırla”.</p>
+    ${usersErr?`<div class="err" style="margin-bottom:12px">E-posta bilgileri alınamadı: ${esc(usersErr)}</div>`:''}
+    ${noAcc.length?`<div class="card" style="background:var(--yellow-soft,#FFF6D6)"><b>Panel hesabı olmayan doktorlar</b><p class="muted small" style="margin:4px 0 10px">Bu doktorlar panele giremez; sertifika yükleyemez, kendi randevu ve saatlerini göremez.</p><div class="chips">${noAcc.map(d=>`<button class="btn sm" data-quick="${d.id}">＋ ${esc(docName(d))} için hesap aç</button>`).join('')}</div></div>`:''}
+    <div class="card"><div class="list">${rows.map(r => { const u = users[r.user_id] || {}; return `<div class="row">
       <div class="avatar" style="--c:${r.role==='admin'?'var(--ink)':r.role==='doctor'?esc(docOf(r.doctor_id)?.color||'var(--teal)'):'var(--purple)'}">${esc(initials(r.full_name))}</div>
-      <div class="grow"><b>${esc(r.full_name)} ${r.user_id===S.user.id?'<span class="muted small">(siz)</span>':''}</b><span class="muted small">${ROLES[r.role]}${r.doctor_id?' · '+esc(docName(docOf(r.doctor_id))):''}</span></div>
-      <button class="btn sm" data-st="${r.user_id}">✏️</button></div>`).join('')}</div></div>
-    <div class="card"><h3>Yeni personel nasıl eklenir?</h3>
-      <ol class="muted" style="padding-left:20px;display:flex;flex-direction:column;gap:6px">
-        <li>Supabase’te <a href="https://supabase.com/dashboard/project/xnjnxogvnldrbridzvqu/auth/users" target="_blank" rel="noopener" style="color:var(--teal);font-weight:800">Authentication → Users</a> sayfasında <b>Add user → Create new user</b> ile e-posta ve şifre oluşturun (<b>Auto Confirm User</b> işaretli).</li>
-        <li>Oluşan kullanıcının <b>UID</b> değerini kopyalayın.</li>
-        <li>Buradaki <b>＋ Personel ekle</b> düğmesine basıp UID’yi yapıştırın, rolü seçin.</li>
-      </ol></div>`;
-  $('stNew').onclick = () => staffForm(null);
-  main.querySelectorAll('[data-st]').forEach(b => b.onclick = () => staffForm(rows.find(r=>r.user_id===b.dataset.st)));
+      <div class="grow"><b>${esc(r.full_name)} ${r.user_id===S.user.id?'<span class="muted small">(siz)</span>':''} ${u.pending?'<span class="pill pending">İlk girişi bekleniyor</span>':''}</b>
+        <span class="muted small">${ROLES[r.role]}${r.doctor_id?' · '+esc(docName(docOf(r.doctor_id))):''}${u.email?' · '+esc(u.email):''}</span></div>
+      ${r.user_id!==S.user.id?`<button class="btn sm" data-rs="${r.user_id}">🔑 Şifre sıfırla</button>`:''}
+      <button class="btn sm" data-st="${r.user_id}">✏️</button></div>`; }).join('')}</div></div>`;
+  $('stNew').onclick = () => staffCreate();
+  main.querySelectorAll('[data-quick]').forEach(b => b.onclick = () => staffCreate(docOf(b.dataset.quick)));
+  main.querySelectorAll('[data-st]').forEach(b => b.onclick = () => staffForm(rows.find(r=>r.user_id===b.dataset.st), users[b.dataset.st]));
+  main.querySelectorAll('[data-rs]').forEach(b => b.onclick = async () => {
+    const r = rows.find(x=>x.user_id===b.dataset.rs);
+    if(!(await confirmBox(`${r.full_name} için yeni geçici şifre üretilecek; eski şifresi çalışmaz.`, 'Şifreyi sıfırla', false))) return;
+    try { const d = await personelFn({action:'reset', user_id:r.user_id}); showCredentials(r.full_name, d.email, d.password, true); }
+    catch(e){ toast(e.message, true); }
+  });
 }
-function staffForm(r){
+function staffCreate(doc){
+  const m = modal('Yeni panel hesabı', `
+    <div class="grid2">
+      <label class="f">E-posta<input class="in" type="email" id="ncEmail" placeholder="ornek@gmail.com" autocomplete="off"></label>
+      <label class="f">Ad soyad<input class="in" id="ncName" value="${esc(doc ? docName(doc) : '')}"></label>
+    </div>
+    <div class="grid2">
+      <label class="f">Rol<select class="in" id="ncRole">${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${(doc?'doctor':'receptionist')===k?'selected':''}>${v}</option>`).join('')}</select></label>
+      <label class="f" id="ncDocBox">Bağlı doktor<select class="in" id="ncDoc">${S.doctors.filter(d=>d.is_active).map(d=>`<option value="${d.id}" ${doc?.id===d.id?'selected':''}>${esc(docName(d))}</option>`).join('')}</select></label>
+    </div>
+    <p class="muted small"><b>Yönetici:</b> her şey · <b>Sekreter:</b> randevu, hasta, izin, saat · <b>Doktor:</b> kendi randevuları, saatleri, izinleri ve sertifikaları</p>
+    <div class="err" id="ncErr" hidden></div>
+    <div class="actions"><button class="btn" data-close>Vazgeç</button><button class="btn primary" id="ncSave">Hesabı aç</button></div>`);
+  const el = id => m.el.querySelector('#'+id);
+  const sync = () => el('ncDocBox').hidden = el('ncRole').value !== 'doctor';
+  el('ncRole').onchange = sync; sync();
+  el('ncSave').onclick = async () => {
+    const err = el('ncErr'); err.hidden = true;
+    const body = { action:'create', email: el('ncEmail').value.trim(), full_name: el('ncName').value.trim(), role: el('ncRole').value, doctor_id: el('ncRole').value==='doctor' ? el('ncDoc').value : null };
+    const btn = el('ncSave'); btn.disabled = true; btn.textContent = 'Açılıyor…';
+    try { const d = await personelFn(body); m.close(); go('staff'); showCredentials(body.full_name, d.email, d.password, false); }
+    catch(e){ err.textContent = e.message; err.hidden = false; btn.disabled = false; btn.textContent = 'Hesabı aç'; }
+  };
+}
+function staffForm(r, u){
   const self = r?.user_id === S.user.id;
-  const m = modal(r ? 'Personeli düzenle' : 'Personel ekle', `
-    ${r?'':'<label class="f">Kullanıcı UID (Supabase’ten)<input class="in" id="stId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></label>'}
+  const m = modal('Personeli düzenle', `
+    ${u?.email?`<p class="muted small" style="margin-top:0">Hesap: <b>${esc(u.email)}</b></p>`:''}
     <label class="f">Ad soyad<input class="in" id="stName" value="${esc(r?.full_name||'')}"></label>
     <div class="grid2">
       <label class="f">Rol<select class="in" id="stRole" ${self?'disabled':''}>${Object.entries(ROLES).map(([k,v])=>`<option value="${k}" ${r?.role===k?'selected':''}>${v}</option>`).join('')}</select></label>
       <label class="f" id="stDocBox">Bağlı doktor<select class="in" id="stDoc">${S.doctors.map(d=>`<option value="${d.id}" ${r?.doctor_id===d.id?'selected':''}>${esc(docName(d))}</option>`).join('')}</select></label>
     </div>
-    <p class="muted small"><b>Yönetici:</b> her şey · <b>Sekreter:</b> randevu, hasta, izin, saat · <b>Doktor:</b> sadece kendi randevuları ve saatleri</p>
     ${self?'<p class="muted small">Kendi rolünüzü değiştiremezsiniz.</p>':''}
     <div class="err" id="stErr" hidden></div>
-    <div class="actions">${r&&!self?'<button class="btn danger" id="stDel" style="margin-right:auto">Yetkiyi kaldır</button>':''}<button class="btn" data-close>Vazgeç</button><button class="btn primary" id="stSave">Kaydet</button></div>`);
+    <div class="actions">${!self?'<button class="btn danger" id="stDel" style="margin-right:auto">Hesabı sil</button>':''}<button class="btn" data-close>Vazgeç</button><button class="btn primary" id="stSave">Kaydet</button></div>`);
   const el = id => m.el.querySelector('#'+id);
   const sync = () => el('stDocBox').hidden = el('stRole').value !== 'doctor';
   el('stRole').onchange = sync; sync();
@@ -1036,20 +1619,41 @@ function staffForm(r){
     const rec = { full_name: el('stName').value.trim(), role, doctor_id: role==='doctor' ? el('stDoc').value : null };
     if(rec.full_name.length<2){ err.textContent='Adı girin.'; err.hidden=false; return; }
     try {
-      if(r){ if(self){ delete rec.role; delete rec.doctor_id; } await q(sb.from('staff_profiles').update(rec).eq('user_id', r.user_id).select('user_id')); }
-      else {
-        const id = el('stId').value.trim();
-        if(!/^[0-9a-f-]{36}$/i.test(id)) throw new Error('UID biçimi hatalı. Supabase’teki kullanıcı satırından kopyalayın.');
-        await q(sb.from('staff_profiles').insert({user_id:id, ...rec}).select('user_id'));
-      }
+      if(self){ delete rec.role; delete rec.doctor_id; }
+      await q(sb.from('staff_profiles').update(rec).eq('user_id', r.user_id).select('user_id'));
       m.close(); toast('Kaydedildi'); go('staff');
-    } catch(e){ err.textContent = e.code==='23503' ? 'Bu UID ile bir kullanıcı bulunamadı.' : friendly(e); err.hidden=false; }
+    } catch(e){ err.textContent = friendly(e); err.hidden=false; }
   };
   if(el('stDel')) el('stDel').onclick = async () => {
-    if(!(await confirmBox(`${r.full_name} artık panele giriş yapamayacak.`, 'Yetkiyi kaldır'))) return;
-    try { await q(sb.from('staff_profiles').delete().eq('user_id', r.user_id).select('user_id')); m.close(); toast('Yetki kaldırıldı'); go('staff'); } catch(e){ toast(friendly(e), true); }
+    if(!(await confirmBox(`${r.full_name} hesabı tamamen silinecek ve panele giremeyecek. Geçmiş randevu kayıtları silinmez.`, 'Hesabı sil'))) return;
+    try { await personelFn({action:'delete', user_id:r.user_id}); m.close(); toast('Hesap silindi'); go('staff'); } catch(e){ toast(e.message, true); }
   };
 }
+/* İlk girişte (ya da şifre sıfırlandıktan sonra) kişi kendi şifresini belirler */
+function forcePasswordChange(){
+  return new Promise(resolve => {
+    const root = $('modalRoot');
+    root.innerHTML = `<div class="modal-bg"><div class="modal"><h2>Kendi şifrenizi belirleyin</h2>
+      <p class="muted small" style="margin-top:0">Hoş geldiniz! Güvenliğiniz için size verilen geçici şifre yerine kendi şifrenizi belirleyin.</p>
+      <label class="f">Yeni şifre (en az 8 karakter)<input class="in" type="password" id="fpA" autocomplete="new-password"></label>
+      <label class="f">Yeni şifre (tekrar)<input class="in" type="password" id="fpB" autocomplete="new-password"></label>
+      <div class="err" id="fpErr" hidden></div>
+      <div class="actions"><button class="btn primary" id="fpSave">Şifremi kaydet</button></div></div></div>`;
+    const err = $('fpErr');
+    $('fpSave').onclick = async () => {
+      err.hidden = true;
+      const a = $('fpA').value, b = $('fpB').value;
+      if(a.length < 8){ err.textContent = 'Şifre en az 8 karakter olmalı.'; err.hidden = false; return; }
+      if(a !== b){ err.textContent = 'İki şifre aynı değil.'; err.hidden = false; return; }
+      if(/^Kk-/.test(a)){ err.textContent = 'Geçici şifreden farklı, kendinize ait bir şifre seçin.'; err.hidden = false; return; }
+      $('fpSave').disabled = true;
+      const { data, error } = await sb.auth.updateUser({ password: a, data: { must_change_password: false } });
+      if(error){ err.textContent = /should be different|same/i.test(error.message) ? 'Yeni şifre eskisinden farklı olmalı.' : friendly(error); err.hidden = false; $('fpSave').disabled = false; return; }
+      S.user = data.user; root.innerHTML = ''; toast('Şifreniz kaydedildi'); resolve();
+    };
+  });
+}
+
 
 /* =========================================================
    AYARLAR
@@ -1265,7 +1869,7 @@ async function exportPatients(){
     'Son randevu': stat[p.id]?.last ? ymd(stat[p.id].last).split('-').reverse().join('.') : '', 'Notlar': p.notes||'' }))]], `klinikids-hastalar-${today()}.xlsx`);
 }
 
-const VIEWS = {reports:viewReports, appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, kurumlar:viewKurumlar, staff:viewStaff, settings:viewSettings};
+const VIEWS = {reports:viewReports, appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, kurumlar:viewKurumlar, yanlislar:viewYanlislar, sertifikalar:viewSertifikalar, profil:viewProfil, sss:viewSSS, galeri:viewGaleri, kvkk:viewKvkk, staff:viewStaff, settings:viewSettings};
 
 sb.auth.onAuthStateChange(ev => { if(ev==='SIGNED_OUT'){ $('appView').hidden=true; $('loginView').hidden=false; } });
 boot();

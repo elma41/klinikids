@@ -5,6 +5,91 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Çocuk Kliniği – Klinikids İzmit Diş Sanatı</title>
 <meta name="description" content="Klinikids Çocuk Kliniği, İzmit: ilk muayene, flor, fissür örtücü, süt dişi tedavileri, yer tutucu ve online randevu. Korkusuz, renkli ve sabırlı çocuk diş hekimliği.">
+<!-- SEO -->
+<meta name="keywords" content="çocuk diş hekimi izmit, pedodonti izmit, çocuk diş kliniği kocaeli, süt dişi tedavisi, fissür örtücü, flor uygulaması, yer tutucu">
+<link rel="canonical" href="https://www.klinikids.com.tr/cocuk.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Özel Klinikids Ağız ve Diş Sağlığı Polikliniği">
+<meta name="geo.region" content="TR-41">
+<meta name="geo.placename" content="İzmit, Kocaeli">
+<meta name="geo.country" content="TR">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Klinikids">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Çocuk Kliniği – Klinikids İzmit Diş Sanatı">
+<meta property="og:description" content="Klinikids Çocuk Kliniği, İzmit: ilk muayene, flor, fissür örtücü, süt dişi tedavileri, yer tutucu ve online randevu. Korkusuz, renkli ve sabırlı çocuk diş hekimliği.">
+<meta property="og:url" content="https://www.klinikids.com.tr/cocuk.html">
+<meta property="og:image" content="https://www.klinikids.com.tr/foto/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Klinikids — Çocuk ve Yetişkin Ağız ve Diş Sağlığı, İzmit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Çocuk Kliniği – Klinikids İzmit Diş Sanatı">
+<meta name="twitter:description" content="Klinikids Çocuk Kliniği, İzmit: ilk muayene, flor, fissür örtücü, süt dişi tedavileri, yer tutucu ve online randevu. Korkusuz, renkli ve sabırlı çocuk diş hekimliği.">
+<meta name="twitter:image" content="https://www.klinikids.com.tr/foto/og-cover.jpg">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Dentist",
+   "@id": "https://www.klinikids.com.tr/cocuk.html#klinik",
+   "name": "Klinikids Çocuk Kliniği",
+   "url": "https://www.klinikids.com.tr/cocuk.html",
+   "description": "Çocuklara özel ağız ve diş sağlığı: ilk muayene, flor, fissür örtücü, süt dişi tedavileri, yer tutucu.",
+   "medicalSpecialty": "Pediatric",
+   "image": "https://www.klinikids.com.tr/foto/og-cover.jpg",
+   "telephone": "+90 546 421 71 41",
+   "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Mehmet Ali Paşa Mahallesi, Erkan Sokak, RBG İş Merkezi No 7B",
+    "addressLocality": "İzmit",
+    "addressRegion": "Kocaeli",
+    "addressCountry": "TR"
+   },
+   "openingHoursSpecification": [
+    {
+     "@type": "OpeningHoursSpecification",
+     "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+     ],
+     "opens": "09:00",
+     "closes": "18:00"
+    }
+   ],
+   "parentOrganization": {
+    "@id": "https://www.klinikids.com.tr/#klinik"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Ana sayfa",
+     "item": "https://www.klinikids.com.tr/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Çocuk Kliniği",
+     "item": "https://www.klinikids.com.tr/cocuk.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<!-- /SEO -->
 <meta name="theme-color" content="#1E5F5B">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -787,6 +872,27 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
   .loc{gap:14px}.loc-map{min-height:220px}
   footer{border-radius:32px 32px 0 0;padding:36px 0 20px}
 }
+
+/* Hekim kartı: öne çıkan bilgiler fotoğrafın altında (geniş ekran) — fotoğrafın altı boş kalmasın */
+.hk-facts-side{display:none}
+@media (min-width:701px){
+  .hk-side{display:flex;flex-direction:column;gap:10px;align-self:stretch;min-width:0}
+  .hk-side .hk-photo{align-self:auto!important;width:100%;flex:none}
+  .hk-facts-side{display:flex!important;flex-direction:column;gap:8px;margin:0!important;flex:1}
+  .hk-facts-side div{flex:1 1 auto;max-height:120px;display:flex;flex-direction:column;justify-content:center;background:color-mix(in srgb,var(--c) 11%,#fff)!important;border:0!important;border-left:4px solid var(--c)!important;border-radius:16px!important;padding:10px 14px!important}
+  .hk-facts-side b{font-family:'Baloo 2',inherit;font-size:20px!important;line-height:1.1;color:var(--ink)}
+  .hk-facts-side span{font-size:12.5px!important;color:var(--ink2);font-weight:700}
+  .hk-facts-body{display:none!important}
+}
+@media (max-width:700px){.hk-facts-side{display:none!important}}
+@media (min-width:701px){.hk-grid{align-items:start!important}.hk-facts-side div{min-height:64px}}
+
+/* Hekimler alt alta: her sayıda hekimde düzenli görünür */
+.hk-grid{grid-template-columns:1fr!important;max-width:none;gap:24px!important}
+@media (min-width:701px){
+  .hk{grid-template-columns:280px 1fr!important;gap:34px!important;padding:24px!important}
+  .hk-intro{max-width:72ch}
+}
 </style>
 </head>
 <body id="top">
@@ -835,6 +941,7 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
       <a href="#galeri">Galeri</a>
       <a href="#sss">SSS</a>
       <a href="#anlasmali">Kurumlar</a>
+      <a href="kvkk.html">KVKK</a>
       <a href="yetiskin.html" class="switch">🧑 Yetişkin Kliniği</a>
     </nav>
     <button class="burger" id="burger" aria-label="Menüyü aç" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -922,7 +1029,7 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
 <section id="hekimimiz">
   <div class="wrap">
     <div class="head reveal"><span class="hand">Tanışalım!</span><h2>Çocuk Kliniği Hekimlerimiz</h2><p>Çocuklarla çalışmayı seven, sabırlı ve güler yüzlü bir ekip.</p></div>
-    <div class="hk-grid" id="hekimler"></div>
+    <div class="hk-grid" id="hekimler" data-clinic="cocuk"></div>
   </div>
 </section>
 
@@ -985,7 +1092,7 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
 <section class="myths" id="yanlislar">
   <div class="wrap">
     <div class="head reveal"><span class="hand">Doğru mu, yanlış mı? Üzerine gelin, görün!</span><h2>Doğru Bilinen Yanlışlar</h2><p>Çocuklarda diş sağlığı hakkında en sık duyduğumuz inanışlar ve doğruları.</p></div>
-    <div class="myth-grid" id="mythGrid"></div>
+    <div class="myth-grid" id="mythGrid" data-yanlis="cocuk"></div>
     <p class="src-note">Bilgiler genel bilgilendirme amaçlıdır; çocuğunuza özel öneri için muayene gerekir. Kaynaklar: <a href="https://www.healthychildren.org/English/healthy-living/oral-health/pages/Brushing-Up-on-Oral-Health-Never-Too-Early-to-Start.aspx" target="_blank" rel="noopener">Amerikan Pediatri Akademisi (HealthyChildren)</a>, <a href="https://www.mouthhealthy.org/en/life-stages/babies-and-kids/healthy-habits-babies-and-kids" target="_blank" rel="noopener">Amerikan Diş Hekimleri Birliği (MouthHealthy)</a>.</p>
   </div>
 </section>
@@ -1014,7 +1121,7 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
 <section id="sss">
   <div class="wrap">
     <div class="head reveal"><span class="hand">Ebeveynlerin merak ettikleri</span><h2>Sık Sorulan Sorular</h2></div>
-    <div class="faq reveal">
+    <div class="faq reveal" data-sss="cocuk">
       <details><summary>Çocuğumu ilk kez ne zaman diş hekimine getirmeliyim?</summary><p>İlk diş çıktığında ya da en geç 1 yaşında ilk muayeneyi öneriyoruz. Erken ziyaret hem olası sorunları erken yakalar hem de çocuğunuzun diş hekimiyle korkusuzca tanışmasını sağlar.</p></details>
       <details><summary>Ne kadar diş macunu kullanmalıyım?</summary><p>3 yaşından küçüklerde pirinç tanesi kadar, 3–6 yaş arasında bezelye tanesi kadar florürlü macun yeterlidir. Çocuk tükürmeyi öğrenene kadar fırçalamayı siz yapın ya da yakından takip edin.</p></details>
       <details><summary>Süt dişindeki çürük neden tedavi edilmeli, nasılsa düşecek?</summary><p>Bazı süt azı dişleri 10–12 yaşına kadar ağızda kalır. Tedavi edilmeyen çürük ağrı, enfeksiyon, beslenme sorunlarına ve alttan gelen kalıcı dişin etkilenmesine yol açabilir.</p></details>
@@ -1070,11 +1177,12 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
         <li><a href="index.html">🏠 Ana sayfa</a></li>
         <li><a href="yetiskin.html">🧑 Yetişkin Kliniği</a></li>
         <li><a href="tel:+905464217141">📞 0546 421 71 41</a></li>
+        <li><a href="kvkk.html">🔒 KVKK Aydınlatma Metni</a></li>
         <li><a data-wa="Merhaba Klinikids!" target="_blank" rel="noopener">💬 WhatsApp</a></li>
         <li>📍 Mehmet Ali Paşa Mah. Erkan Sok. RBG İş Merkezi No 7B İzmit / Kocaeli</li>
       </ul></div>
     </div>
-    <div class="copy"><span>© <span id="yr"></span> Klinikids Tüm Hakları Saklıdır.</span> <a class="madeby" href="https://elmabaski.com" target="_blank" rel="noopener" aria-label="Tasarım ve yazılım: elmabaski.com">Tasarım &amp; Yazılım <img src="foto/elmabaski-logo-beyaz.png" alt="elmabaski.com" width="430" height="96" loading="lazy"></a></div>
+    <div class="copy"><span>© <span id="yr"></span> Klinikids Tüm Hakları Saklıdır.</span> <a href="kvkk.html" style="text-decoration:underline;text-underline-offset:3px">KVKK Aydınlatma Metni</a> <a class="madeby" href="https://elmabaski.com" target="_blank" rel="noopener" aria-label="Tasarım ve yazılım: elmabaski.com">Tasarım &amp; Yazılım <img src="foto/elmabaski-logo-beyaz.png" alt="elmabaski.com" width="430" height="96" loading="lazy"></a></div>
   </div>
 </footer>
 
@@ -1142,7 +1250,7 @@ const M=[
  ['🪥','Çocuk kendi dişini fırçalayabiliyorsa yardıma gerek yok.','Çocukların el becerisi genellikle 7–8 yaşına kadar tam temizlik için yeterli olmaz. Bu yaşa kadar fırçalamaya yardım etmeniz ya da sonunda kontrol etmeniz önerilir.'],
  ['🦷','Yerinden çıkan kalıcı dişe yapılacak bir şey yok.','Kalıcı diş, kökünden tutulmadan sütün içinde ve vakit kaybetmeden kliniğe getirilirse çoğu zaman yerine takılabilir. Süt dişi ise yerine takılmaz; yine de muayene gerekir.'],
 ];
-document.getElementById('mythGrid').innerHTML=M.map(m=>`<details class="myth reveal"><summary><span class="q">${m[0]}</span><span>“${m[1]}”<span class="hint">Doğru mu? Üzerine gelin 👆</span></span></summary><div class="ans"><b class="v">YANLIŞ</b><br><b class="t">DOĞRUSU</b>${m[2]}</div></details>`).join('');
+window.YANLIS_YEDEK=M.map(m=>({emoji:m[0],myth:m[1],truth:m[2]})); /* yanlislar.js çizer; liste admin panelinden yönetilir */
 
 
 
@@ -1198,8 +1306,11 @@ if(matchMedia('(hover:hover)').matches)document.querySelectorAll('details.myth, 
  const upd=()=>{up.hidden=scrollY<300;dn.hidden=innerHeight+scrollY>=document.documentElement.scrollHeight-40};
  upd();addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd)})();
 </script>
-<script>window.HEKIMLER=[{"name": "Ayşe Gül Aydın Çetinkaya", "title": "Dt.", "role": "Diş Hekimi · Klinikids kurucusu", "color": "#FF6F9C", "photo": "foto/ayse-gul-aydin-cetinkaya.jpg", "intro": "Hacettepe Üniversitesi mezunu. 2008'den bu yana mesleğini yalnızca çocuk hastalara ayırıyor; deneyimini 2026'da kurduğu Klinikids'te sürdürüyor.", "facts": [["2007", "Hacettepe Üniv."], ["18+ yıl", "Çocuklarla"]], "tags": ["Süt dişi tedavileri", "Koruyucu tedaviler", "Yer tutucu", "Erken ortodonti"], "edu": [["2002 – 2007", "Hacettepe Üniversitesi Diş Hekimliği Fakültesi, Ankara"], ["Lise", "Trabzon Yomra Fen Lisesi"], ["Sürekli eğitim", "Yurt içi ve yurt dışında çocuk diş hekimliği (pedodonti) kursları, sempozyumlar, online ve uygulamalı eğitimler"]], "exp": [["2026 –", "Özel Klinikids Ağız ve Diş Sağlığı Polikliniği, İzmit · Kurucu"], ["2019 – 2022", "Dentatlas Ağız ve Diş Sağlığı Polikliniği"], ["2018 – 2019", "Aden Aile Ağız ve Diş Sağlığı Polikliniği, Yenişehir ve Başiskele"], ["2013 – 2018", "Hospitadent Ağız ve Diş Sağlığı Merkezi, Çamlıca"], ["2010 – 2015", "Kendi muayenehanesi, Kadıköy"], ["2009 – 2010", "Dr. Tahsin Özbek Çocuk Diş Kliniği, İzmit"], ["2008 – 2009", "5.15 Çocuk Diş Kliniği, Etiler"], ["2007 – 2008", "Dt. Turan Sarı Muayenehanesi, İzmit"]], "about": "1983 Trabzon doğumlu. Evli ve bir oğul annesi. Karadeniz'e ayrı bir sevgisi var ama ülkemizin her köşesini ayrı seviyor.", "hobbies": ["🚶‍♀️ Yürüyüş", "🏃‍♀️ Koşu", "💃 Halk oyunları, flamenko, Latin dansları", "🍳 Yemek yapmak", "🧒 Çocuklarla sohbet", "☕ Dostlarla vakit"], "waMsg": "Merhaba Ayşe Gül Hanım, çocuğum için bilgi almak istiyorum."}, {"name": "Arya Koç Kuş", "title": "Dt.", "role": "Diş Hekimi · Çocuk Kliniği", "color": "#45B4EA", "photo": "foto/arya-koc-kus.jpg", "intro": "Çocuk kliniğimizde küçük hastalarımızın muayene ve tedavilerini yürütür; her adımı çocuğun anlayacağı dilde anlatarak ilerler.", "tags": ["Muayene & kontrol", "Koruyucu tedaviler", "Dolgu", "Flor & fissür örtücü"], "waMsg": "Merhaba Arya Hanım, çocuğum için bilgi almak istiyorum.", "facts": [["Klinikids", "Çocuk Kliniği"], ["İzmit", "Kocaeli"]]}];</script>
+<script>window.HEKIM_YAN_BILGI=true;</script>
+<script>window.HEKIMLER=[{"name": "Ayşe Gül Aydın Çetinkaya", "title": "Dt.", "role": "Diş Hekimi · Klinikids kurucusu", "color": "#FF6F9C", "photo": "foto/ayse-gul-aydin-cetinkaya.jpg", "intro": "Hacettepe Üniversitesi mezunu. 2008'den bu yana mesleğini yalnızca çocuk hastalara ayırıyor; deneyimini 2026'da kurduğu Klinikids'te sürdürüyor.", "facts": [["2007", "Hacettepe Üniv."], ["18+ yıl", "Çocuklarla"]], "tags": ["Süt dişi tedavileri", "Koruyucu tedaviler", "Yer tutucu", "Erken ortodonti"], "edu": [["2002 – 2007", "Hacettepe Üniversitesi Diş Hekimliği Fakültesi, Ankara"], ["Lise", "Trabzon Yomra Fen Lisesi"], ["Sürekli eğitim", "Yurt içi ve yurt dışında çocuk diş hekimliği (pedodonti) kursları, sempozyumlar, online ve uygulamalı eğitimler"]], "exp": [["2026 –", "Özel Klinikids Ağız ve Diş Sağlığı Polikliniği, İzmit · Kurucu"], ["2019 – 2022", "Dentatlas Ağız ve Diş Sağlığı Polikliniği"], ["2018 – 2019", "Aden Aile Ağız ve Diş Sağlığı Polikliniği, Yenişehir ve Başiskele"], ["2013 – 2018", "Hospitadent Ağız ve Diş Sağlığı Merkezi, Çamlıca"], ["2010 – 2015", "Kendi muayenehanesi, Kadıköy"], ["2009 – 2010", "Dr. Tahsin Özbek Çocuk Diş Kliniği, İzmit"], ["2008 – 2009", "5.15 Çocuk Diş Kliniği, Etiler"], ["2007 – 2008", "Dt. Turan Sarı Muayenehanesi, İzmit"]], "about": "1983 Trabzon doğumlu. Evli ve bir oğul annesi. Karadeniz'e ayrı bir sevgisi var ama ülkemizin her köşesini ayrı seviyor.", "hobbies": ["🚶‍♀️ Yürüyüş", "🏃‍♀️ Koşu", "💃 Halk oyunları, flamenko, Latin dansları", "🍳 Yemek yapmak", "🧒 Çocuklarla sohbet", "☕ Dostlarla vakit"], "waMsg": "Merhaba Ayşe Gül Hanım, çocuğum için bilgi almak istiyorum."}, {"name": "Arya Koç Kuş", "title": "Dt.", "role": "Diş Hekimi · Çocuk Kliniği", "color": "#45B4EA", "photo": "foto/arya-koc-kus.jpg", "intro": "Çocuk kliniğimizde küçük hastalarımızın muayene ve tedavilerini yürütür; her adımı çocuğun anlayacağı dilde anlatarak ilerler.", "tags": ["Muayene & kontrol", "Koruyucu tedaviler", "Dolgu", "Flor & fissür örtücü"], "waMsg": "Merhaba Arya Hanım, çocuğum için bilgi almak istiyorum.", "facts": [["Klinikids", "Çocuk Kliniği"], ["İzmit", "Kocaeli"]]}, {"name": "Mücahit Çağan", "title": "Dt.", "role": "Diş Hekimi · Çocuk ve Yetişkin Kliniği", "color": "#7CC94F", "photo": "foto/mucahit-cagan.jpg", "intro": "Dicle Üniversitesi Diş Hekimliği Fakültesi'nden 2023'te mezun oldu. Öğrenciliğinde Almanya'da özel bir klinikte stajyer hekim olarak çalıştı; orada gözlemlediği tedavi tekniklerini bugün kendi tedavilerinde uyguluyor. Oral cerrahi, implantoloji, vital diş tedavileri, gülüş tasarımı ve protez alanlarına özel ilgi duyuyor.", "facts": [["2023", "Dicle Üniv. mezuniyeti"], ["Almanya", "Klinik staj"], ["2 klinik", "Çocuk ve yetişkin"]], "tags": ["Muayene & tedavi", "Vital diş tedavileri", "Diş çekimi & oral cerrahi", "Koruyucu tedaviler"], "edu": [["2018 – 2023", "Dicle Üniversitesi Diş Hekimliği Fakültesi, Diyarbakır"], ["Lise", "Haydar Aliyev Fen Lisesi; Özel Sınav Temel Lisesi"], ["İlköğretim", "Atatürk İlköğretim Okulu ve Mevlana İlköğretim Okulu"], ["Sürekli eğitim", "Yurt içi ve yurt dışında alanında değerli hocaların eğitim programları"]], "exp": [["2026 –", "Özel Klinikids Ağız ve Diş Sağlığı Polikliniği, İzmit"], ["2023 –", "Özel sektörde klinisyen diş hekimi"], ["2021", "Almanya'da özel bir klinikte 3 ay stajyer hekim: Alman tedavi teknikleri, laboratuvar sistemleri ve klinik işleyişi"]], "about": "1999 Iğdır doğumlu; bugün İzmit'te yaşıyor. Lise yıllarında ailesinden birini ameliyat eden bir cerrahtan etkilenerek bu mesleği seçti. En büyük hedefi, tüm ağız ve diş tedavilerini uluslararası standartlar ve bilimsel temeller üzerinde, hastalarına en kolay ve en koruyucu şekilde ulaştırmak. En büyük hobisinin mesleği olduğunu söylüyor.", "hobbies": ["🦷 Mesleği", "🧭 Yeni yerler keşfetmek", "🏊 Yüzmek"], "waMsg": "Merhaba Mücahit Bey, çocuğum için bilgi almak istiyorum."}];</script>
 <script src="hekimler.js" defer></script>
+<script src="yanlislar.js" defer></script>
+<script src="sss.js" defer></script>
 <script src="kurumlar.js" defer></script>
 <script>
 </script>

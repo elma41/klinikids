@@ -57,7 +57,7 @@ root.innerHTML = `
         <label class="rb-field">${KIDS ? 'Veli cep telefonu' : 'Cep telefonu'} *<input data-el="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="05xx xxx xx xx"></label>
         ${KIDS ? `<label class="rb-field">Veli adı<input data-el="parent" autocomplete="name" placeholder="Örn. Ayşe Yılmaz"></label>` : ''}
         <label class="rb-field rb-full">Notunuz<textarea data-el="note" placeholder="${KIDS ? 'Şikâyeti, çocuğunuzun daha önce diş hekimine gidip gitmediği…' : 'Şikâyetinizi veya sorunuzu kısaca yazabilirsiniz…'}"></textarea></label>
-        <label class="rb-check rb-full"><input type="checkbox" data-el="ok"> <span>${KIDS ? 'Velisi olarak, çocuğumun ve kendi' : 'Kişisel ve sağlık'} ${KIDS ? 'kişisel ve sağlık verilerimizin' : 'verilerimin'} randevu işlemleri için klinik tarafından işlenmesine açık rıza veriyorum (KVKK).</span></label>
+        <label class="rb-check rb-full"><input type="checkbox" data-el="ok"> <span>${KIDS ? 'Velisi olarak, çocuğumun ve kendi' : 'Kişisel ve sağlık'} ${KIDS ? 'kişisel ve sağlık verilerimizin' : 'verilerimin'} randevu işlemleri için klinik tarafından işlenmesine açık rıza veriyorum. <a href="kvkk.html" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:700">KVKK aydınlatma metni</a></span></label>
       </div>
     </div>
     <p class="rb-sum" data-el="sum"></p>
@@ -92,11 +92,12 @@ async function init() {
   try {
     const [docs, svcs, links, hours, set] = await Promise.all([
       get(`doctors?select=id,full_name,title,specialty,color,clinic&is_active=eq.true&clinic=in.(${CLINIC},ikisi)&order=sort_order,full_name`),
-      get('services?select=id,name,duration_minutes&is_active=eq.true&order=sort_order,name'),
+      get('services?select=*&is_active=eq.true&order=sort_order,name'),
       get('doctor_services?select=doctor_id,service_id'),
       get('working_hours?select=doctor_id,weekday'),
       get('clinic_settings?select=max_days_ahead').catch(() => [])]);
-    st.svcs = svcs; st.links = links; st.hours = hours;
+    /* Hizmetin kliniği (cocuk / yetiskin / ikisi): bu sayfaya ait olmayan hizmetler gösterilmez */
+    st.svcs = svcs.filter(s => !s.clinic || s.clinic === CLINIC || s.clinic === 'ikisi'); st.links = links; st.hours = hours;
     if (set[0]) st.maxAhead = set[0].max_days_ahead;
     st.docs = docs.filter(d => svcsFor(d.id).length && hours.some(h => h.doctor_id === d.id));
     if (!st.docs.length) return fallback();

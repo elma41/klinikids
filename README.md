@@ -6,6 +6,12 @@
 |---|---|
 | `01_schema.sql` | Tablolar, yetkiler (RLS), boş saat hesabı, randevu alma ve iptal fonksiyonları |
 | `03_kurumlar.sql` | Anlaşmalı kurumlar tablosu ve logo deposu (admin panelindeki **Kurumlar** sayfası için). Bir kez çalıştır. |
+| `04_yanlislar.sql` | “Doğru bilinen yanlışlar” tablosu (admin panelindeki **Doğru Bilinen Yanlışlar** sayfası). ✅ Kuruldu. |
+| `05_sertifikalar.sql` | Hekim sertifikaları tablosu ve dosya deposu (panelde **Sertifikalar**; doktor kendi sertifikalarını yönetir). ✅ Kuruldu. |
+| `06_hizmet_klinik_ve_mucahit.sql` | Hizmetlere klinik bilgisi (çocuk / yetişkin / ikisi) ve Dt. Mücahit Çağan kaydı. ✅ Kuruldu. |
+| `07_site_icerikleri.sql` | Hekim profilleri (kart bilgileri panelden), SSS, galeri, sitede çalışma saatleri/izinler, Uzm. Dt. Duygu Nur Cesur Kocakaya. ✅ Kuruldu. |
+| `supabase/functions/personel` | Panelden personel hesabı açma / şifre sıfırlama / silme (Edge Function). ✅ Yayında. |
+| `08_kvkk.sql` | KVKK aydınlatma metni bölümleri (kvkk.html; panelde **KVKK metinleri**). ✅ Kuruldu. |
 | `02_seed.sql` | Test için 3 örnek doktor, 4 hizmet ve çalışma saatleri. Gerçek kurulumda çalıştırma. |
 
 ## Kurulum
@@ -81,3 +87,14 @@ Gerçek PostgreSQL 16 üzerinde denendi:
 2. Admin paneli: giriş, takvim (FullCalendar), doktor/hizmet/saat yönetimi
 3. SMS hatırlatma (Supabase Edge Function + Netgsm/İleti Merkezi), formda captcha
 4. KVKK aydınlatma metni (hukukçu kontrolünde)
+
+## Panelden yönetilenler (tasarımcıya gerek yok)
+
+| Sayfa | Kim | Ne yapar |
+|---|---|---|
+| Personel | Yönetici | E-posta ile hesap açar; geçici şifreyi WhatsApp'tan gönderir; şifre sıfırlar |
+| Doktorlar | Yönetici | Hekim ekler, hangi klinikte (çocuk / yetişkin / ikisi) görüneceğini seçer, hizmet ve saat atar |
+| Site profili | Doktor (kendi), Yönetici (hepsi) | Fotoğraf, tanıtım, öne çıkanlar, etiketler, eğitim, deneyim, hobiler |
+| Sertifikalar | Doktor (kendi), Yönetici (hepsi) | Sertifika yükler / siler |
+| Doktorlar → Saatler, İzinler | Doktor (kendi), Sekreter, Yönetici | Çalışma saatleri, izin, resmi tatil (sitede görünür) |
+| SSS, Doğru Bilinen Yanlışlar, Galeri, Kurumlar, KVKK metinleri | Yönetici | Ekle / düzenle / sırala / sil |

@@ -5,6 +5,91 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Yetişkin Kliniği – Klinikids Ağız ve Diş Sağlığı | İzmit</title>
 <meta name="description" content="Klinikids Yetişkin Kliniği, İzmit: gülüş tasarımı, diş beyazlatma, lamine ve E-max, implant, köprü ve protez, şeffaf plak, diş eti tedavisi. Online randevu.">
+<!-- SEO -->
+<meta name="keywords" content="diş kliniği izmit, implant izmit, gülüş tasarımı izmit, lamine izmit, e-max, diş beyazlatma izmit, şeffaf plak, ortodonti izmit">
+<link rel="canonical" href="https://www.klinikids.com.tr/yetiskin.html">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="Özel Klinikids Ağız ve Diş Sağlığı Polikliniği">
+<meta name="geo.region" content="TR-41">
+<meta name="geo.placename" content="İzmit, Kocaeli">
+<meta name="geo.country" content="TR">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Klinikids">
+<meta property="og:locale" content="tr_TR">
+<meta property="og:title" content="Yetişkin Kliniği – Klinikids Ağız ve Diş Sağlığı | İzmit">
+<meta property="og:description" content="Klinikids Yetişkin Kliniği, İzmit: gülüş tasarımı, diş beyazlatma, lamine ve E-max, implant, köprü ve protez, şeffaf plak, diş eti tedavisi. Online randevu.">
+<meta property="og:url" content="https://www.klinikids.com.tr/yetiskin.html">
+<meta property="og:image" content="https://www.klinikids.com.tr/foto/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Klinikids — Çocuk ve Yetişkin Ağız ve Diş Sağlığı, İzmit">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Yetişkin Kliniği – Klinikids Ağız ve Diş Sağlığı | İzmit">
+<meta name="twitter:description" content="Klinikids Yetişkin Kliniği, İzmit: gülüş tasarımı, diş beyazlatma, lamine ve E-max, implant, köprü ve protez, şeffaf plak, diş eti tedavisi. Online randevu.">
+<meta name="twitter:image" content="https://www.klinikids.com.tr/foto/og-cover.jpg">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Dentist",
+   "@id": "https://www.klinikids.com.tr/yetiskin.html#klinik",
+   "name": "Klinikids Yetişkin Kliniği · İzmit Diş Sanatı",
+   "url": "https://www.klinikids.com.tr/yetiskin.html",
+   "description": "Gülüş tasarımı, diş beyazlatma, lamine ve E-max, implant, köprü ve protez, şeffaf plak, ortodonti ve diş eti tedavisi.",
+   "medicalSpecialty": "Dentistry",
+   "image": "https://www.klinikids.com.tr/foto/og-cover.jpg",
+   "telephone": "+90 546 421 71 41",
+   "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Mehmet Ali Paşa Mahallesi, Erkan Sokak, RBG İş Merkezi No 7B",
+    "addressLocality": "İzmit",
+    "addressRegion": "Kocaeli",
+    "addressCountry": "TR"
+   },
+   "openingHoursSpecification": [
+    {
+     "@type": "OpeningHoursSpecification",
+     "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+     ],
+     "opens": "09:00",
+     "closes": "18:00"
+    }
+   ],
+   "parentOrganization": {
+    "@id": "https://www.klinikids.com.tr/#klinik"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Ana sayfa",
+     "item": "https://www.klinikids.com.tr/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Yetişkin Kliniği",
+     "item": "https://www.klinikids.com.tr/yetiskin.html"
+    }
+   ]
+  }
+ ]
+}
+</script>
+<!-- /SEO -->
 <meta name="theme-color" content="#0F2A44">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -439,7 +524,7 @@ footer{margin-top:0}
 /* Hekim kartları yan yana eşit boy */
 @media (min-width:561px){
   .hk-grid{align-items:stretch}
-  .hk-photo{align-self:stretch;aspect-ratio:auto;min-height:280px}
+  .hk-photo{align-self:start;aspect-ratio:4/5;min-height:0}
   .hk-body{display:flex;flex-direction:column}
   .hk-ctas{margin-top:auto;padding-top:12px}
 }
@@ -502,6 +587,26 @@ footer{margin-top:0}
   .visual .card{position:static;inset:auto;text-align:left;justify-content:flex-start;padding:10px 12px;font-size:13px;line-height:1.25}
   .visual .card small{font-size:11.5px;margin-top:2px}
 }
+
+/* Hekim kartı: öne çıkan bilgiler fotoğrafın altında (geniş ekran) — fotoğrafın altı boş kalmasın */
+.hk-facts-side{display:none}
+@media (max-width:700px){.hk-facts-side{display:none!important}}
+@media (min-width:701px){
+  .hk-side{display:flex;flex-direction:column;gap:10px;align-self:stretch;min-width:0}
+  .hk-side .hk-photo{align-self:auto;width:100%;flex:none}
+  .hk-facts-side{display:flex;flex-direction:column;gap:8px;margin:0;flex:1}
+  .hk-facts-side div{flex:1 1 auto;max-height:120px;display:flex;flex-direction:column;justify-content:center;background:var(--gold-soft);border:0;border-left:3px solid var(--c,var(--gold));border-radius:12px;padding:10px 14px}
+  .hk-facts-side b{font-size:18px}
+  .hk-facts-side span{font-size:12.5px}
+  .hk-facts-body{display:none}
+}
+
+/* Hekimler alt alta: her sayıda hekimde düzenli görünür */
+.hk-grid{grid-template-columns:1fr!important;max-width:none;gap:24px!important}
+@media (min-width:701px){
+  .hk{grid-template-columns:280px 1fr!important;gap:34px!important;padding:24px!important}
+  .hk-intro{max-width:72ch}
+}
 </style>
 </head>
 <body>
@@ -541,6 +646,7 @@ footer{margin-top:0}
     <a href="#yanlislar">Doğru Bilinen Yanlışlar</a>
     <a href="#sss">SSS</a>
     <a href="#anlasmali">Kurumlar</a>
+    <a href="kvkk.html">KVKK</a>
     <a href="#iletisim">İletişim</a>
     <a href="cocuk.html" class="kidlink">🧒 Çocuk Kliniği</a>
   </nav>
@@ -637,9 +743,9 @@ footer{margin-top:0}
 <!-- HEKİMLER -->
 <section id="hekimlerimiz">
   <div class="wrap">
-    <div class="sec-head reveal"><span class="eyebrow">Hekimlerimiz</span><h2>Yetişkin Kliniği Hekimimiz</h2><p>Deneyimli hekimlerimizle muayeneden tedavi planına kadar her adımda yanınızdayız.</p></div>
-    <div class="hk-grid" id="hekimler"></div>
-    <a class="kidbar reveal" href="cocuk.html#hekimimiz"><span>🧒</span><span><b>Çocuk Kliniği hekimlerimiz</b> Dt. Ayşe Gül Aydın Çetinkaya ve Dt. Arya Koç Kuş</span><span class="go">Tanışın →</span></a>
+    <div class="sec-head reveal"><span class="eyebrow">Hekimlerimiz</span><h2>Yetişkin Kliniği Hekimlerimiz</h2><p>Deneyimli hekimlerimizle muayeneden tedavi planına kadar her adımda yanınızdayız.</p></div>
+    <div class="hk-grid" id="hekimler" data-clinic="yetiskin"></div>
+    <a class="kidbar reveal" href="cocuk.html#hekimimiz"><span>🧒</span><span><b>Çocuk Kliniği hekimlerimiz</b> Çocuklara özel, sabırlı ve güler yüzlü ekibimizle tanışın</span><span class="go">Tanışın →</span></a>
   </div>
 </section>
 
@@ -655,7 +761,7 @@ footer{margin-top:0}
 <section class="myths" id="yanlislar">
   <div class="wrap">
     <div class="sec-head reveal"><span class="eyebrow">Bilgi</span><h2>Diş sağlığında doğru bilinen yanlışlar</h2><p>Kulaktan kulağa yayılan inanışlar ve doğruları. Bir maddenin üzerine gelin (telefonda dokunun), doğrusu açılsın.</p></div>
-    <div class="mgrid" id="mgrid"></div>
+    <div class="mgrid" id="mgrid" data-yanlis="yetiskin"></div>
     <p class="src-note">Bilgiler genel bilgilendirme amaçlıdır; size özel öneri için muayene gerekir. Kaynaklar: <a href="https://www.ada.org/en/resources/ada-library/oral-health-topics/pregnancy" target="_blank" rel="noopener">Amerikan Diş Hekimleri Birliği (ADA)</a>, <a href="https://www.mouthhealthy.org/" target="_blank" rel="noopener">MouthHealthy</a>.</p>
   </div>
 </section>
@@ -676,7 +782,7 @@ footer{margin-top:0}
 <section id="sss">
   <div class="wrap">
     <div class="sec-head center reveal"><span class="eyebrow">SSS</span><h2>Sık sorulan sorular</h2></div>
-    <div class="faq reveal">
+    <div class="faq reveal" data-sss="yetiskin">
       <details><summary>Diş beyazlatma dişlere zarar verir mi?</summary><p>Hekim kontrolünde, uygun yöntemle yapılan beyazlatma güvenlidir. İşlem sırasında ve sonrasında geçici hassasiyet olabilir. Dolgu ve kaplamaların rengi değişmez; bu nedenle uygunluğunu muayenede değerlendiririz.</p></details>
       <details><summary>Eksik dişlerim için hangi seçenekler var?</summary><p>İmplant, köprü, hareketli protez ve tam protez başlıca seçeneklerdir. Eksik dişler yalnızca estetiği değil; çiğneme, konuşma ve komşu dişlerin konumunu da etkiler. Size uygun çözüm muayene ve görüntüleme sonrası belirlenir.</p></details>
       <details><summary>Lamine ile E-max arasındaki fark nedir?</summary><p>Lamine, dişin ön yüzeyine uygulanan ince porselen kaplamadır. E-max ise lityum disilikat seramikten üretilen, ışık geçirgenliği yüksek bir materyaldir; lamine ya da tam kaplama olarak kullanılabilir. Hangisinin uygun olduğu dişin durumuna göre belirlenir.</p></details>
@@ -731,7 +837,7 @@ footer{margin-top:0}
         <li><a href="https://www.instagram.com/ozelklinikids_agizvedissagligi/" target="_blank" rel="noopener">Instagram</a></li>
       </ul></div>
     </div>
-    <div class="copy"><span>© <span id="yr"></span> Klinikids Tüm Hakları Saklıdır.</span> <a class="madeby" href="https://elmabaski.com" target="_blank" rel="noopener" aria-label="Tasarım ve yazılım: elmabaski.com">Tasarım &amp; Yazılım <img src="foto/elmabaski-logo-beyaz.png" alt="elmabaski.com" width="430" height="96" loading="lazy"></a></div>
+    <div class="copy"><span>© <span id="yr"></span> Klinikids Tüm Hakları Saklıdır.</span> <a href="kvkk.html" style="text-decoration:underline;text-underline-offset:3px">KVKK Aydınlatma Metni</a> <a class="madeby" href="https://elmabaski.com" target="_blank" rel="noopener" aria-label="Tasarım ve yazılım: elmabaski.com">Tasarım &amp; Yazılım <img src="foto/elmabaski-logo-beyaz.png" alt="elmabaski.com" width="430" height="96" loading="lazy"></a></div>
   </div>
 </footer>
 
@@ -782,7 +888,7 @@ const M=[
  ['Kanal tedavisi çok acı verir.','Kanal tedavisi lokal anestezi altında yapılır ve çoğu zaman var olan ağrıyı gideren tedavidir. Sonrasında birkaç gün hafif hassasiyet olabilir.'],
  ['İmplant herkese yapılamaz, yaşlılara hiç yapılmaz.','İmplant için belirleyici olan yaş değil; genel sağlık durumu ve çene kemiğinin uygunluğudur. Uygunluk muayene ve görüntüleme ile değerlendirilir.'],
 ];
-document.getElementById('mgrid').innerHTML=M.map(m=>`<details class="myth reveal"><summary><span class="x">YANLIŞ</span><span>“${m[0]}”</span><span class="pl">+</span></summary><div class="ans"><b>DOĞRUSU</b>${m[1]}</div></details>`).join('');
+window.YANLIS_YEDEK=M.map(m=>({myth:m[0],truth:m[1]})); /* yanlislar.js çizer; liste admin panelinden yönetilir */
 
 /* Önce/sonra */
 const baR=document.getElementById('baRange'),baA=document.getElementById('baAfter'),baH=document.getElementById('baHandle');
@@ -819,8 +925,11 @@ if(matchMedia('(hover:hover)').matches)document.querySelectorAll('details.myth, 
  const upd=()=>{up.hidden=scrollY<300;dn.hidden=innerHeight+scrollY>=document.documentElement.scrollHeight-40};
  upd();addEventListener('scroll',upd,{passive:true});addEventListener('resize',upd)})();
 </script>
-<script>window.HEKIMLER=[{"name": "Mehtap Uysal", "title": "Dt.", "role": "DİŞ HEKİMİ · YETİŞKİN KLİNİĞİ", "color": "#B8955A", "photo": "foto/mehtap-uysal.jpg", "photoAlt": "https://pixel-p2.s3.eu-central-1.amazonaws.com/doctor/avatar/a81303ec/a81303ec-079a-4464-bcae-7025bf0348f2_large.jpg", "intro": "2003 yılında Ankara Üniversitesi Diş Hekimliği Fakültesi'nden mezun oldu. Özel sağlık kuruluşları ve Kocaeli Acıbadem Hastanesi'ndeki çalışmalarının ardından 2008'den itibaren İzmit'te kendi muayenehanesinde hasta kabul etti. 2026'dan bu yana Klinikids yetişkin kliniğinde hastalarını kabul ediyor.", "facts": [["2003", "Ankara Üniv. mezuniyeti"], ["20+ yıl", "Mesleki deneyim"], ["TR · EN", "Konuştuğu diller"]], "tags": ["Gülüş tasarımı", "Lamine, E-max, zirkonyum", "İmplant", "Kanal tedavisi", "Diş eti tedavileri", "Şeffaf plak", "Gömülü / 20 yaş dişleri", "Bruksizm & çene eklemi"], "edu": [["2003", "Ankara Üniversitesi Diş Hekimliği Fakültesi"]], "exp": [["2026 –", "Özel Klinikids Ağız ve Diş Sağlığı Polikliniği, İzmit"], ["2008 – 2025", "Kendi muayenehanesi, İzmit"], ["2006 – 2008", "Kocaeli Acıbadem Hastanesi"], ["2004 – 2006", "Alanya Özel Hayat Hastanesi"], ["2003 – 2004", "Dentfam Ağız ve Diş Sağlığı Merkezi"]], "lang": "Türkçe, İngilizce", "waMsg": "Merhaba Mehtap Hanım, bilgi almak istiyorum."}];</script>
+<script>window.HEKIM_YAN_BILGI=true;</script>
+<script>window.HEKIMLER=[{"name": "Mehtap Uysal", "title": "Dt.", "role": "DİŞ HEKİMİ · YETİŞKİN KLİNİĞİ", "color": "#B8955A", "photo": "foto/mehtap-uysal.jpg", "photoAlt": "https://pixel-p2.s3.eu-central-1.amazonaws.com/doctor/avatar/a81303ec/a81303ec-079a-4464-bcae-7025bf0348f2_large.jpg", "intro": "2003 yılında Ankara Üniversitesi Diş Hekimliği Fakültesi'nden mezun oldu. 20 yılı aşkın deneyimiyle estetik diş hekimliği, restoratif uygulamalar, kanal tedavisi, protez ve implant üstü protezler alanlarında çalışıyor. Ön bölge estetik restorasyonları, el becerisi ve sanatsal bakışın bilimsel bilgiyle buluştuğu özel ilgi alanı.", "facts": [["2003", "Ankara Üniv. mezuniyeti"], ["20+ yıl", "Mesleki deneyim"], ["TR · EN", "Konuştuğu diller"]], "tags": ["Estetik diş hekimliği", "Ön bölge estetik restorasyonlar", "Restoratif uygulamalar", "Kanal tedavisi", "Protez", "İmplant üstü protez", "Genel diş hekimliği"], "edu": [["2003", "Ankara Üniversitesi Diş Hekimliği Fakültesi"], ["Sürekli eğitim", "Ulusal ve uluslararası kongre, sempozyum, kurs ve eğitim programları"]], "exp": [["Günümüzde", "Özel Klinik IDS Ağız ve Diş Sağlığı Polikliniği, İzmit"], ["2025", "Ayşe Gül Aydın Çetinkaya Diş Muayenehanesi"], ["2008 – 2025", "Kendi muayenehanesi, İzmit"], ["2006 – 2008", "Kocaeli Acıbadem Hastanesi"], ["2004 – 2006", "Alanya Özel Hayat Hastanesi"], ["2003 – 2004", "Dentfam Ağız ve Diş Sağlığı Polikliniği"]], "lang": "Türkçe, İngilizce", "about": "Tedavi yaklaşımının merkezinde hasta memnuniyeti, ağız ve diş sağlığının yeniden kazandırılması, fonksiyon ve estetiğin bütünlüğü var. Hastalarıyla güçlü bir iletişim ve güven ilişkisi kurmayı, her tedaviyi kişiye özel, titizlikle ve özenle yapmayı temel ilkeleri arasında görüyor. Meslekteki en değerli kazanımlarından biri, yıllar sonra bile hastalarından aldığı memnuniyet ve süregelen güven. Bilimsel ve teknolojik yenilikleri takip ederek kendini sürekli geliştirmeye önem veriyor. Mesleği dışında resim ve heykel sanatına, farkındalığı temel alan Doğu felsefelerine ilgi duyuyor; hayatını bir köpekle paylaşıyor ve doğaya, sanata, keşfetmeye özel bir yer ayırıyor.", "hobbies": ["🎨 Resim ve heykel", "🧘 Doğu felsefeleri", "✈️ Seyahat", "🌲 Orman yürüyüşleri", "⛺ Kamp", "🐕 Köpeğiyle vakit"], "waMsg": "Merhaba Mehtap Hanım, bilgi almak istiyorum."}, {"name": "Mücahit Çağan", "title": "Dt.", "role": "DİŞ HEKİMİ · YETİŞKİN VE ÇOCUK KLİNİĞİ", "color": "#1C8C88", "photo": "foto/mucahit-cagan.jpg", "intro": "Dicle Üniversitesi Diş Hekimliği Fakültesi'nden 2023'te mezun oldu. Öğrenciliğinde Almanya'da özel bir klinikte stajyer hekim olarak çalıştı; orada gözlemlediği tedavi tekniklerini bugün kendi tedavilerinde uyguluyor. Oral cerrahi, implantoloji, vital diş tedavileri, gülüş tasarımı ve protez alanlarına özel ilgi duyuyor.", "facts": [["2023", "Dicle Üniv. mezuniyeti"], ["Almanya", "Klinik staj"], ["2 klinik", "Çocuk ve yetişkin"]], "tags": ["Oral cerrahi", "İmplantoloji", "Vital diş tedavileri", "Gülüş tasarımı", "Protez", "Genel diş hekimliği"], "edu": [["2018 – 2023", "Dicle Üniversitesi Diş Hekimliği Fakültesi, Diyarbakır"], ["Lise", "Haydar Aliyev Fen Lisesi; Özel Sınav Temel Lisesi"], ["İlköğretim", "Atatürk İlköğretim Okulu ve Mevlana İlköğretim Okulu"], ["Sürekli eğitim", "Yurt içi ve yurt dışında alanında değerli hocaların eğitim programları"]], "exp": [["2026 –", "Özel Klinikids Ağız ve Diş Sağlığı Polikliniği, İzmit"], ["2023 –", "Özel sektörde klinisyen diş hekimi"], ["2021", "Almanya'da özel bir klinikte 3 ay stajyer hekim: Alman tedavi teknikleri, laboratuvar sistemleri ve klinik işleyişi"]], "about": "1999 Iğdır doğumlu; bugün İzmit'te yaşıyor. Lise yıllarında ailesinden birini ameliyat eden bir cerrahtan etkilenerek bu mesleği seçti. En büyük hedefi, tüm ağız ve diş tedavilerini uluslararası standartlar ve bilimsel temeller üzerinde, hastalarına en kolay ve en koruyucu şekilde ulaştırmak. En büyük hobisinin mesleği olduğunu söylüyor.", "hobbies": ["🦷 Mesleği", "🧭 Yeni yerler keşfetmek", "🏊 Yüzmek"], "waMsg": "Merhaba Mücahit Bey, bilgi almak istiyorum."}, {"name": "Duygu Nur Cesur Kocakaya", "title": "Uzm. Dt.", "role": "ORTODONTİ UZMANI · YETİŞKİN KLİNİĞİ", "color": "#7A5BA6", "photo": "foto/duygu-nur-cesur-kocakaya.jpg", "intro": "2018 yılında Kocaeli Üniversitesi Diş Hekimliği Fakültesi'nden fakülte birincisi olarak mezun oldu. 2019'da DUS'ta Türkiye 39.'su olarak aynı üniversitenin Ortodonti Anabilim Dalı'nda uzmanlık eğitimini tamamladı.", "facts": [["2018", "Fakülte birincisi"], ["DUS 39.", "Türkiye derecesi"], ["Ortodonti", "Uzmanlık alanı"]], "tags": ["Sabit ortodontik tedavi", "Şeffaf plak", "Erken dönem önleyici ortodonti", "Fonksiyonel ortodonti", "Yetişkin ortodontisi"]}];</script>
 <script src="hekimler.js" defer></script>
+<script src="yanlislar.js" defer></script>
+<script src="sss.js" defer></script>
 <script src="kurumlar.js" defer></script>
 <script>
 </script>

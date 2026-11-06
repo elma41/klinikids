@@ -1,8 +1,8 @@
 /* =====================================================================
    Klinikids — Galeri (çocuk ve yetişkin sayfalarında ortak)
    Kullanım: <div id="galeriApp" data-theme="cocuk"></div>  (veya "yetiskin")
-   Resim önce foto/galeri/<dosya adı> klasöründen aranır; yoksa
-   aysegulaydin.com.tr'deki kopyası gösterilir.
+   Fotoğraflar YÖNETİM PANELİ → "Galeri" sayfasından yüklenir, sıralanır, silinir.
+   Veritabanına ulaşılamazsa aşağıdaki yedek liste gösterilir.
    ===================================================================== */
 (() => {
 const root = document.getElementById('galeriApp');
@@ -10,10 +10,16 @@ if (!root) return;
 const CDN = 'https://aysegulaydin.gumlet.io/img/galeri/';
 const FILES = ['araba-son.webp','DSC_4887aaaaa.webp','DSC_4862aaaaa.webp','DSC_4899aaaa.webp','DSC_5229aaaaa.webp','DSC_5116aaaaaa.webp','DSC_5184aaaaa.webp','DSC_5013aaaaa.webp','DSC_5749aaaaa.jpg','DSC_5509aaaa.jpg','DSC_5378aaaaa.jpg','DSC_5420aaaaa.jpg','17.jpg','16.jpg','15.jpg','14.jpg','13.jpg','12.jpg','11.jpg','10.jpg','8.jpg','6.jpg','9.jpg','7.jpg','5.jpg','3.jpg','2.jpg','galeri-26.jpg','galeri-28.jpg','galeri-29.jpg','galeri-35.jpg','galeri-36.jpg','galeri-30.jpg','galeri-31.jpg','galeri-34.jpg','galeri-37.jpg','galeri-38.jpg','1.jpg','galeri-40.jpg','galeri-42.jpg','galeri-43.jpg'];
 const KIDS = root.dataset.theme === 'cocuk';
+const SB = 'https://xnjnxogvnldrbridzvqu.supabase.co';
+const KEY = 'sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
+const CLINIC = KIDS ? 'cocuk' : 'yetiskin';
 const FIRST = window.innerWidth < 640 ? 6 : window.innerWidth < 900 ? 9 : window.innerWidth < 1100 ? 8 : 10;
-const thumb = f => CDN + f + '?w=720&compress=smart&skip_larger=true';
-const big = f => CDN + f + '?height=1400&compress=smart&skip_larger=true';
-const local = f => 'foto/galeri/' + f;
+/* Dış adres (gumlet) küçültülerek, panelden yüklenenler doğrudan gösterilir */
+const isG = u => /gumlet\.io/.test(u);
+const thumb = u => isG(u) ? u + '?w=720&compress=smart&skip_larger=true' : u;
+const big = u => isG(u) ? u + '?height=1400&compress=smart&skip_larger=true' : u;
+const fileUrl = p => `${SB}/storage/v1/object/public/galeri/${p.split('/').map(encodeURIComponent).join('/')}`;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const css = document.createElement('style');
 css.textContent = `
@@ -33,28 +39,32 @@ css.textContent = `
 @media (max-width:1100px){.gl-grid{grid-template-columns:repeat(4,1fr)}}@media (max-width:900px){.gl-grid{grid-template-columns:repeat(3,1fr)}}@media (max-width:640px){.gl-grid{grid-template-columns:1fr 1fr;gap:8px}.gl-box{padding:60px 8px}.gl-box .p,.gl-box .n{top:auto;bottom:8px;transform:none}}`;
 document.head.appendChild(css);
 
-root.innerHTML = `<div class="gl-grid">${FILES.map((f, i) => `<button type="button" class="gl-item" data-i="${i}" ${i >= FIRST ? 'hidden' : ''} aria-label="Fotoğrafı büyüt (${i + 1}/${FILES.length})"><img data-f="${f}" alt="Klinikids kliniğinden bir kare" loading="lazy" decoding="async"></button>`).join('')}</div>
-  <div class="gl-more"><button type="button">Tüm fotoğrafları göster (${FILES.length})</button></div>`;
-
-/* Önce yerel kopya, yoksa CDN */
-const srcOf = {};
-root.querySelectorAll('img[data-f]').forEach(img => {
-  const f = img.dataset.f;
-  img.onerror = () => { img.onerror = () => img.closest('.gl-item').remove(); img.src = thumb(f); srcOf[f] = big(f); };
-  img.src = local(f); srcOf[f] = local(f);
-});
-
-const more = root.querySelector('.gl-more');
-more.querySelector('button').onclick = () => { root.querySelectorAll('.gl-item[hidden]').forEach(b => b.hidden = false); more.remove(); };
+let ITEMS = [];
+function build(list) {
+  ITEMS = list;
+  if (!list.length) { const sec = root.closest('section'); if (sec) sec.hidden = true; document.querySelectorAll('a[href="#galeri"]').forEach(a => a.hidden = true); return; }
+  root.innerHTML = `<div class="gl-grid">${list.map((g, i) => `<button type="button" class="gl-item" data-i="${i}" ${i >= FIRST ? 'hidden' : ''} aria-label="Fotoğrafı büyüt (${i + 1}/${list.length})"><img src="${esc(thumb(g.u))}" alt="${esc(g.c || 'Klinikids kliniğinden bir kare')}" loading="lazy" decoding="async"></button>`).join('')}</div>
+  ${list.length > FIRST ? `<div class="gl-more"><button type="button">Tüm fotoğrafları göster (${list.length})</button></div>` : ''}`;
+  root.querySelectorAll('.gl-item img').forEach(img => img.onerror = () => img.closest('.gl-item').remove());
+  const more = root.querySelector('.gl-more');
+  if (more) more.querySelector('button').onclick = () => { root.querySelectorAll('.gl-item[hidden]').forEach(b => b.hidden = false); more.remove(); };
+}
+const fallback = () => build(FILES.map(f => ({ u: CDN + f })));
+const ctl = new AbortController(); const tm = setTimeout(() => ctl.abort(), 5000);
+fetch(`${SB}/rest/v1/gallery?select=url,file_path,caption&is_active=eq.true&clinic=in.(${CLINIC},ikisi)&order=sort_order,created_at`, { headers: { apikey: KEY }, signal: ctl.signal })
+  .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status)))
+  .then(rows => build(rows.map(r => ({ u: r.file_path ? fileUrl(r.file_path) : r.url, c: r.caption }))))
+  .catch(fallback)
+  .finally(() => clearTimeout(tm));
 
 /* Büyük görüntüleyici */
 let box = null, cur = 0;
 const items = () => [...root.querySelectorAll('.gl-item')];
 function show(i) {
   const list = items(); cur = (i + list.length) % list.length;
-  const f = list[cur].querySelector('img').dataset.f;
-  box.querySelector('img').src = srcOf[f] || big(f);
-  box.querySelector('.c').textContent = `${cur + 1} / ${list.length}`;
+  const g = ITEMS[+list[cur].dataset.i];
+  box.querySelector('img').src = big(g.u); box.querySelector('img').alt = g.c || 'Klinikids kliniğinden bir kare';
+  box.querySelector('.c').textContent = `${ITEMS[+list[cur].dataset.i].c ? ITEMS[+list[cur].dataset.i].c + ' · ' : ''}${cur + 1} / ${list.length}`;
 }
 function open(i) {
   box = document.createElement('div'); box.className = 'gl-box'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-label', 'Fotoğraf galerisi');

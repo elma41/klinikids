@@ -496,6 +496,11 @@ details p{padding:0 24px 22px;color:var(--ink2);font-size:16.5px}
 .loc{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
 .loc-map{border-radius:40px;overflow:hidden;min-height:340px;position:relative;background:#EAF6E1}
 .loc-map iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.mapcard .mapart{position:absolute;inset:0;width:100%;height:100%}
+.mapcard-info{position:absolute;left:16px;right:16px;bottom:16px;background:#fff;border-radius:18px;padding:14px 16px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:4px;font-size:14px;line-height:1.4}
+.mapcard-info strong{font-size:16px}
+.mapcard-info a{align-self:flex-start;margin-top:6px;background:#EF4E45;color:#fff;border-radius:999px;padding:8px 16px;font-weight:700;text-decoration:none;cursor:pointer}
+.mapcard-info a:hover{filter:brightness(.95)}
 .loc-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
 .loc-btns .btn{padding:11px 18px;font-size:15px}
 .btn-sun{background:var(--yellow,#FFC83D);color:var(--ink);box-shadow:0 5px 0 rgba(0,0,0,.15)}
@@ -1198,7 +1203,7 @@ body > section > .wrap{width:min(1280px,100% - 32px)}
         <a class="btn btn-line" data-review target="_blank" rel="noopener">⭐ Google'da Değerlendirin</a>
       </div>
     </div>
-    <div class="loc-map reveal"><iframe title="Klinikids konumu" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q=Mehmet+Ali+Pa%C5%9Fa+Mahallesi+Erkan+Sokak+No+7B+%C4%B0zmit+Kocaeli&output=embed"></iframe></div>
+    <div class="loc-map reveal mapcard"><svg class="mapart" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="300" fill="#EEF4EA"/><g fill="none" stroke="#fff" stroke-linecap="round"><path d="M-10 210 C80 190 150 230 240 200 S360 150 410 170" stroke-width="16"/><path d="M90 -10 L130 310" stroke-width="12"/><path d="M260 -10 C250 80 290 160 270 310" stroke-width="10"/><path d="M-10 90 L410 120" stroke-width="8"/><path d="M180 120 L200 310" stroke-width="6"/><path d="M20 30 L380 260" stroke-width="5" opacity=".7"/></g><rect x="300" y="20" width="80" height="60" rx="10" fill="#D7EBC9"/><rect x="20" y="230" width="60" height="50" rx="10" fill="#D7EBC9"/><circle cx="196" cy="140" r="34" fill="#EF4E45" opacity=".15"/><path d="M196 96c-15 0-27 12-27 27 0 20 27 45 27 45s27-25 27-45c0-15-12-27-27-27z" fill="#EF4E45"/><circle cx="196" cy="123" r="10" fill="#fff"/></svg><div class="mapcard-info"><strong>Klinikids · İzmit</strong><span>Mehmet Ali Paşa Mah. Erkan Sok. RBG İş Merkezi No 7B, İzmit / Kocaeli</span><a data-maps target="_blank" rel="noopener">📍 Yol tarifi al</a></div></div>
   </div>
 </section>
 

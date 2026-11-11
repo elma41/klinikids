@@ -8,9 +8,10 @@
 | `veritabani/` | SQL dosyaları ve Supabase Edge Function kaynakları | ❌ Hayır (Supabase'e zaten uygulandı) |
 | `_yedek_2026-11-11/` | 11 Kasım değişikliklerinden önceki dosyalar | ❌ Hayır |
 
-**Yükleme:** FTP programında (ör. FileZilla) ya da cPanel → Dosya Yöneticisi'nde `public_html/` içindeki her şeyi
-(gizli `.htaccess` dahil) sunucudaki `public_html/` içine sürükleyin. Aynı adlı dosyaların üzerine yazılmasını onaylayın.
-FileZilla'da gizli dosyaları görmek için: Sunucu → Gizli dosyaları göstermeye zorla.
+**Yayın (Plesk + GitHub):** Sunucu GitHub'daki `elma41/klinikids` deposundan çekiyor (Plesk → Git, dal `main` → `/httpdocs`).
+Sitenin kök klasörü `httpdocs/public_html` olarak ayarlı; `veritabani/` sunucuda durur ama dışarıdan açılamaz.
+Değişiklik yayına almak: GitHub'a gönder → Plesk → Websites & Domains → Git → **Pull now** (otomatik dağıtım açık, çekilen kayıt hemen yayına girer).
+Elle dosya yüklemeye gerek yok.
 
 ## Supabase durumu (12.11.2026)
 

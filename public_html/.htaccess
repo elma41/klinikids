@@ -45,9 +45,11 @@ RewriteRule ^(.+?)/?$ $1.html [L]
   ExpiresByType image/png "access plus 30 days"
   ExpiresByType image/webp "access plus 30 days"
   ExpiresByType image/x-icon "access plus 30 days"
+  ExpiresByType font/woff2 "access plus 1 year"
 </IfModule>
 
 AddType application/manifest+json .webmanifest
+AddType font/woff2 .woff2
 
 # ---------------------------------------------------------------------
 #  Güvenlik

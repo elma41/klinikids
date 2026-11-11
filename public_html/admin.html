@@ -5,12 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>Klinikids – Yönetim Paneli</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="kk-client.js?v=20261112b"></script>
-<script src="vendor/chart.umd.min.js?v=20261112b" defer></script>
-<script src="vendor/xlsx.full.min.js?v=20261112b" defer></script>
+<link rel="stylesheet" href="/fonts/fonts.css?v=20261112c">
+<script src="kk-client.js?v=20261112c"></script>
+<script src="vendor/chart.umd.min.js?v=20261112c" defer></script>
+<script src="vendor/xlsx.full.min.js?v=20261112c" defer></script>
 <style>
 :root{
   --cream:#FFFBF0; --white:#fff; --line:#EDE6D3;
@@ -1185,7 +1183,7 @@ const tblFriendly = (e, file) => /PGRST205|42P01|does not exist|Bucket not found
    ========================================================= */
 const HBUCKET = 'hekim-foto';
 const hfUrl = p => sb.storage.from(HBUCKET).getPublicUrl(p).data.publicUrl;
-const hfPathOf = url => { const m = String(url||'').match(/\/object\/public\/hekim-foto\/(.+)$/); return m ? decodeURIComponent(m[1]) : null; };
+const hfPathOf = url => { const m = String(url||'').match(/\/(?:object\/public|uploads)\/hekim-foto\/(.+)$/); return m ? decodeURIComponent(m[1]) : null; };
 if(!document.getElementById('profCss')){
   const st=document.createElement('style'); st.id='profCss'; st.textContent=`
 .pf-grid{display:grid;grid-template-columns:220px 1fr;gap:20px}

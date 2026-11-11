@@ -1,6 +1,29 @@
-# Diş Kliniği Randevu Sistemi — Veritabanı
+# Klinikids — Web sitesi ve randevu sistemi
 
-## Dosyalar
+## Klasör yapısı
+
+| Klasör | Ne var | Sunucuya yüklenir mi? |
+|---|---|---|
+| `public_html/` | Sitenin kendisi (sayfalar, js/css, fotoğraflar ve `foto/galeri`, .htaccess) | ✅ **İçindekilerin tamamı** hosting'deki `public_html` klasörüne yüklenir |
+| `veritabani/` | SQL dosyaları ve Supabase Edge Function kaynakları | ❌ Hayır (Supabase'e zaten uygulandı) |
+| `_yedek_2026-11-11/` | 11 Kasım değişikliklerinden önceki dosyalar | ❌ Hayır |
+
+**Yükleme:** FTP programında (ör. FileZilla) ya da cPanel → Dosya Yöneticisi'nde `public_html/` içindeki her şeyi
+(gizli `.htaccess` dahil) sunucudaki `public_html/` içine sürükleyin. Aynı adlı dosyaların üzerine yazılmasını onaylayın.
+FileZilla'da gizli dosyaları görmek için: Sunucu → Gizli dosyaları göstermeye zorla.
+
+## Supabase durumu (12.11.2026)
+
+- ✅ 01–09 SQL dosyaları canlı veritabanında
+- ✅ `personel` ve `randevu-mail` Edge Function'ları yayında
+- ⏳ `randevu-mail` için **SMTP_HOST** ve **SMTP_PASS** gizli değerleri girilince e-postalar gitmeye başlar
+  (SMTP_PORT varsayılan 465, SMTP_USER varsayılan aysegul@klinikids.company)
+
+---
+
+# Veritabanı
+
+## Dosyalar (`veritabani/` klasöründe)
 
 | Dosya | Ne işe yarar |
 |---|---|
@@ -10,8 +33,10 @@
 | `05_sertifikalar.sql` | Hekim sertifikaları tablosu ve dosya deposu (panelde **Sertifikalar**; doktor kendi sertifikalarını yönetir). ✅ Kuruldu. |
 | `06_hizmet_klinik_ve_mucahit.sql` | Hizmetlere klinik bilgisi (çocuk / yetişkin / ikisi) ve Dt. Mücahit Çağan kaydı. ✅ Kuruldu. |
 | `07_site_icerikleri.sql` | Hekim profilleri (kart bilgileri panelden), SSS, galeri, sitede çalışma saatleri/izinler, Uzm. Dt. Duygu Nur Cesur Kocakaya. ✅ Kuruldu. |
-| `supabase/functions/personel` | Panelden personel hesabı açma / şifre sıfırlama / silme (Edge Function). ✅ Yayında. |
+| `edge-functions/personel` | Panelden personel hesabı açma / şifre sıfırlama / silme (Edge Function). ✅ Yayında. |
 | `08_kvkk.sql` | KVKK aydınlatma metni bölümleri (kvkk.html; panelde **KVKK metinleri**). ✅ Kuruldu. |
+| `09_eposta_ve_hekimler.sql` | Arya Hanım'ın yeni özgeçmişi, Duygu Hanım iki klinikte, randevu e-postaları (aysegul@klinikids.company) için tetikleyici, KVKK metnine e-posta eklemeleri. Aşağıdaki **Randevu e-postaları** adımlarıyla kur. |
+| `edge-functions/randevu-mail` | Yeni randevu → kliniğe, onaylanınca → hastaya e-posta (Edge Function). |
 | `02_seed.sql` | Test için 3 örnek doktor, 4 hizmet ve çalışma saatleri. Gerçek kurulumda çalıştırma. |
 
 ## Kurulum
@@ -98,3 +123,24 @@ Gerçek PostgreSQL 16 üzerinde denendi:
 | Sertifikalar | Doktor (kendi), Yönetici (hepsi) | Sertifika yükler / siler |
 | Doktorlar → Saatler, İzinler | Doktor (kendi), Sekreter, Yönetici | Çalışma saatleri, izin, resmi tatil (sitede görünür) |
 | SSS, Doğru Bilinen Yanlışlar, Galeri, Kurumlar, KVKK metinleri | Yönetici | Ekle / düzenle / sırala / sil |
+
+
+## Randevu e-postaları (aysegul@klinikids.company)
+
+- Siteden yeni randevu gelince **kliniğe** e-posta gider (hasta, telefon, hekim, işlem, tarih, not).
+- Randevu panelden **Onayla** ile onaylanınca, hasta e-posta yazdıysa **hastaya** "Randevunuz onaylandı" e-postası gider.
+- Hasta iptal linkinden iptal ederse kliniğe e-posta gider. Personelin panelden yaptığı iptal bildirilmez.
+- E-posta gönderilemese bile randevu kaydı asla engellenmez.
+
+**Kurulum (bir kez):**
+1. Supabase → **Edge Functions** → **Deploy a new function** → adı `randevu-mail`, içerik `veritabani/edge-functions/randevu-mail/index.ts`.
+   Fonksiyon ayarlarında **Verify JWT / Enforce JWT verification = KAPALI** (veritabanı çağırır; kendi gizli anahtarıyla korunur).
+2. Edge Functions → **Secrets** bölümüne ekle:
+   - `SMTP_HOST` = e-posta sağlayıcınızın giden sunucusu (ör. mail.klinikids.company)
+   - `SMTP_PORT` = `465` (SSL). Supabase 25 ve 587 portlarına izin vermez.
+   - `SMTP_USER` = `aysegul@klinikids.company`
+   - `SMTP_PASS` = bu posta kutusunun şifresi
+   - (Alternatif) `RESEND_API_KEY` girilirse SMTP yerine Resend kullanılır (alan adı doğrulaması gerekir).
+3. SQL Editor'da `09_eposta_ve_hekimler.sql` → **Run**.
+4. Test: sitede kendi e-postanızla randevu alın, panelden onaylayın. Sonuçlar:
+   `select status_code, content, created from net._http_response order by created desc limit 10;`

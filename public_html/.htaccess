@@ -1,0 +1,68 @@
+# =====================================================================
+#  Klinikids — sunucu ayarları (cPanel / Apache)
+#  Bu dosyayı sitenin ana klasörüne (public_html) yükleyin.
+#  ÖNCE cPanel → SSL/TLS Status (AutoSSL) ile ücretsiz SSL sertifikasını
+#  etkinleştirin; https olmadan aşağıdaki yönlendirme çalışmaz.
+# =====================================================================
+
+Options -MultiViews -Indexes
+DirectoryIndex index.html
+RewriteEngine On
+
+# 1) Her zaman https://www.klinikids.com.tr (http ve www'siz girişler yönlendirilir)
+RewriteCond %{HTTP_HOST} !^www\.klinikids\.com\.tr$ [NC,OR]
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^(.*)$ https://www.klinikids.com.tr/$1 [R=301,L]
+
+# 2) /index.html → /   (ana sayfa sade adresle açılır)
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+RewriteRule ^index\.html$ / [R=301,L]
+
+# 3) /cocuk.html → /cocuk   (eski .html adresleri sade adrese yönlendirilir)
+RewriteCond %{THE_REQUEST} \s/+([^?\s]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+# 4) /cocuk → cocuk.html dosyası (adres çubuğunda .html görünmez)
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+# ---------------------------------------------------------------------
+#  Hız: sıkıştırma ve tarayıcı önbelleği
+# ---------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json application/xml image/svg+xml application/manifest+json
+</IfModule>
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 hour"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/css "access plus 1 day"
+  ExpiresByType application/javascript "access plus 1 day"
+  ExpiresByType image/jpeg "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType image/webp "access plus 30 days"
+  ExpiresByType image/x-icon "access plus 30 days"
+</IfModule>
+
+AddType application/manifest+json .webmanifest
+
+# ---------------------------------------------------------------------
+#  Güvenlik
+# ---------------------------------------------------------------------
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  # Yönetim paneli arama motorlarında çıkmasın
+  <FilesMatch "^admin\.html$">
+    Header set X-Robots-Tag "noindex, nofollow"
+  </FilesMatch>
+</IfModule>
+
+# Yardımcı dosyalar dışarıdan açılmasın
+<FilesMatch "\.(sql|md|py|ts)$">
+  Require all denied
+</FilesMatch>

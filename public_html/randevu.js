@@ -58,7 +58,7 @@ root.innerHTML = `
         ${KIDS ? `<label class="rb-field">Veli adı<input data-el="parent" autocomplete="name" placeholder="Örn. Ayşe Yılmaz"></label>` : ''}
         <label class="rb-field rb-full">${KIDS ? 'Veli e-posta adresi' : 'E-posta adresiniz'} <small style="font-weight:600;opacity:.7">(isteğe bağlı · onay e-postası için)</small><input data-el="email" type="email" autocomplete="email" inputmode="email" placeholder="ornek@mail.com"></label>
         <label class="rb-field rb-full">Notunuz<textarea data-el="note" placeholder="${KIDS ? 'Şikâyeti, çocuğunuzun daha önce diş hekimine gidip gitmediği…' : 'Şikâyetinizi veya sorunuzu kısaca yazabilirsiniz…'}"></textarea></label>
-        <label class="rb-check rb-full"><input type="checkbox" data-el="ok"> <span>${KIDS ? 'Velisi olarak, çocuğumun ve kendi' : 'Kişisel ve sağlık'} ${KIDS ? 'kişisel ve sağlık verilerimizin' : 'verilerimin'} randevu işlemleri için klinik tarafından işlenmesine açık rıza veriyorum. <a href="kvkk.html" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:700">KVKK aydınlatma metni</a></span></label>
+        <label class="rb-check rb-full"><input type="checkbox" data-el="ok"> <span>${KIDS ? 'Velisi olarak, çocuğumun ve kendi' : 'Kişisel ve sağlık'} ${KIDS ? 'kişisel ve sağlık verilerimizin' : 'verilerimin'} randevu işlemleri için klinik tarafından işlenmesine ve randevu bildirimlerinin kliniğin e-posta hizmet sağlayıcısı (Google) üzerinden gönderilmesine açık rıza veriyorum. <a href="kvkk.html" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:700">KVKK aydınlatma metni</a></span></label>
       </div>
     </div>
     <p class="rb-sum" data-el="sum"></p>

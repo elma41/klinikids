@@ -1,0 +1,6 @@
+# Tüm /api/... istekleri index.php'ye gider
+Options -Indexes
+DirectoryIndex index.php
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [L,QSA]

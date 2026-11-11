@@ -10,7 +10,7 @@ if (!root) return;
 const CDN = 'https://aysegulaydin.gumlet.io/img/galeri/';
 const FILES = ['araba-son.webp','DSC_4887aaaaa.webp','DSC_4862aaaaa.webp','DSC_4899aaaa.webp','DSC_5229aaaaa.webp','DSC_5116aaaaaa.webp','DSC_5184aaaaa.webp','DSC_5013aaaaa.webp','DSC_5749aaaaa.jpg','DSC_5509aaaa.jpg','DSC_5378aaaaa.jpg','DSC_5420aaaaa.jpg','17.jpg','16.jpg','15.jpg','14.jpg','13.jpg','12.jpg','11.jpg','10.jpg','8.jpg','6.jpg','9.jpg','7.jpg','5.jpg','3.jpg','2.jpg','galeri-26.jpg','galeri-28.jpg','galeri-29.jpg','galeri-35.jpg','galeri-36.jpg','galeri-30.jpg','galeri-31.jpg','galeri-34.jpg','galeri-37.jpg','galeri-38.jpg','1.jpg','galeri-40.jpg','galeri-42.jpg','galeri-43.jpg'];
 const KIDS = root.dataset.theme === 'cocuk';
-const SB = 'https://xnjnxogvnldrbridzvqu.supabase.co';
+const SB = '/api';
 const KEY = 'sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
 const CLINIC = KIDS ? 'cocuk' : 'yetiskin';
 const FIRST = window.innerWidth < 640 ? 6 : window.innerWidth < 900 ? 9 : window.innerWidth < 1100 ? 8 : 10;
@@ -18,7 +18,7 @@ const FIRST = window.innerWidth < 640 ? 6 : window.innerWidth < 900 ? 9 : window
 const isG = u => /gumlet\.io/.test(u);
 const thumb = u => isG(u) ? u + '?w=720&compress=smart&skip_larger=true' : u;
 const big = u => isG(u) ? u + '?height=1400&compress=smart&skip_larger=true' : u;
-const fileUrl = p => `${SB}/storage/v1/object/public/galeri/${p.split('/').map(encodeURIComponent).join('/')}`;
+const fileUrl = p => `/uploads/galeri/${p.split('/').map(encodeURIComponent).join('/')}`;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 const css = document.createElement('style');

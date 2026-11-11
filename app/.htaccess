@@ -1,0 +1,2 @@
+# Bu klasör web kökünün dışında olmalı; yine de olur da açılırsa hiçbir dosya sunulmaz.
+Require all denied

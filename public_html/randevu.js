@@ -6,11 +6,11 @@
    veriler veritabanındaki güvenlik kurallarıyla korunur.
    ===================================================================== */
 (() => {
-const SB = 'https://xnjnxogvnldrbridzvqu.supabase.co';
+const SB = '/api';
 const KEY = 'sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
 const WA_PHONE = '905464217141';
 const TZ = 'Europe/Istanbul';
-const H = { apikey: KEY, 'Content-Type': 'application/json' };
+const H = { apikey: KEY, 'Content-Type': 'application/json', 'X-KK': '1' };
 
 const root = document.getElementById('randevuApp');
 if (!root) return;

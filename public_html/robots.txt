@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /admin
+Disallow: /api/
 
 Sitemap: https://www.klinikids.com.tr/sitemap.xml

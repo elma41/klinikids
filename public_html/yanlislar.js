@@ -7,7 +7,7 @@
    yedek liste (window.YANLIS_YEDEK) gösterilir. Hiç aktif madde yoksa bölüm gizlenir.
    ===================================================================== */
 (() => {
-const SB = 'https://xnjnxogvnldrbridzvqu.supabase.co';
+const SB = '/api';
 const KEY = 'sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
 const box = document.querySelector('[data-yanlis]');
 if (!box) return;

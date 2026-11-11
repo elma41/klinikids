@@ -11,7 +11,7 @@
 (() => {
 const box = document.getElementById('hekimler');
 if (!box) return;
-const SB = 'https://xnjnxogvnldrbridzvqu.supabase.co';
+const SB = '/api';
 const KEY = 'sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
 const CLINIC = box.dataset.clinic === 'cocuk' ? 'cocuk' : 'yetiskin';
 const KIDS = CLINIC === 'cocuk';
@@ -23,7 +23,7 @@ const wa = t => 'https://wa.me/905464217141?text=' + encodeURIComponent(t);
 const WA = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>';
 const api = (path, opt = {}) => {
   const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), 5000);
-  return fetch(`${SB}/rest/v1/${path}`, { ...opt, headers: { apikey: KEY, 'Content-Type': 'application/json', ...(opt.headers || {}) }, signal: ctl.signal })
+  return fetch(`${SB}/rest/v1/${path}`, { ...opt, headers: { apikey: KEY, 'Content-Type': 'application/json', 'X-KK': '1', ...(opt.headers || {}) }, signal: ctl.signal })
     .then(r => r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))).finally(() => clearTimeout(t));
 };
 /* Sayfa window.HEKIM_YAN_BILGI = true derse öne çıkan bilgiler geniş ekranda fotoğrafın altına dizilir */
@@ -140,7 +140,7 @@ if (!document.getElementById('hkCertCss')) {
 }
 
 /* ---------- Sertifikalar ---------- */
-const certUrl = p => `${SB}/storage/v1/object/public/sertifikalar/${p.split('/').map(encodeURIComponent).join('/')}`;
+const certUrl = p => `/uploads/sertifikalar/${p.split('/').map(encodeURIComponent).join('/')}`;
 function lightbox(items, start) {
   let i = start;
   const lb = document.createElement('div'); lb.className = 'cert-lb'; lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');

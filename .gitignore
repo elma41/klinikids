@@ -2,3 +2,9 @@ _yedek*/
 *.zip
 .DS_Store
 Thumbs.db
+
+# Kendi sunucudaki sürüm: ayar dosyası ve yüklenen dosyalar git dışında
+app/config.php
+app/config.php.tmp
+public_html/uploads/*
+!public_html/uploads/.htaccess

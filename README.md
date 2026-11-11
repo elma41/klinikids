@@ -1,28 +1,53 @@
 # Klinikids — Web sitesi ve randevu sistemi
 
+Site, randevu sistemi ve yönetim paneli **tamamen kendi sunucunuzda** (Plesk, PHP 8.2 + MySQL) çalışır.
+Supabase'e bağımlılık yoktur. Hasta verileri Türkiye'deki sunucuda tutulur.
+
 ## Klasör yapısı
 
-| Klasör | Ne var | Sunucuya yüklenir mi? |
+| Klasör | Ne var | Web'den erişilir mi? |
 |---|---|---|
-| `public_html/` | Sitenin kendisi (sayfalar, js/css, fotoğraflar ve `foto/galeri`, .htaccess) | ✅ **İçindekilerin tamamı** hosting'deki `public_html` klasörüne yüklenir |
-| `veritabani/` | SQL dosyaları ve Supabase Edge Function kaynakları | ❌ Hayır (Supabase'e zaten uygulandı) |
-| `_yedek_2026-11-11/` | 11 Kasım değişikliklerinden önceki dosyalar | ❌ Hayır |
+| `public_html/` | Site: sayfalar, js/css, fotoğraflar, `api/` (tek giriş noktası), `uploads/` (yüklenen dosyalar) | ✅ Sitenin kökü |
+| `app/` | PHP arka uç: veritabanı şeması, yetki kuralları, randevu mantığı, giriş, e-posta, kurulum | ❌ Web kökünün dışında |
+| `app/config.php` | Veritabanı ve e-posta ayarları (kurulum sayfası oluşturur, **git'e girmez**) | ❌ |
+| `veritabani/` | Eski Supabase sürümünün SQL dosyaları (arşiv) | ❌ |
 
-**Yayın (Plesk + GitHub):** Sunucu GitHub'daki `elma41/klinikids` deposundan çekiyor (Plesk → Git, dal `main` → `/httpdocs`).
-Sitenin kök klasörü `httpdocs/public_html` olarak ayarlı; `veritabani/` sunucuda durur ama dışarıdan açılamaz.
-Değişiklik yayına almak: GitHub'a gönder → Plesk → Websites & Domains → Git → **Pull now** (otomatik dağıtım açık, çekilen kayıt hemen yayına girer).
-Elle dosya yüklemeye gerek yok.
+## Nasıl çalışır
 
-## Supabase durumu (12.11.2026)
+- `public_html/api/index.php` tüm istekleri karşılar; asıl kod `app/` içinde.
+- API, Supabase'in adres biçimini taklit eder (`/api/rest/v1/doctors?select=...`). Bu sayede site ve
+  panel kodu neredeyse değişmeden taşındı; panel `kk-client.js` ile çalışır.
+- Yetki kuralları (`app/policy.php`) eski Supabase RLS kurallarının birebir karşılığıdır:
+  ziyaretçi yalnızca aktif içerikleri görür; hasta/randevu verisini yalnızca personel görür;
+  doktor yalnızca kendi randevu ve hastalarını görür.
+- Oturum, JavaScript'in okuyamadığı güvenli bir çerezde tutulur. Şifreler bcrypt ile saklanır.
+- Randevu çakışması, boş saat hesabı ve hız sınırları sunucuda kontrol edilir.
+- Yüklenen dosyalar `public_html/uploads/` altında; içerik türü dosyanın kendisinden doğrulanır,
+  bu klasörde betik çalışmaz.
 
-- ✅ 01–09 SQL dosyaları canlı veritabanında
-- ✅ `personel` ve `randevu-mail` Edge Function'ları yayında
-- ⏳ `randevu-mail` için **SMTP_HOST** ve **SMTP_PASS** gizli değerleri girilince e-postalar gitmeye başlar
-  (SMTP_PORT varsayılan 465, SMTP_USER varsayılan aysegul@klinikids.company)
+## Yayın (Plesk + GitHub)
+
+Plesk → Git, `main` dalını `/httpdocs` klasörüne çeker; sitenin kökü `httpdocs/public_html`.
+Değişiklik yayına almak: GitHub'a gönder → Plesk → Git → **Pull now**.
+`app/config.php` ve `public_html/uploads/` git dışında olduğu için güncellemelerde silinmez.
+
+## İlk kurulum (bir kez)
+
+1. Plesk → **Databases** → **Add Database**: veritabanı adı, kullanıcı adı ve şifre belirleyin.
+2. `https://www.klinikids.com.tr/api/kurulum` adresini açın; kurulum anahtarını ve veritabanı bilgilerini girin.
+   Tablolar oluşturulur, veriler Supabase'ten tek seferde aktarılır (yönetici şifresi aynen korunur).
+3. `https://www.klinikids.com.tr/api/kurulum/eposta` (yönetici girişiyle): e-posta gönderim ayarları
+   (SMTP, ör. Yandex posta kutusu, ya da Resend). "Test e-postası gönder" ile deneyin.
+
+## Yedekleme
+
+Plesk → **Backup & Restore** → zamanlanmış yedek (günlük önerilir). Veritabanı ve `uploads/` klasörü yedeklenmeli.
 
 ---
 
-# Veritabanı
+# Arşiv: eski Supabase sürümü
+
+Aşağıdaki bilgiler eski Supabase kurulumuna aittir; yeni sürümde kullanılmaz.
 
 ## Dosyalar (`veritabani/` klasöründe)
 

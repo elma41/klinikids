@@ -6,13 +6,13 @@
    Logolar sabit, renkli kutular hâlinde dizilir. Aktif kurum yoksa bölüm gizlenir.
    ===================================================================== */
 (() => {
-const SB = 'https://xnjnxogvnldrbridzvqu.supabase.co';
+const SB = '/api';
 const KEY = 'sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
 const box = document.getElementById('kurumlar');
 const sec = document.getElementById('anlasmali');
 if (!box) return;
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const logoUrl = p => p ? `${SB}/storage/v1/object/public/kurum-logolari/${encodeURIComponent(p)}` : '';
+const logoUrl = p => p ? `/uploads/kurum-logolari/${encodeURIComponent(p)}` : '';
 const hide = () => { if (sec) sec.hidden = true; else box.hidden = true; };
 
 if (!document.getElementById('krCss')) {

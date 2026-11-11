@@ -5,7 +5,7 @@
    Hiç aktif soru yoksa bölüm gizlenir.
    ===================================================================== */
 (() => {
-const SB = 'https://xnjnxogvnldrbridzvqu.supabase.co';
+const SB = '/api';
 const KEY = 'sb_publishable_CpJXbL8ZBECdSo3uSYXqdg_5W1DStIb';
 const box = document.querySelector('[data-sss]');
 if (!box) return;

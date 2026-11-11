@@ -84,6 +84,15 @@ function auth_session(): array {
 function auth_update(array $b): array {
     $c = ctx();
     if (!$c->uid) throw new ApiError('Oturumunuz bulunamadı. Lütfen yeniden giriş yapın.', 401);
+    if (isset($b['email'])) {
+        $email = strtolower(trim((string)$b['email']));
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) throw new ApiError('Geçerli bir e-posta adresi girin.', 422);
+        rate_limit('email_change', 10, 900);
+        $hash = (string)q('SELECT password_hash FROM users WHERE id = ?', [$c->uid])->fetchColumn();
+        if (!password_verify((string)($b['current_password'] ?? ''), $hash)) throw new ApiError('Mevcut şifre hatalı.', 400);
+        if (q('SELECT 1 FROM users WHERE email = ? AND id <> ?', [$email, $c->uid])->fetch()) throw new ApiError('Bu e-posta adresiyle başka bir hesap var.', 409);
+        q('UPDATE users SET email = ? WHERE id = ?', [$email, $c->uid]);
+    }
     if (isset($b['password'])) {
         $p = (string)$b['password'];
         if (mb_strlen($p) < 8) throw new ApiError('Şifre en az 8 karakter olmalı.', 422, 'weak_password');

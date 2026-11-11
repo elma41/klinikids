@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<script src="kk-client.js?v=20261112"></script>
-<script src="vendor/chart.umd.min.js?v=20261112" defer></script>
-<script src="vendor/xlsx.full.min.js?v=20261112" defer></script>
+<script src="kk-client.js?v=20261112b"></script>
+<script src="vendor/chart.umd.min.js?v=20261112b" defer></script>
+<script src="vendor/xlsx.full.min.js?v=20261112b" defer></script>
 <style>
 :root{
   --cream:#FFFBF0; --white:#fff; --line:#EDE6D3;
@@ -1677,6 +1677,10 @@ async function viewSettings(main){
       <p class="muted small">${esc(S.user.email)}</p>
       <div class="grid2" style="margin-top:10px"><label class="f">Yeni şifre<input class="in" type="password" id="nPass" autocomplete="new-password" minlength="8"></label>
       <div style="align-self:end"><button class="btn" id="nSave">Şifreyi değiştir</button></div></div>
+      <h4 style="margin:18px 0 6px">Giriş e-postasını değiştir</h4>
+      <div class="grid2"><label class="f">Yeni e-posta<input class="in" type="email" id="eNew" autocomplete="email" placeholder="ornek@klinikids.com.tr"></label>
+      <label class="f">Mevcut şifreniz (onay için)<input class="in" type="password" id="ePass" autocomplete="current-password"></label></div>
+      <div style="margin-top:8px"><button class="btn" id="eSave">E-postayı değiştir</button> <span class="muted small">Şifreniz değişmez.</span></div>
     </div>`;
   $('cSave').onclick = async () => {
     const err=$('cErr'); err.hidden=true;
@@ -1689,6 +1693,16 @@ async function viewSettings(main){
     if(p.length<8) return toast('Şifre en az 8 karakter olmalı.', true);
     const {error} = await sb.auth.updateUser({password:p});
     if(error) toast(friendly(error), true); else { $('nPass').value=''; toast('Şifre değiştirildi'); }
+  };
+  $('eSave').onclick = async () => {
+    const email = $('eNew').value.trim(), current_password = $('ePass').value;
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('Geçerli bir e-posta adresi yazın.', true);
+    if(!current_password) return toast('Onay için mevcut şifrenizi yazın.', true);
+    const {data, error} = await sb.auth.updateUser({email, current_password});
+    if(error) return toast(friendly(error), true);
+    S.user = data.user; $('ePass').value=''; $('eNew').value='';
+    $('meRole').textContent = $('meRole').textContent.replace(/ · .*$/, ' · ' + S.user.email);
+    toast('Giriş e-postanız ' + S.user.email + ' olarak değiştirildi'); go('settings');
   };
 }
 

@@ -8,3 +8,5 @@ app/config.php
 app/config.php.tmp
 public_html/uploads/*
 !public_html/uploads/.htaccess
+
+app/yedek/

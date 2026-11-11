@@ -324,6 +324,7 @@ const TABS = [
   {id:'kvkk', ic:'🔒', label:'KVKK metinleri', show:()=>isAdmin()},
   {id:'staff',    ic:'🔑', label:'Personel',   show:()=>isAdmin()},
   {id:'settings', ic:'⚙️', label:'Ayarlar',    show:()=>isAdmin()},
+  {id:'yedek',    ic:'🗄️', label:'Yedekleme',  show:()=>isAdmin()},
 ];
 
 /* ---------------- giriş ---------------- */
@@ -1880,7 +1881,107 @@ async function exportPatients(){
     'Son randevu': stat[p.id]?.last ? ymd(stat[p.id].last).split('-').reverse().join('.') : '', 'Notlar': p.notes||'' }))]], `klinikids-hastalar-${today()}.xlsx`);
 }
 
-const VIEWS = {reports:viewReports, appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, kurumlar:viewKurumlar, yanlislar:viewYanlislar, sertifikalar:viewSertifikalar, profil:viewProfil, sss:viewSSS, galeri:viewGaleri, kvkk:viewKvkk, staff:viewStaff, settings:viewSettings};
+/* =========================================================
+   YEDEKLEME
+   ========================================================= */
+async function yx(action, extra={}){
+  const r = await fetch('/api/functions/v1/yedek', {method:'POST', credentials:'same-origin', headers:{'Content-Type':'application/json','X-KK':'1'}, body:JSON.stringify({action, ...extra})});
+  const j = await r.json().catch(()=>({}));
+  if(!r.ok) throw new Error(j.message || 'İşlem yapılamadı.');
+  return j;
+}
+const trDT = x => x ? new Date(x).toLocaleString('tr-TR', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '—';
+const kb = n => n > 1048576 ? (n/1048576).toFixed(1).replace('.',',') + ' MB' : Math.max(1, Math.round(n/1024)) + ' KB';
+async function viewYedek(main){
+  main.innerHTML = `<div class="top"><h1>Yedekleme ve aylık rapor</h1></div><div class="card"><p class="muted">Yükleniyor…</p></div>`;
+  let d; try { d = await yx('durum'); } catch(e){ main.querySelector('.card').innerHTML = `<div class="err">${esc(e.message)}</div>`; return; }
+  const ok = (b, y, n) => `<span style="font-weight:700;color:${b?'#1baf7a':'#e34948'}">${b?'✓ '+y:'✗ '+n}</span>`;
+  main.innerHTML = `<div class="top"><h1>Yedekleme ve aylık rapor</h1></div>
+    <div class="card"><h3>Durum</h3>
+      <div class="tbl-wrap"><table class="tbl"><tbody>
+        <tr><td>Yedek şifresi</td><td>${ok(d.sifre_var, 'Belirlendi · '+trDT(d.sifre_tarihi), 'Belirlenmedi — aşağıdan belirleyin')}</td></tr>
+        <tr><td>E-posta gönderimi</td><td>${ok(d.eposta, 'Açık · raporlar '+esc(d.alici)+' adresine gider', 'Kapalı — E-posta ayarlarını tamamlayın')}</td></tr>
+        <tr><td>Son otomatik gece yedeği</td><td>${d.son_calisma ? trDT(d.son_calisma) : '<span class="muted">Henüz çalışmadı (zamanlanmış görev kurulunca her gece 03:00)</span>'}</td></tr>
+        <tr><td>Son aylık rapor</td><td>${d.son_rapor ? esc(d.son_rapor) : '<span class="muted">Henüz gönderilmedi</span>'}</td></tr>
+      </tbody></table></div>
+      <p class="muted small" style="margin-top:10px">Her gece sunucuda otomatik yedek alınır, son 30 gün saklanır. Her ayın 1'inde geçen ayın özeti ve sitenin şifreli tam yedeği e-postayla gönderilir.</p>
+    </div>
+
+    <div class="card"><h3>${d.sifre_var ? 'Yedek şifresini değiştir' : 'Yedek şifresi belirleyin'}</h3>
+      <p class="muted small">Yedek dosyaları bu şifreyle kilitlenir; hasta bilgileri şifre olmadan okunamaz. <b>Bu şifreyi unutursanız yedekler açılamaz</b> — kâğıda yazıp güvenli bir yerde saklayın. Şifreyi değiştirirseniz eski yedekler eski şifreyle açılmaya devam eder.</p>
+      <div class="grid3" style="margin-top:10px">
+        <label class="f">Yedek şifresi (en az 10 karakter)<input class="in" type="password" id="ySifre" autocomplete="new-password" minlength="10"></label>
+        <label class="f">Yedek şifresi (tekrar)<input class="in" type="password" id="ySifre2" autocomplete="new-password"></label>
+        <label class="f">Panel giriş şifreniz (onay için)<input class="in" type="password" id="yHesap" autocomplete="current-password"></label>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn primary" id="ySave">Kaydet</button></div>
+    </div>
+
+    <div class="card"><h3>Şimdi yap</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:end">
+        <a class="btn" id="yIndir" href="/api/functions/v1/yedek/indir" ${d.sifre_var?'':'aria-disabled="true" style="opacity:.5;pointer-events:none"'}>⬇ Şifreli yedeği bilgisayara indir</a>
+        <button class="btn" id="yNow">Sunucuda yedek al</button>
+        <label class="f" style="margin-left:auto">Rapor ayı<input class="in" type="month" id="yAy" value="${esc(d.gecen_ay)}"></label>
+        <button class="btn" id="yRapor" ${d.eposta?'':'disabled'}>✉ Aylık raporu şimdi gönder</button>
+      </div>
+      ${d.yerel.length ? `<h4 style="margin:18px 0 6px">Sunucudaki gece yedekleri</h4><div class="tbl-wrap" style="max-height:240px;overflow:auto"><table class="tbl"><tbody>${d.yerel.map(f=>`<tr><td>${esc(trDT(f.tarih))}</td><td>${kb(f.boyut)}</td><td>${/\.kkyedek$/.test(f.ad)?'🔐 Şifreli':'Şifresiz'}</td><td style="text-align:right"><a href="/api/functions/v1/yedek/indir?ad=${encodeURIComponent(f.ad)}">İndir</a></td></tr>`).join('')}</tbody></table></div>` : ''}
+    </div>
+
+    <div class="card"><h3>Yedekten geri yükle</h3>
+      <p class="muted small">Bir sorun olursa e-postayla gelen ya da indirdiğiniz <b>.kkyedek</b> dosyasını buradan yükleyin. Önce neyin geri ekleneceği gösterilir; siz onaylamadan hiçbir değişiklik yapılmaz. <b>Mevcut kayıtlar değiştirilmez</b>, yalnızca silinmiş/eksik kayıtlar geri eklenir. Geri yüklemeden hemen önce sunucuda otomatik bir güvenlik yedeği alınır.</p>
+      <div class="grid2" style="margin-top:10px">
+        <label class="f">Yedek dosyası<input class="in" type="file" id="gDosya" accept=".kkyedek,.gz,application/octet-stream"></label>
+        <label class="f">Yedek şifresi<input class="in" type="password" id="gSifre" autocomplete="off"></label>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="gKontrol">Kontrol et</button></div>
+      <div id="gSonuc"></div>
+    </div>`;
+
+  $('ySave').onclick = async () => {
+    const a=$('ySifre').value, b=$('ySifre2').value, h=$('yHesap').value;
+    if(a.length<10) return toast('Yedek şifresi en az 10 karakter olmalı.', true);
+    if(a!==b) return toast('İki yedek şifresi aynı değil.', true);
+    if(!h) return toast('Onay için panel giriş şifrenizi yazın.', true);
+    try { await yx('sifre', {sifre:a, hesap_sifresi:h}); toast('Yedek şifresi kaydedildi'); go('yedek'); } catch(e){ toast(e.message, true); }
+  };
+  $('yNow').onclick = async e => {
+    e.target.disabled = true;
+    try { const r = await yx('simdi'); toast('Yedek alındı (' + kb(r.boyut) + ')'); go('yedek'); } catch(err){ toast(err.message, true); e.target.disabled=false; }
+  };
+  $('yRapor').onclick = async e => {
+    e.target.disabled = true; e.target.textContent = 'Gönderiliyor…';
+    try { const r = await yx('rapor', {ay:$('yAy').value}); toast(r.ay + ' raporu ' + r.gonderildi + ' adresine gönderildi' + (r.yedek_eklendi?' (yedek ekli)':'')); }
+    catch(err){ toast(err.message, true); }
+    e.target.disabled = false; e.target.textContent = '✉ Aylık raporu şimdi gönder';
+  };
+  const send = async (onay) => {
+    const f = $('gDosya').files[0]; if(!f) { toast('Önce yedek dosyasını seçin.', true); return null; }
+    const fd = new FormData(); fd.append('dosya', f); fd.append('sifre', $('gSifre').value); fd.append('onay', onay ? '1' : '0');
+    const r = await fetch('/api/functions/v1/yedek/geri', {method:'POST', credentials:'same-origin', headers:{'X-KK':'1'}, body:fd});
+    const j = await r.json().catch(()=>({})); if(!r.ok) throw new Error(j.message || 'Yedek okunamadı.'); return j;
+  };
+  $('gKontrol').onclick = async e => {
+    const out = $('gSonuc'); e.target.disabled = true; out.innerHTML = '<p class="muted">Yedek okunuyor…</p>';
+    try {
+      const r = await send(false); if(!r){ out.innerHTML=''; return; }
+      const rows = r.tablolar.filter(t=>t.yedekte>0);
+      out.innerHTML = `<p style="margin-top:14px">Yedek tarihi: <b>${esc(trDT(r.tarih))}</b></p>
+        <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Bölüm</th><th>Yedekte</th><th>Geri eklenecek</th></tr></thead><tbody>
+        ${rows.map(t=>`<tr><td>${esc(t.ad)}</td><td>${t.yedekte}</td><td style="font-weight:700;color:${t.eklenecek?'#1E5F5B':'#9aa3ad'}">${t.eklenecek||'—'}</td></tr>`).join('')}</tbody></table></div>
+        ${r.toplam_eklenecek ? `<div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn primary" id="gUygula">${r.toplam_eklenecek} eksik kaydı geri yükle</button></div>`
+                             : '<p class="muted" style="margin-top:12px">✓ Eksik kayıt yok — sitedeki bilgiler bu yedeği zaten içeriyor.</p>'}`;
+      if($('gUygula')) $('gUygula').onclick = async ev => {
+        if(!(await confirmBox(r.toplam_eklenecek + ' eksik kayıt geri eklenecek. Mevcut kayıtlar değişmeyecek. Devam edilsin mi?', 'Geri yükle', false))) return;
+        ev.target.disabled = true; ev.target.textContent = 'Geri yükleniyor…';
+        try { const x = await send(true); toast(x.toplam_eklenecek + ' kayıt geri yüklendi'); out.innerHTML = `<p style="margin-top:12px;font-weight:700;color:#1baf7a">✓ ${x.toplam_eklenecek} kayıt geri yüklendi.</p>`; }
+        catch(err){ toast(err.message, true); ev.target.disabled=false; ev.target.textContent='Tekrar dene'; }
+      };
+    } catch(err){ out.innerHTML = `<div class="err" style="margin-top:12px">${esc(err.message)}</div>`; }
+    e.target.disabled = false;
+  };
+}
+
+const VIEWS = {reports:viewReports, appts:viewAppts, patients:viewPatients, timeoff:viewTimeoff, doctors:viewDoctors, services:viewServices, kurumlar:viewKurumlar, yanlislar:viewYanlislar, sertifikalar:viewSertifikalar, profil:viewProfil, sss:viewSSS, galeri:viewGaleri, kvkk:viewKvkk, staff:viewStaff, settings:viewSettings, yedek:viewYedek};
 
 sb.auth.onAuthStateChange(ev => { if(ev==='SIGNED_OUT'){ $('appView').hidden=true; $('loginView').hidden=false; } });
 boot();

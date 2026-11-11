@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 $app = dirname(__DIR__, 2) . '/app';
-foreach (['bootstrap', 'tables', 'auth', 'policy', 'mail', 'rest', 'rpc', 'storage', 'setup', 'migrate'] as $f) require $app . "/$f.php";
+foreach (['bootstrap', 'tables', 'auth', 'policy', 'mail', 'rest', 'rpc', 'storage', 'setup', 'migrate', 'backup'] as $f) require $app . "/$f.php";
 
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: strict-origin-when-cross-origin');
@@ -42,6 +42,9 @@ try {
     }
     if ($path === '/functions/v1/personel' && $method === 'POST') { json_out(fn_personel(body_json())); exit; }
     if ($path === '/functions/v1/dis-kaynak' && $method === 'POST') { json_out(fn_dis_kaynak(body_json())); exit; }
+    if ($path === '/functions/v1/yedek' && $method === 'POST') { json_out(fn_yedek(body_json())); exit; }
+    if ($path === '/functions/v1/yedek/indir' && $method === 'GET') { fn_yedek_indir(); exit; }
+    if ($path === '/functions/v1/yedek/geri' && $method === 'POST') { json_out(fn_yedek_geri()); exit; }
     if (preg_match('#^/storage/v1/object/([a-z-]+)(?:/(.+))?$#', $path, $m)) {
         if ($method === 'POST' && !empty($m[2])) { json_out(storage_upload($m[1], $m[2])); exit; }
         if ($method === 'DELETE' && empty($m[2])) { json_out(storage_remove($m[1], body_json())); exit; }

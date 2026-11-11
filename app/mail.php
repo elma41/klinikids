@@ -90,23 +90,25 @@ function html_to_text(string $html): string {
     return trim(preg_replace("/\n{3,}/", "\n\n", $t));
 }
 
-function mail_send(string $to, string $subject, string $html, ?string $replyTo = null): void {
+/** $att: [['ad' => dosya adı, 'tur' => MIME, 'veri' => içerik], ...] */
+function mail_send(string $to, string $subject, string $html, ?string $replyTo = null, array $att = []): void {
     $cfg = mcfg();
     if ($cfg['driver'] === 'resend') {
         $ch = curl_init('https://api.resend.com/emails');
         curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 20,
             CURLOPT_HTTPHEADER => ['Authorization: Bearer ' . $cfg['resend_key'], 'Content-Type: application/json'],
             CURLOPT_POSTFIELDS => json_encode(array_filter(['from' => $cfg['from'], 'to' => [$to], 'subject' => $subject,
-                'html' => $html, 'text' => html_to_text($html), 'reply_to' => $replyTo]), JSON_UNESCAPED_UNICODE)]);
+                'html' => $html, 'text' => html_to_text($html), 'reply_to' => $replyTo,
+                'attachments' => $att ? array_map(fn($a) => ['filename' => $a['ad'], 'content' => base64_encode($a['veri'])], $att) : null]), JSON_UNESCAPED_UNICODE)]);
         $res = curl_exec($ch); $code = curl_getinfo($ch, CURLINFO_RESPONSE_CODE); curl_close($ch);
         if ($code < 200 || $code >= 300) throw new RuntimeException("Resend $code: $res");
         return;
     }
-    if ($cfg['driver'] === 'smtp') { smtp_send($cfg, $to, $subject, $html, $replyTo); return; }
+    if ($cfg['driver'] === 'smtp') { smtp_send($cfg, $to, $subject, $html, $replyTo, $att); return; }
 }
 
 /** Küçük SMTP istemcisi (SSL 465 ya da STARTTLS 587, AUTH LOGIN) */
-function smtp_send(array $cfg, string $to, string $subject, string $html, ?string $replyTo): void {
+function smtp_send(array $cfg, string $to, string $subject, string $html, ?string $replyTo, array $att = []): void {
     $s = $cfg['smtp'] ?? [];
     $host = $s['host'] ?? ''; $port = (int)($s['port'] ?? 465); $secure = $s['secure'] ?? ($port === 465 ? 'ssl' : 'tls');
     $verify = ($s['verify'] ?? true) !== false; // yalnızca yerel testte kapatılır
@@ -136,10 +138,17 @@ function smtp_send(array $cfg, string $to, string $subject, string $html, ?strin
     $msg = "From: {$enc($fromName)} <$fromAddr>\r\nTo: <$to>\r\nSubject: {$enc($subject)}\r\n"
          . ($replyTo ? "Reply-To: <$replyTo>\r\n" : '')
          . 'Date: ' . date('r') . "\r\nMessage-ID: <" . bin2hex(random_bytes(12)) . "@klinikids.com.tr>\r\nMIME-Version: 1.0\r\n"
+         . ($att ? "Content-Type: multipart/mixed; boundary=\"m$b\"\r\n\r\n--m$b\r\n" : '')
          . "Content-Type: multipart/alternative; boundary=\"$b\"\r\n\r\n"
          . "--$b\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode(html_to_text($html)))
          . "--$b\r\nContent-Type: text/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n" . chunk_split(base64_encode($html))
          . "--$b--\r\n";
+    foreach ($att as $a) {
+        $fn = preg_replace('/[^A-Za-z0-9._-]/', '_', (string)$a['ad']);
+        $msg .= "--m$b\r\nContent-Type: {$a['tur']}; name=\"$fn\"\r\nContent-Disposition: attachment; filename=\"$fn\"\r\nContent-Transfer-Encoding: base64\r\n\r\n"
+              . chunk_split(base64_encode((string)$a['veri']));
+    }
+    if ($att) $msg .= "--m$b--\r\n";
     $cmd($msg . '.', [250]); // base64 gövdede satır başında '.' olamaz, ekstra kaçış gerekmez
     @fwrite($fp, "QUIT\r\n"); fclose($fp);
 }

@@ -41,7 +41,21 @@ Değişiklik yayına almak: GitHub'a gönder → Plesk → Git → **Pull now**.
 
 ## Yedekleme
 
-Plesk → **Backup & Restore** → zamanlanmış yedek (günlük önerilir). Veritabanı ve `uploads/` klasörü yedeklenmeli.
+Yönetim paneli → **Yedekleme** sayfası (yalnızca yönetici):
+
+- **Yedek şifresi**: yedekler AES-256-GCM ile şifrelenir (anahtar PBKDF2-SHA256, 300.000 tur). Sunucuda şifrenin kendisi değil türetilmiş anahtar saklanır (`app/config.php`). Şifre unutulursa yedekler açılamaz.
+- **Gece yedeği**: `app/yedek/` klasörüne (web'den erişilemez), son 30 gün saklanır.
+- **Aylık rapor**: her ayın 1'inde (kaçarsa 2–3'ünde) geçen ayın özeti + özet CSV + şifreli tam yedek (`.kkyedek`) klinik e-postasına gider. Hasta adı içeren listeler e-postaya konmaz.
+- **Geri yükleme**: `.kkyedek` dosyası + şifre → önce önizleme, onaydan sonra yalnızca **eksik** kayıtlar eklenir; mevcut kayıtlar değişmez. Öncesinde otomatik güvenlik yedeği alınır.
+
+Zamanlanmış görev (Plesk → **Zamanlanmış Görevler** → PHP betiği çalıştır, her gün 03:00):
+
+```
+app/cron.php            # günlük yedek (+ ayın 1'inde rapor)
+app/cron.php rapor      # raporu hemen gönder (deneme)
+```
+
+Fotoğraflar (`public_html/uploads/`) e-posta yedeğine sığmadığı için ayrıca Plesk → **Backup & Restore** ile yedeklenmeli.
 
 ---
 

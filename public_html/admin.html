@@ -1980,7 +1980,7 @@ async function viewYedek(main){
       <div class="tbl-wrap"><table class="tbl"><tbody>
         <tr><td>Yedek şifresi</td><td>${ok(d.sifre_var, 'Belirlendi · '+trDT(d.sifre_tarihi), 'Belirlenmedi — aşağıdan belirleyin')}</td></tr>
         <tr><td>E-posta gönderimi</td><td>${ok(d.eposta, 'Açık · raporlar '+esc(d.alici)+' adresine gider', 'Kapalı — E-posta ayarlarını tamamlayın')}</td></tr>
-        <tr><td>Son otomatik gece yedeği</td><td>${d.son_calisma ? trDT(d.son_calisma) : '<span class="muted">Henüz çalışmadı (her gün 03:00'ten sonraki ilk ziyarette otomatik çalışır)</span>'}</td></tr>
+        <tr><td>Son otomatik gece yedeği</td><td>${d.son_calisma ? trDT(d.son_calisma) : '<span class="muted">Henüz çalışmadı (her gün 03:00’ten sonraki ilk ziyarette otomatik çalışır)</span>'}</td></tr>
         <tr><td>Son aylık rapor</td><td>${d.son_rapor ? esc(d.son_rapor) : '<span class="muted">Henüz gönderilmedi</span>'}</td></tr>
         ${d.rapor_hata ? `<tr><td>Rapor hatası</td><td style="color:#e34948">${esc(d.rapor_hata)}</td></tr>` : ''}
       </tbody></table></div>

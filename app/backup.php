@@ -242,20 +242,43 @@ function report_prev_month(): string {
     return (new DateTimeImmutable('first day of last month', new DateTimeZone('Europe/Istanbul')))->format('Y-m');
 }
 
-/** Zamanlanmış görev (her gece): yedek + ayın 1'inde rapor */
+/** Gece görevi: yedek + ayın ilk haftasında geçen ayın raporu (rapor hatası yedeği etkilemez) */
 function cron_run(bool $forceReport = false): array {
     $log = ['yedek' => backup_daily()];
+    $st = backup_state(); $st['son_calisma'] = gmdate('c');
     $ym = report_prev_month();
     $mark = KK_BACKUP_DIR . "/.aylik-$ym";
     $day = (int)(new DateTimeImmutable('now', new DateTimeZone('Europe/Istanbul')))->format('j');
-    if ($forceReport || ($day <= 3 && !is_file($mark))) { // 1'inde çalışamadıysa 2-3'ünde telafi eder
-        $log['rapor'] = report_send($ym);
-        @file_put_contents($mark, gmdate('c'));
+    if ($forceReport || ($day <= 7 && !is_file($mark))) { // 1'inde gönderilemezse ilk hafta her gün yeniden dener
+        try {
+            $log['rapor'] = report_send($ym);
+            @file_put_contents($mark, gmdate('c'));
+            $st['son_rapor'] = $ym; unset($st['rapor_hata']);
+        } catch (Throwable $e) { $st['rapor_hata'] = $e->getMessage(); error_log('KK rapor: ' . $e->getMessage()); }
     }
-    $st = backup_state(); $st['son_calisma'] = gmdate('c');
-    if (!empty($log['rapor'])) $st['son_rapor'] = $ym;
-    @file_put_contents(KK_BACKUP_DIR . '/durum.json', json_encode($st));
+    @file_put_contents(KK_BACKUP_DIR . '/durum.json', json_encode($st, JSON_UNESCAPED_UNICODE));
     return $log;
+}
+
+/**
+ * Sunucuda zamanlanmış görev (cron) yoksa: her gün 03:00'ten sonraki İLK ziyarette gece görevini
+ * yanıt ziyaretçiye gönderildikten SONRA arka planda çalıştırır. Günde en fazla bir kez, kilitli.
+ */
+function cron_maybe(): void {
+    $tz = new DateTimeZone('Europe/Istanbul');
+    $t3 = (new DateTimeImmutable('today 03:00', $tz))->getTimestamp();
+    $due = time() >= $t3 ? $t3 : $t3 - 86400;              // en son geçmesi gereken 03:00
+    $last = strtotime((string)(backup_state()['son_calisma'] ?? '')) ?: 0;
+    if ($last >= $due) return;
+    if (!is_dir(KK_BACKUP_DIR) && !@mkdir(KK_BACKUP_DIR, 0700, true)) return;
+    $fp = @fopen(KK_BACKUP_DIR . '/.kilit', 'c');
+    if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) return;     // başka bir istek zaten çalıştırıyor
+    register_shutdown_function(function () use ($fp) {
+        if (function_exists('fastcgi_finish_request')) @fastcgi_finish_request();
+        @set_time_limit(300); @ignore_user_abort(true);
+        try { cron_run(); } catch (Throwable $e) { error_log('KK gece görevi: ' . $e->getMessage()); }
+        flock($fp, LOCK_UN); fclose($fp);
+    });
 }
 
 /* ------------------------- Panel uç noktaları ------------------------- */
@@ -266,7 +289,7 @@ function fn_yedek(array $b): array {
     if ($a === 'durum') {
         $bc = backup_cfg();
         return ['sifre_var' => backup_has_key(), 'sifre_tarihi' => $bc['set_at'] ?? null, 'son_calisma' => backup_state()['son_calisma'] ?? null,
-                'son_rapor' => backup_state()['son_rapor'] ?? null, 'yerel' => backup_local_list(), 'eposta' => mcfg()['driver'] !== 'none',
+                'son_rapor' => backup_state()['son_rapor'] ?? null, 'rapor_hata' => backup_state()['rapor_hata'] ?? null, 'yerel' => backup_local_list(), 'eposta' => mcfg()['driver'] !== 'none',
                 'alici' => mcfg()['clinic'], 'gecen_ay' => report_prev_month(), 'cron_yolu' => KK_APP . '/cron.php'];
     }
     if ($a === 'sifre') {

@@ -20,6 +20,7 @@ try {
 
     if (!kk_installed()) throw new ApiError('Sistem henüz kurulmadı.', 503);
     kk_migrate();
+    cron_maybe();
 
     // Değişiklik yapan isteklerde başka sitelerden gelen çağrıları engelle (CSRF)
     if (!in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {

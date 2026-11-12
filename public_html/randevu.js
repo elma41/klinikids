@@ -74,11 +74,13 @@ const step = n => root.querySelector(`[data-step="${n}"]`);
 const form = $('body'), err = $('err');
 
 /* ---------- durum ---------- */
-const st = { ready: false, docs: [], svcs: [], links: [], hours: [], maxAhead: 60,
+const st = { ready: false, docs: [], svcs: [], links: [], hours: [], clinic: [], closed: [], maxAhead: 60,
   doc: null, svc: null, week: null, day: null, slot: null, slots: {}, loading: false, pick: null, req: 0 };
 const docOf = id => st.docs.find(d => d.id === id), svcOf = id => st.svcs.find(s => s.id === id);
 const svcsFor = docId => st.svcs.filter(s => st.links.some(l => l.doctor_id === docId && l.service_id === s.id));
-const works = (docId, day) => st.hours.some(h => h.doctor_id === docId && h.weekday === dow(day));
+/* Klinik o gün açık mı (panel → Ayarlar → Çalışma günleri / kapalı günler) */
+const clinicOpen = day => (!st.clinic.length || st.clinic.some(c => c.weekday === dow(day) && c.is_open)) && !st.closed.some(c => day >= c.starts_on && day <= c.ends_on);
+const works = (docId, day) => clinicOpen(day) && st.hours.some(h => h.doctor_id === docId && h.weekday === dow(day));
 const firstWeek = () => addD(todayTZ(), 1 - dow(todayTZ()));
 const lastDay = () => addD(todayTZ(), st.maxAhead);
 
@@ -91,12 +93,15 @@ function fallback() {
 
 async function init() {
   try {
-    const [docs, svcs, links, hours, set] = await Promise.all([
+    const [docs, svcs, links, hours, set, clinic, closed] = await Promise.all([
       get(`doctors?select=id,full_name,title,specialty,color,clinic&is_active=eq.true&clinic=in.(${CLINIC},ikisi)&order=sort_order,full_name`),
       get('services?select=*&is_active=eq.true&order=sort_order,name'),
       get('doctor_services?select=doctor_id,service_id'),
       get('working_hours?select=doctor_id,weekday'),
-      get('clinic_settings?select=max_days_ahead').catch(() => [])]);
+      get('clinic_settings?select=max_days_ahead').catch(() => []),
+      get('clinic_hours?select=weekday,is_open').catch(() => []),
+      get(`clinic_closures?select=starts_on,ends_on&ends_on=gte.${todayTZ()}`).catch(() => [])]);
+    st.clinic = clinic; st.closed = closed;
     /* Hizmetin kliniği (cocuk / yetiskin / ikisi): bu sayfaya ait olmayan hizmetler gösterilmez */
     st.svcs = svcs.filter(s => !s.clinic || s.clinic === CLINIC || s.clinic === 'ikisi'); st.links = links; st.hours = hours;
     if (set[0]) st.maxAhead = set[0].max_days_ahead;

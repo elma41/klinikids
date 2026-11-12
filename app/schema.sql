@@ -45,6 +45,29 @@ CREATE TABLE IF NOT EXISTS clinic_settings (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 INSERT IGNORE INTO clinic_settings (id) VALUES (1);
 
+-- Kliniğin genel çalışma günleri/saatleri (1 = Pazartesi … 7 = Pazar). Hekim saatleri bunun içinde kalır.
+CREATE TABLE IF NOT EXISTS clinic_hours (
+  weekday    TINYINT    NOT NULL PRIMARY KEY CHECK (weekday BETWEEN 1 AND 7),
+  is_open    TINYINT(1) NOT NULL DEFAULT 1,
+  open_time  TIME       NOT NULL DEFAULT '09:00:00',
+  close_time TIME       NOT NULL DEFAULT '18:00:00',
+  CHECK (open_time < close_time)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+INSERT IGNORE INTO clinic_hours (weekday, is_open, open_time, close_time) VALUES
+  (1,1,'09:00:00','18:00:00'),(2,1,'09:00:00','18:00:00'),(3,1,'09:00:00','18:00:00'),(4,1,'09:00:00','18:00:00'),
+  (5,1,'09:00:00','18:00:00'),(6,0,'10:00:00','17:00:00'),(7,0,'10:00:00','17:00:00');
+
+-- Kliniğin tamamen kapalı olduğu günler (resmi tatil, bayram vb.) — tarihler dahil
+CREATE TABLE IF NOT EXISTS clinic_closures (
+  id         CHAR(36)     NOT NULL PRIMARY KEY,
+  starts_on  DATE         NOT NULL,
+  ends_on    DATE         NOT NULL,
+  reason     VARCHAR(255) NULL,
+  created_at DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CHECK (starts_on <= ends_on),
+  INDEX (starts_on, ends_on)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS doctors (
   id         CHAR(36)     NOT NULL PRIMARY KEY,
   full_name  VARCHAR(255) NOT NULL,

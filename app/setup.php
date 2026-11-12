@@ -48,6 +48,14 @@ function write_config(array $cfg): void {
     kk_config(true); // bu istekte de yeni ayarlar geçerli olsun
 }
 
+/** Yeni sürümde eklenen tabloları canlı veritabanına bir kez uygular (schema.sql tekrar çalıştırmaya uygundur) */
+const KK_SCHEMA_V = 2;
+function kk_migrate(): void {
+    if ((int)(kk_config()['schema_v'] ?? 1) >= KK_SCHEMA_V) return;
+    run_schema(db());
+    $c = kk_config(); $c['schema_v'] = KK_SCHEMA_V; write_config($c);
+}
+
 function run_schema(PDO $pdo): void {
     $sql = file_get_contents(KK_APP . '/schema.sql');
     $sql = preg_replace('/^\s*--.*$/m', '', $sql);

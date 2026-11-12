@@ -1703,6 +1703,85 @@ async function viewSettings(main){
     $('meRole').textContent = $('meRole').textContent.replace(/ · .*$/, ' · ' + S.user.email);
     toast('Giriş e-postanız ' + S.user.email + ' olarak değiştirildi'); go('settings');
   };
+  await settingsHours(main);
+}
+
+/* ---- Ayarlar: kliniğin çalışma günleri/saatleri ve kapalı günler ---- */
+async function settingsHours(main){
+  const first = main.querySelector('.card'); if(!first) return;
+  first.insertAdjacentHTML('afterend', `
+    <div class="card"><h3>Çalışma günleri ve saatleri</h3>
+      <p class="muted small">Online randevu yalnızca kliniğin açık olduğu gün ve saatlerde alınabilir. Hekimlerin kendi saatleri (Doktorlar → 🕘 Saatler) bu aralığın içinde kalır. Sitedeki “Çalışma saatleri” yazısı ve Google’a giden bilgi de buradan güncellenir.</p>
+      <div id="chRows" style="margin-top:10px"><p class="muted">Yükleniyor…</p></div>
+      <div class="err" id="chErr" hidden style="margin-top:10px"></div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn primary" id="chSave">Saatleri kaydet</button></div>
+    </div>
+    <div class="card"><h3>Kapalı günler (resmi tatil, bayram…)</h3>
+      <p class="muted small">Bu tarihlerde online randevu alınamaz; sitede “kliniğimiz kapalıdır” duyurusu otomatik çıkar.</p>
+      <div id="clList" style="margin-top:8px"></div>
+      <div class="grid3" style="margin-top:12px">
+        <label class="f">İlk gün<input class="in" type="date" id="clFrom" min="${today()}"></label>
+        <label class="f">Son gün<input class="in" type="date" id="clTo" min="${today()}"></label>
+        <label class="f">Açıklama (sitede görünür)<input class="in" id="clWhy" maxlength="120" placeholder="Ör. Kurban Bayramı"></label>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-top:12px"><button class="btn" id="clAdd">＋ Kapalı gün ekle</button></div>
+    </div>`);
+  let hours, wh, closed;
+  try {
+    [hours, wh, closed] = await Promise.all([
+      q(sb.from('clinic_hours').select('*').order('weekday')),
+      q(sb.from('working_hours').select('doctor_id,weekday')),
+      q(sb.from('clinic_closures').select('*').gte('ends_on', today()).order('starts_on'))]);
+  } catch(e){ $('chRows').innerHTML = `<div class="err">${esc(friendly(e))}</div>`; return; }
+  const active = new Set((S.doctors||[]).filter(d=>d.is_active).map(d=>d.id));
+  const docsOn = w => new Set(wh.filter(h=>h.weekday===w && (!active.size || active.has(h.doctor_id))).map(h=>h.doctor_id)).size;
+  const hm = t => String(t||'').slice(0,5);
+  $('chRows').innerHTML = `<div class="tbl-wrap"><table class="tbl"><tbody>${[1,2,3,4,5,6,7].map(w=>{
+    const h = hours.find(x=>x.weekday===w) || {is_open:false, open_time:'09:00', close_time:'18:00'};
+    return `<tr data-w="${w}"><td style="width:150px"><label class="check"><input type="checkbox" class="chOpen" ${h.is_open?'checked':''}> ${DAYS[w]}</label></td>
+      <td><input class="in chS" type="time" step="900" value="${hm(h.open_time)}" style="max-width:130px"> – <input class="in chE" type="time" step="900" value="${hm(h.close_time)}" style="max-width:130px"></td>
+      <td class="muted small chNote"></td></tr>`; }).join('')}</tbody></table></div>`;
+  const refresh = () => $('chRows').querySelectorAll('tr').forEach(tr => {
+    const w = +tr.dataset.w, open = tr.querySelector('.chOpen').checked, n = docsOn(w);
+    tr.querySelectorAll('.chS,.chE').forEach(i => { i.disabled = !open; i.style.opacity = open ? 1 : .45; });
+    tr.querySelector('.chNote').innerHTML = !open ? 'Kapalı' : n ? `${n} hekim çalışıyor` : '<span style="color:#e34948;font-weight:700">⚠ Bu gün çalışan hekim yok — Doktorlar sayfasından saat ekleyin</span>';
+  });
+  $('chRows').addEventListener('change', refresh); refresh();
+  $('chSave').onclick = async e => {
+    const err = $('chErr'); err.hidden = true;
+    const rows = [...$('chRows').querySelectorAll('tr')].map(tr => ({ w:+tr.dataset.w, is_open: tr.querySelector('.chOpen').checked, open_time: tr.querySelector('.chS').value, close_time: tr.querySelector('.chE').value }));
+    const bad = rows.find(r => r.is_open && (!r.open_time || !r.close_time || r.open_time >= r.close_time));
+    if(bad){ err.textContent = `${DAYS[bad.w]}: açılış saati kapanıştan önce olmalı.`; err.hidden = false; return; }
+    if(!rows.some(r=>r.is_open)){ err.textContent = 'En az bir gün açık olmalı.'; err.hidden = false; return; }
+    e.target.disabled = true;
+    try { for(const r of rows) await q(sb.from('clinic_hours').update({is_open:r.is_open, open_time:r.open_time||'09:00', close_time:r.close_time||'18:00'}).eq('weekday', r.w).select('weekday')); toast('Çalışma saatleri kaydedildi'); }
+    catch(x){ err.textContent = friendly(x); err.hidden = false; }
+    e.target.disabled = false;
+  };
+  const trD = d => new Date(d+'T12:00:00').toLocaleDateString('tr-TR',{day:'numeric', month:'long', year:'numeric', weekday:'short'});
+  const drawCl = () => { $('clList').innerHTML = closed.length ? `<div class="tbl-wrap"><table class="tbl"><tbody>${closed.map(c=>`<tr><td>${esc(trD(c.starts_on))}${c.ends_on!==c.starts_on?' – '+esc(trD(c.ends_on)):''}</td><td>${esc(c.reason||'')}</td><td style="text-align:right"><button class="btn" data-delcl="${c.id}">Sil</button></td></tr>`).join('')}</tbody></table></div>` : '<p class="muted small">Planlanmış kapalı gün yok.</p>'; };
+  drawCl();
+  $('clList').onclick = async e => {
+    const b = e.target.closest('[data-delcl]'); if(!b) return;
+    if(!(await confirmBox('Bu kapalı gün kaldırılsın mı? O tarihlerde yeniden online randevu alınabilir.', 'Kaldır'))) return;
+    try { await q(sb.from('clinic_closures').delete().eq('id', b.dataset.delcl).select('id')); closed = closed.filter(c=>c.id!==b.dataset.delcl); drawCl(); toast('Kaldırıldı'); } catch(x){ toast(friendly(x), true); }
+  };
+  $('clFrom').onchange = () => { if(!$('clTo').value || $('clTo').value < $('clFrom').value) $('clTo').value = $('clFrom').value; $('clTo').min = $('clFrom').value; };
+  $('clAdd').onclick = async e => {
+    const f = $('clFrom').value, t = $('clTo').value || f, why = $('clWhy').value.trim();
+    if(!f) return toast('İlk günü seçin.', true);
+    if(t < f) return toast('Son gün ilk günden önce olamaz.', true);
+    e.target.disabled = true;
+    try {
+      const from = new Date(f+'T00:00:00+03:00').toISOString(), to = new Date(new Date(t+'T00:00:00+03:00').getTime()+864e5).toISOString();
+      const clash = await q(sb.from('appointments').select('id').in('status',['pending','confirmed']).lt('starts_at', to).gte('starts_at', from));
+      if(clash.length && !(await confirmBox(`Bu tarihlerde ${clash.length} randevu var. Kapalı gün eklemek bu randevuları iptal etmez; hastaları arayıp yeni gün vermeniz gerekir. Yine de eklensin mi?`, 'Ekle', false))) { e.target.disabled=false; return; }
+      const [row] = await q(sb.from('clinic_closures').insert({starts_on:f, ends_on:t, reason: why || null}).select());
+      closed.push(row); closed.sort((a,b)=>a.starts_on.localeCompare(b.starts_on)); drawCl();
+      $('clFrom').value = $('clTo').value = $('clWhy').value = ''; toast('Kapalı gün eklendi');
+    } catch(x){ toast(friendly(x), true); }
+    e.target.disabled = false;
+  };
 }
 
 /* =========================================================

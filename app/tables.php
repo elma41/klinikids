@@ -7,6 +7,10 @@ const T = [
   'clinic_settings' => ['pk' => 'id', 'cols' => [
       'id' => 'bool', 'clinic_name' => 'text', 'timezone' => 'text', 'slot_step_minutes' => 'int',
       'min_notice_minutes' => 'int', 'max_days_ahead' => 'int', 'auto_confirm' => 'bool']],
+  'clinic_hours' => ['pk' => 'weekday', 'cols' => [
+      'weekday' => 'int', 'is_open' => 'bool', 'open_time' => 'time', 'close_time' => 'time']],
+  'clinic_closures' => ['pk' => 'id', 'cols' => [
+      'id' => 'uuid', 'starts_on' => 'text', 'ends_on' => 'text', 'reason' => 'text', 'created_at' => 'ts']],
   'doctors' => ['pk' => 'id', 'cols' => [
       'id' => 'uuid', 'full_name' => 'text', 'title' => 'text', 'specialty' => 'text', 'bio' => 'text',
       'photo_url' => 'text', 'color' => 'text', 'is_active' => 'bool', 'sort_order' => 'int',

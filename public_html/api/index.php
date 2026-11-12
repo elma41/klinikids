@@ -19,6 +19,7 @@ try {
     if ($path === '/health') { json_out(['ok' => true, 'installed' => kk_installed()]); exit; }
 
     if (!kk_installed()) throw new ApiError('Sistem henüz kurulmadı.', 503);
+    kk_migrate();
 
     // Değişiklik yapan isteklerde başka sitelerden gelen çağrıları engelle (CSRF)
     if (!in_array($method, ['GET', 'HEAD', 'OPTIONS'], true)) {

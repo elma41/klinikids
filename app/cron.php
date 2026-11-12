@@ -10,6 +10,7 @@ foreach (['bootstrap', 'tables', 'auth', 'mail', 'setup', 'backup'] as $f) requi
 
 try {
     if (!kk_installed()) throw new RuntimeException('Sistem kurulu değil.');
+    kk_migrate();
     $log = cron_run(($argv[1] ?? '') === 'rapor');
     echo gmdate('c') . ' OK ' . json_encode($log, JSON_UNESCAPED_UNICODE) . "\n";
 } catch (Throwable $e) {

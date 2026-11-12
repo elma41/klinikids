@@ -38,8 +38,8 @@ function slots_for(string $doctorId, string $serviceId, string $date, ?array $s 
     if ($dur === false) return [];
     $dur = (int)$dur; $step = (int)$s['slot_step_minutes'];
     $dow = (int)(new DateTimeImmutable($date, $tz))->format('N');
-    $hours = q('SELECT start_time, end_time FROM working_hours WHERE doctor_id = ? AND weekday = ? ORDER BY start_time', [$doctorId, $dow])->fetchAll();
-    if (!$hours) return [];
+    $hours = clip_to_clinic($dow, q('SELECT start_time, end_time FROM working_hours WHERE doctor_id = ? AND weekday = ? ORDER BY start_time', [$doctorId, $dow])->fetchAll());
+    if (!$hours || clinic_closed_on($date)) return [];
     $dayStart = (new DateTimeImmutable("$date 00:00:00", $tz))->getTimestamp();
     $dayEnd = $dayStart + 86400 + 3600;
     $busy = q("SELECT starts_at, ends_at FROM appointments WHERE doctor_id = ? AND status IN ('pending','confirmed') AND starts_at < ? AND ends_at > ?
@@ -61,6 +61,28 @@ function slots_for(string $doctorId, string $serviceId, string $date, ?array $s 
     }
     usort($out, fn($a, $b) => strcmp($a['slot_start'], $b['slot_start']));
     return $out;
+}
+
+/** Kliniğin o günkü açılış/kapanış saatleri: null = kapalı */
+function clinic_day(int $dow): ?array {
+    static $c = null;
+    if ($c === null) { $c = []; foreach (q('SELECT weekday, is_open, open_time, close_time FROM clinic_hours') as $r) $c[(int)$r['weekday']] = $r; }
+    if (!$c) return ['open_time' => '00:00:00', 'close_time' => '24:00:00']; // tablo boşsa kısıt yok
+    $r = $c[$dow] ?? null;
+    return ($r && (int)$r['is_open']) ? $r : null;
+}
+/** Hekim saatlerini kliniğin açık olduğu saatlerle sınırla */
+function clip_to_clinic(int $dow, array $hours): array {
+    $cd = clinic_day($dow); if (!$cd) return [];
+    $o = [];
+    foreach ($hours as $h) {
+        $st = max($h['start_time'], $cd['open_time']); $en = min($h['end_time'], $cd['close_time']);
+        if ($st < $en) $o[] = ['start_time' => $st, 'end_time' => $en];
+    }
+    return $o;
+}
+function clinic_closed_on(string $date): bool {
+    return (bool)q('SELECT 1 FROM clinic_closures WHERE ? BETWEEN starts_on AND ends_on LIMIT 1', [$date])->fetchColumn();
 }
 
 function rpc_get_available_slots(array $a): array {
@@ -147,11 +169,25 @@ function rpc_public_schedule(array $a): array {
     $off = q('SELECT t.doctor_id d, t.starts_at s, t.ends_at e, t.reason r FROM time_off t JOIN doctors d ON d.id = t.doctor_id
                WHERE d.is_active = 1 AND t.ends_at > ? AND t.starts_at < ? ORDER BY t.starts_at',
              [now_db(), gmdate('Y-m-d H:i:s', time() + 60 * 86400)])->fetchAll();
-    return [
-        'tz' => $s['timezone'],
-        'hours' => array_map(fn($h) => ['d' => $h['d'], 'w' => (int)$h['w'], 's' => substr($h['s'], 0, 5), 'e' => substr($h['e'], 0, 5)], $hours),
-        'off' => array_map(fn($o) => ['d' => $o['d'], 's' => from_db_time($o['s']), 'e' => from_db_time($o['e']), 'r' => $o['r']], $off),
-    ];
+    // Hekim saatleri kliniğin açık saatleriyle sınırlanır
+    $clipped = [];
+    foreach ($hours as $h) foreach (clip_to_clinic((int)$h['w'], [['start_time' => $h['s'], 'end_time' => $h['e']]]) as $x)
+        $clipped[] = ['d' => $h['d'], 'w' => (int)$h['w'], 's' => substr($x['start_time'], 0, 5), 'e' => substr($x['end_time'], 0, 5)];
+    $offOut = array_map(fn($o) => ['d' => $o['d'], 's' => from_db_time($o['s']), 'e' => from_db_time($o['e']), 'r' => $o['r']], $off);
+    // Klinik kapalı günleri: her hekim için izin gibi görünür (sitede "kliniğimiz kapalı" duyurusu çıkar)
+    $tz = new DateTimeZone($s['timezone']);
+    $today = (new DateTimeImmutable('now', $tz))->format('Y-m-d');
+    $closed = q('SELECT starts_on, ends_on, reason FROM clinic_closures WHERE ends_on >= ? AND starts_on <= ? ORDER BY starts_on',
+                [$today, (new DateTimeImmutable('now', $tz))->modify('+60 days')->format('Y-m-d')])->fetchAll();
+    $closedOut = array_map(fn($c) => ['s' => (new DateTimeImmutable($c['starts_on'] . ' 00:00:00', $tz))->format('c'),
+                                      'e' => (new DateTimeImmutable($c['ends_on'] . ' 00:00:00', $tz))->modify('+1 day')->format('c'), 'r' => $c['reason']], $closed);
+    $docs = array_values(array_unique(array_column($hours, 'd')));
+    foreach ($closedOut as $c) foreach ($docs as $d) $offOut[] = ['d' => $d] + $c;
+    $clinic = [];
+    foreach (q('SELECT weekday, is_open, open_time, close_time FROM clinic_hours ORDER BY weekday') as $r)
+        $clinic[] = ['w' => (int)$r['weekday'], 'open' => (bool)$r['is_open'], 's' => substr($r['open_time'], 0, 5), 'e' => substr($r['close_time'], 0, 5)];
+    usort($offOut, fn($a, $b) => strcmp($a['s'], $b['s']));
+    return ['tz' => $s['timezone'], 'hours' => $clipped, 'off' => $offOut, 'clinic' => $clinic, 'closed' => $closedOut];
 }
 
 function rpc_update_my_profile(array $a): ?array {

@@ -234,7 +234,7 @@ function addSchedule() {
     });
     if (closures.length) {
       const c = closures[0], ongoing = new Date(c.s) <= now;
-      const html = `<span>${ongoing ? '🎉' : '📅'}</span><span>${c.r ? esc(c.r) + ' nedeniyle ' : ''}${esc(range(c.s, c.e))} tarihlerinde kliniğimiz kapalıdır.${ongoing ? ' Acil durumlar için WhatsApp’tan yazabilirsiniz.' : ''}</span>`;
+      const html = `<span>${ongoing ? '🎉' : '📅'}</span><span>${c.r ? esc(c.r) + ' nedeniyle ' : ''}${esc(range(c.s, c.e))} tarih${range(c.s, c.e).includes('–') ? 'lerinde' : 'inde'} kliniğimiz kapalıdır.${ongoing ? ' Acil durumlar için WhatsApp’tan yazabilirsiniz.' : ''}</span>`;
       ['#randevu .wrap', '#hekimler'].forEach(sel => {
         const host = document.querySelector(sel); if (!host) return;
         const n = document.createElement('div'); n.className = 'kk-closure'; n.innerHTML = html;
@@ -245,7 +245,10 @@ function addSchedule() {
     /* İletişim kutusu: kliniğin genel çalışma saatleri */
     const contact = document.querySelector('#iletisim .loc-box > p, #iletisim.cbox > p, #iletisim > p');
     if (contact && ids.length) {
-      const day = d => { const x = S.hours.filter(h => ids.includes(h.d) && h.w === d); return x.length ? `${x.map(h => h.s).sort()[0]}–${x.map(h => h.e).sort().pop()}` : ''; };
+      // Panelde klinik saatleri girildiyse onlar, girilmediyse hekim saatlerinin birleşimi
+      const ch = Array.isArray(S.clinic) && S.clinic.length ? S.clinic : null;
+      const day = ch ? (d => { const c = ch.find(x => x.w === d); return c && c.open ? `${c.s}–${c.e}` : ''; })
+                     : (d => { const x = S.hours.filter(h => ids.includes(h.d) && h.w === d); return x.length ? `${x.map(h => h.s).sort()[0]}–${x.map(h => h.e).sort().pop()}` : ''; });
       const rows = []; let i = 1;
       while (i <= 7) { const v = day(i); let j = i; while (j < 7 && day(j + 1) === v) j++; rows.push(`${SD[i]}${j > i ? '–' + SD[j] : ''} ${v || 'Kapalı'}`); i = j + 1; }
       const t = day(today), closedNow = closures.some(c => new Date(c.s) <= now && new Date(c.e) > now);
@@ -254,6 +257,18 @@ function addSchedule() {
       el.innerHTML = `<b>Çalışma saatleri</b>${rows.join(' · ')}<br><span class="now ${openNow ? 'open' : 'closed'}">${openNow ? 'Şu an açığız' : 'Şu an kapalıyız'}</span>`;
       contact.after(el);
     }
+    /* Google için çalışma saatleri (sayfadaki yapısal veri) panelle aynı kalsın */
+    if (Array.isArray(S.clinic) && S.clinic.length) try {
+      const EN = ['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], groups = {};
+      S.clinic.filter(c => c.open).forEach(c => { (groups[c.s + '|' + c.e] = groups[c.s + '|' + c.e] || []).push(EN[c.w]); });
+      const spec = Object.entries(groups).map(([k, days]) => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: days, opens: k.split('|')[0], closes: k.split('|')[1] }));
+      (S.closed || []).forEach(c => spec.push({ '@type': 'OpeningHoursSpecification', validFrom: c.s.slice(0, 10), validThrough: new Date(new Date(c.e) - 1).toISOString().slice(0, 10), opens: '00:00', closes: '00:00' }));
+      document.querySelectorAll('script[type="application/ld+json"]:not([id])').forEach(el => {
+        const d = JSON.parse(el.textContent);
+        (d['@graph'] || [d]).forEach(n => { if (n.openingHoursSpecification) n.openingHoursSpecification = spec; });
+        el.textContent = JSON.stringify(d);
+      });
+    } catch (e) {}
   }).catch(() => {});
 }
 

@@ -8,7 +8,7 @@ const ADMIN_WRITE  = ['doctors', 'services', 'doctor_services', 'faqs', 'gallery
 
 function policy_read(string $t, Ctx $c) {
     switch ($t) {
-        case 'clinic_settings': case 'doctor_services': case 'working_hours': return null;
+        case 'clinic_settings': case 'doctor_services': case 'working_hours': case 'clinic_hours': case 'clinic_closures': return null;
         case 'time_off':
             if ($c->is('admin', 'receptionist')) return null;
             if ($c->role === 'doctor' && $c->doctorId) return ['t.doctor_id = ?', [$c->doctorId]];
@@ -35,7 +35,8 @@ function policy_read(string $t, Ctx $c) {
 function policy_write(string $t, string $op, Ctx $c) {
     if (in_array($t, ADMIN_WRITE, true)) return $c->is('admin') ? null : false;
     switch ($t) {
-        case 'clinic_settings': return ($op === 'update' && $c->is('admin')) ? null : false;
+        case 'clinic_settings': case 'clinic_hours': return ($op === 'update' && $c->is('admin')) ? null : false;
+        case 'clinic_closures': return $c->is('admin', 'receptionist') ? null : false;
         case 'doctor_certificates':
             if ($c->is('admin')) return null;
             return ($c->role === 'doctor' && $c->doctorId) ? ['t.doctor_id = ?', [$c->doctorId]] : false;

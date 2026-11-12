@@ -152,6 +152,7 @@ textarea.in{min-height:70px;resize:vertical}
 .avatar{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#fff;background:var(--c,var(--teal));flex-shrink:0;font-size:14px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chip{background:var(--cream);border:1.5px solid var(--line);border-radius:99px;padding:3px 10px;font-size:13px;font-weight:700}
+.chDoc{display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none}.chDoc input{width:15px;height:15px;margin:0;accent-color:var(--teal)}.chDoc .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .wh-row{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line)}
 .wh-row:last-child{border-bottom:0}
 
@@ -1730,21 +1731,26 @@ async function settingsHours(main){
   try {
     [hours, wh, closed] = await Promise.all([
       q(sb.from('clinic_hours').select('*').order('weekday')),
-      q(sb.from('working_hours').select('doctor_id,weekday')),
+      q(sb.from('working_hours').select('id,doctor_id,weekday')),
       q(sb.from('clinic_closures').select('*').gte('ends_on', today()).order('starts_on'))]);
   } catch(e){ $('chRows').innerHTML = `<div class="err">${esc(friendly(e))}</div>`; return; }
-  const active = new Set((S.doctors||[]).filter(d=>d.is_active).map(d=>d.id));
-  const docsOn = w => new Set(wh.filter(h=>h.weekday===w && (!active.size || active.has(h.doctor_id))).map(h=>h.doctor_id)).size;
+  const docs = (S.doctors||[]).filter(d=>d.is_active);
+  const short = n => { const p = String(n).trim().split(/\s+/); return p.length >= 4 ? p.slice(0,2).join(' ') : p[0]; };
+  const works = (w, id) => wh.some(h=>h.weekday===w && h.doctor_id===id);
   const hm = t => String(t||'').slice(0,5);
   $('chRows').innerHTML = `<div class="tbl-wrap"><table class="tbl"><tbody>${[1,2,3,4,5,6,7].map(w=>{
     const h = hours.find(x=>x.weekday===w) || {is_open:false, open_time:'09:00', close_time:'18:00'};
     return `<tr data-w="${w}"><td style="width:150px"><label class="check"><input type="checkbox" class="chOpen" ${h.is_open?'checked':''}> ${DAYS[w]}</label></td>
       <td><input class="in chS" type="time" step="900" value="${hm(h.open_time)}" style="max-width:130px"> – <input class="in chE" type="time" step="900" value="${hm(h.close_time)}" style="max-width:130px"></td>
-      <td class="muted small chNote"></td></tr>`; }).join('')}</tbody></table></div>`;
+      <td><div class="chips chDocs">${docs.map(d=>`<label class="chip chDoc" title="${esc((d.title||'')+' '+d.full_name)}"><input type="checkbox" data-doc="${d.id}" ${works(w,d.id)?'checked':''}> <span class="dot" style="background:${esc(d.color||'#1C8C88')}"></span>${esc(short(d.full_name))}</label>`).join('')}</div>
+        <div class="small chNote" style="margin-top:4px"></div></td></tr>`; }).join('')}</tbody></table></div>
+    <p class="muted small" style="margin-top:6px">O gün çalışan hekimleri işaretleyin. Yeni eklenen hekim o gün kliniğin açık olduğu saatler boyunca çalışır; farklı saat (ör. öğle arası) için Doktorlar → 🕘 Saatler.</p>`;
   const refresh = () => $('chRows').querySelectorAll('tr').forEach(tr => {
-    const w = +tr.dataset.w, open = tr.querySelector('.chOpen').checked, n = docsOn(w);
+    const open = tr.querySelector('.chOpen').checked, n = tr.querySelectorAll('.chDoc input:checked').length;
     tr.querySelectorAll('.chS,.chE').forEach(i => { i.disabled = !open; i.style.opacity = open ? 1 : .45; });
-    tr.querySelector('.chNote').innerHTML = !open ? 'Kapalı' : n ? `${n} hekim çalışıyor` : '<span style="color:#e34948;font-weight:700">⚠ Bu gün çalışan hekim yok — Doktorlar sayfasından saat ekleyin</span>';
+    tr.querySelectorAll('.chDoc').forEach(l => { const on = l.querySelector('input').checked; l.style.opacity = on ? 1 : .5; l.style.borderColor = on ? 'var(--teal)' : ''; });
+    tr.querySelector('.chNote').innerHTML = !open ? (n ? '<span style="color:#b26b00;font-weight:700">Klinik bu gün kapalı işaretli — hekim seçtiyseniz soldan günü açın</span>' : '<span class="muted">Kapalı</span>')
+      : n ? `<span class="muted">${n} hekim çalışıyor</span>` : '<span style="color:#e34948;font-weight:700">⚠ Bu gün çalışan hekim seçilmedi — online randevu alınamaz</span>';
   });
   $('chRows').addEventListener('change', refresh); refresh();
   $('chSave').onclick = async e => {
@@ -1754,7 +1760,23 @@ async function settingsHours(main){
     if(bad){ err.textContent = `${DAYS[bad.w]}: açılış saati kapanıştan önce olmalı.`; err.hidden = false; return; }
     if(!rows.some(r=>r.is_open)){ err.textContent = 'En az bir gün açık olmalı.'; err.hidden = false; return; }
     e.target.disabled = true;
-    try { for(const r of rows) await q(sb.from('clinic_hours').update({is_open:r.is_open, open_time:r.open_time||'09:00', close_time:r.close_time||'18:00'}).eq('weekday', r.w).select('weekday')); toast('Çalışma saatleri kaydedildi'); }
+    try {
+      for(const r of rows) await q(sb.from('clinic_hours').update({is_open:r.is_open, open_time:r.open_time||'09:00', close_time:r.close_time||'18:00'}).eq('weekday', r.w).select('weekday'));
+      // Hekim seçimleri: işaretlenen ama o gün saati olmayan hekime kliniğin saatleri eklenir, işareti kaldırılanın o günkü saatleri silinir
+      const add = [], del = [];
+      $('chRows').querySelectorAll('tr').forEach(tr => {
+        const w = +tr.dataset.w, r = rows.find(x=>x.w===w);
+        tr.querySelectorAll('.chDoc input').forEach(i => {
+          const id = i.dataset.doc, has = wh.filter(h=>h.weekday===w && h.doctor_id===id);
+          if(i.checked && !has.length) add.push({doctor_id:id, weekday:w, start_time:r.open_time||'09:00', end_time:r.close_time||'18:00'});
+          if(!i.checked && has.length) del.push(...has.map(h=>h.id));
+        });
+      });
+      if(add.length) await q(sb.from('working_hours').insert(add).select('id'));
+      if(del.length) await q(sb.from('working_hours').delete().in('id', del).select('id'));
+      wh = await q(sb.from('working_hours').select('id,doctor_id,weekday'));
+      toast('Çalışma günleri, saatleri ve hekimler kaydedildi'); refresh();
+    }
     catch(x){ err.textContent = friendly(x); err.hidden = false; }
     e.target.disabled = false;
   };
